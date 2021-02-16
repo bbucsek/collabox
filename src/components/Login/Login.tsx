@@ -1,5 +1,6 @@
 import React from 'react'
-import { signIn } from '../service/authentication'
+import { signIn } from '../../service/authentication'
+import { Container } from './styles'
 
 export default function Login() {
 
@@ -9,7 +10,7 @@ export default function Login() {
   }
 
   return (
-    <>
+    <Container>
         <button onClick={handleClick}>Sing up with google</button>
-    </>)
+    </Container>)
 }
