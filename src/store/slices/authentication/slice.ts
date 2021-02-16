@@ -14,7 +14,7 @@ const slice = createSlice({
     name: 'authentication',
     initialState,
     reducers: {
-        SET_CURRENT_USER: (state, action: PayloadAction<user | null>) => {
+        SET_CURRENT_USER: (state, action: PayloadAction<User | null>) => {
             state.currentUser = action.payload
             state.loading = false
         },
