@@ -1,6 +1,7 @@
 import React from 'react'
-import { Container } from './styles'
+import { Container, Title, Logout } from './styles'
 import { signOut } from '../../service/authentication'
+import PlaylistItem from './PlaylistItem'
 
 const Sidebar = () => {
 
@@ -9,7 +10,11 @@ const Sidebar = () => {
     }
     return (
         <Container>
-            <button onClick={handleLogout}>logout</button>
+            <Title>Collabox</Title>
+            <PlaylistItem name={'joszika playlist'} />
+            <PlaylistItem name={'pistike playlist'} />
+            <PlaylistItem name={'gabika playlist'} />
+            <Logout onClick={handleLogout}>logout</Logout>
         </Container>
     )
 }
