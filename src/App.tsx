@@ -1,22 +1,34 @@
-import React from 'react';
-import styled from 'styled-components'
-
-const Container = styled.div`
-  height: 100vh;
-  background-color: ${({ theme }) => theme.colors.background};
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 3rem;
-`
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  selectCurrentUser,
+  selectAuthLoading,
+} from './store/slices/authentication/selectors'
+import { authenticationAsyncActions } from './store/slices/authentication/slice'
+import Login from './components/Login'
+import PrivateRoutes from './modules/PrivateRoutes/PrivateRoutes';
+import Loading from './components/Loading';
 
 function App() {
-  return (
-    <Container>
-      Happy coding!
-    </Container>
-  );
+  const dispatch = useDispatch()
+  const currentUser = useSelector(selectCurrentUser)
+  const loading = useSelector(selectAuthLoading)
+
+  useEffect(() => {
+    dispatch(authenticationAsyncActions.subscribeToAuthChanges())
+  }, [dispatch])
+
+  if (loading) {
+    return (
+      <Loading />
+    )
+  }
+
+  if (currentUser) {
+    return <PrivateRoutes />
+  }
+  
+  return <Login />
 }
 
 export default App;
