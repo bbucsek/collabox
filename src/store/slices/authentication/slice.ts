@@ -2,12 +2,12 @@ import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit'
 import firebase from 'firebase/app'
 import User from '../../../types/User'
 import AuthState from './types/AuthState'
-import { subscriber } from '../../../service/authentication'
+import { subscribeToAuthentication } from '../../../service/authentication'
 
 const initialState: AuthState = {
     currentUser: null,
     errorMessage: null,
-    loading: true,
+    loading: false,
 }
 
 const slice = createSlice({
@@ -37,7 +37,7 @@ const subscribeToAuthChanges = createAsyncThunk(
             }
         }
         try {
-            await subscriber(observer)
+            await subscribeToAuthentication(observer)
         } catch (error) {
             thunkApi.rejectWithValue('authentication_error')
         }

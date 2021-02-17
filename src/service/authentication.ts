@@ -9,6 +9,6 @@ export const signOut = () => {
   return firebase.auth().signOut()
 }
 
-export const subscriber = (observer: any) => {
+export const subscribeToAuthentication = (observer: any) => {
   firebase.auth().onAuthStateChanged(observer)
 }

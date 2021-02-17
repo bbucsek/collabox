@@ -1,5 +1,6 @@
 import React from 'react'
 import { signOut } from '../../service/authentication'
+import { Container } from './styles'
 
 const Landing = () => {
 
@@ -8,9 +9,9 @@ const Landing = () => {
     }
     
     return (
-        <div>
+        <Container>
             <button onClick={handleLogout}>logout</button>
-        </div>
+        </Container>
     )
 }
 
