@@ -1,96 +1,98 @@
-import React from 'react';
-import { render } from '@testing-library/react';
-import App from './App';
-import { Provider } from 'react-redux'
-import configureMockStore from 'redux-mock-store'
-import thunk from 'redux-thunk'
-import { selectCurrentUser, selectAuthLoading } from './store/slices/authentication/selectors'
-import Login from './components/Login';
-import Loading from './components/Loading';
-import User from './types/User';
-import Landing from './components/Landing'
+import React from "react";
+import { render } from "@testing-library/react";
+import App from "./App";
+import { Provider } from "react-redux";
+import configureMockStore from "redux-mock-store";
+import thunk from "redux-thunk";
 
-const initialMockState = {
-  currentUser: {},
-}
+const mockStore = configureMockStore([thunk]);
 
-const state = initialMockState
-const mockStore = configureMockStore([thunk])
-const store = mockStore(() => state)
+const store = mockStore({
+    authentication: {
+        currentUser: null,
+        loading: true,
+    },
+});
 
-jest.mock('./store/slices/authentication/selectors', () => ({
-  selectCurrentUser: jest.fn(),
-  selectAuthLoading: jest.fn(),
-}))
+const storeLoadingFalse = mockStore({
+    authentication: {
+        currentUser: null,
+        loading: false,
+    },
+});
 
-jest.mock('./components/Login')
-jest.mock('./components/Loading')
-jest.mock('./components/Landing')
+const storeWithUser = mockStore({
+    authentication: {
+        currentUser: {
+            id: "test-id",
+            name: "test-user",
+            email: "test-user-email",
+        },
+        loading: false,
+    },
+});
 
-describe('App component', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-  })
+jest.mock("./components/Login", () => {
+    return function Dummy() {
+        return <div data-testid="login">"LoginMock"</div>;
+    };
+});
 
-  it('renders without crashing', () => {
-    Login.mockImplementation(() => <div>LoginMock</div>)
-    render(
-        <Provider store={store}>
-            <App />
-        </Provider>
-    )
-  })
+jest.mock("./components/Loading", () => {
+    return function Dummy() {
+        return <div data-testid="loading">"LoadingMock"</div>;
+    };
+});
 
-  
-  it('renders Login component when loading state is false and currentUser is null', () => {
-    selectAuthLoading.mockImplementation(() => false)
-    selectCurrentUser.mockImplementation(() => null)
-    Login.mockImplementation(() => <div>LoginMock</div>)
+jest.mock("./modules/PrivateRoutes/PrivateRoutes", () => {
+    return function Dummy() {
+        return <div data-testid="private-routes">"PrivateRoutesMock"</div>;
+    };
+});
 
-    const { queryByText } = render(
-      <Provider store={store}>
-          <App />
-      </Provider>
-    )
+describe("App component", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
 
-    const loginMock = queryByText('LoginMock')
+     it("renders without crashing", () => {
+        render(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
+    });
 
-    expect(loginMock).toBeInTheDocument()
-  })
+    it("renders Login component when loading state is false and currentUser is null", () => {
+        const { getByTestId } = render(
+            <Provider store={storeLoadingFalse}>
+                <App />
+            </Provider>
+        );
 
-  it('renders Loading component when loading state is true', () => {
-    selectAuthLoading.mockImplementation(() => true)
-    Loading.mockImplementation(() => <div>LoadingMock</div>)
+        const loginMock = getByTestId("login");
+        expect(loginMock).toBeInTheDocument();
+    });
 
-    const { queryByText } = render(
-      <Provider store={store}>
-          <App />
-      </Provider>
-    )
+    it("renders Loading component when loading state is true", () => {
+        const { getByTestId } = render(
+            <Provider store={store}>
+                <App />
+            </Provider>
+        );
 
-    const LoadingComponent = queryByText('LoadingMock')
+        const LoadingComponent = getByTestId("loading");
+        expect(LoadingComponent).toBeInTheDocument();
+    });
 
-    expect(LoadingComponent).toBeInTheDocument()
-  })
+    it("renders PrivateRoutes when loading is false and user is not null", () => {
+        const { getByTestId } = render(
+            <Provider store={storeWithUser}>
+                <App />
+            </Provider>
+        );
 
-  it('renders PrivateRoutes when loading is false and user is not null', () => {
-    const user: User = {
-      id: 'test-id',
-      name: 'test-user',
-      email: 'test-user-email',
-    }
-    selectAuthLoading.mockImplementation(() => false)
-    selectCurrentUser.mockImplementation(() => user)
-    Landing.mockImplementation(() => <div>LandingMock</div>)
-
-    const { getByText } = render(
-      <Provider store={store}>
-          <App />
-      </Provider>
-    )
-
-    const PrivateRoutesComponent = getByText('LandingMock')
-
-    expect(PrivateRoutesComponent).toBeInTheDocument()
-  })
-})
+        const PrivateRoutesComponent = getByTestId("private-routes");
+        expect(PrivateRoutesComponent).toBeInTheDocument();
+    });
+});
