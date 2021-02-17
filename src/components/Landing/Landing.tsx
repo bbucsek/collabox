@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React from "react";
 import { signOut } from "../../service/authentication";
 import AddPlaylist from "../AddPlaylist/AddPlaylist";
@@ -12,6 +13,16 @@ const Landing = () => {
         <Container>
             <button onClick={handleLogout}>logout</button>
             <AddPlaylist />
+=======
+import React from 'react'
+import { Container } from './styles'
+
+const Landing = () => {
+    
+    return (
+        <Container>
+            hello
+>>>>>>> feat: add style to login page. create sidebar.
         </Container>
     );
 };
