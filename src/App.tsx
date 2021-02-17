@@ -7,6 +7,7 @@ import {
 import { authenticationAsyncActions } from './store/slices/authentication/slice'
 import Login from './components/Login'
 import PrivateRoutes from './modules/PrivateRoutes/PrivateRoutes';
+import Loading from './components/Loading';
 
 function App() {
   const dispatch = useDispatch()
@@ -19,9 +20,7 @@ function App() {
 
   if (loading) {
     return (
-      <div>
-        loading....
-      </div>
+      <Loading />
     )
   }
 
