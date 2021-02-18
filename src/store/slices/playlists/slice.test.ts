@@ -99,7 +99,6 @@ describe('CreatePlaylist slice async action', () => {
 
     expect(nextState.loading.createPlaylistLoading).toBe(true)
   })
-
   it("sets loading to false when action is fulfilled", () => {
     const nextState = playlistsReducer(
       state,
@@ -108,7 +107,6 @@ describe('CreatePlaylist slice async action', () => {
 
     expect(nextState.loading.createPlaylistLoading).toBe(false)
   })
-
   it("sets loading to false when action is rejected", () => {
     const nextState = playlistsReducer(
       state,
@@ -133,7 +131,6 @@ describe('SubscribeToPlaylist slice async action', () => {
   beforeEach(() => {
     store.clearActions()
   })
-
   it('returns the right action if subscribed to playlist', async () => {
     mockedFirestoreApi.subscribeToPlaylist.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
