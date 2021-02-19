@@ -3,6 +3,7 @@ import PlaylistsState from './types/PlaylistsState'
 import { firestoreApi } from '../../../service/firestoreApi'
 import RootState from '../../RootState'
 import Playlist from './types/Playlist'
+import PlaylistData from '../../../types/PlayListData'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -42,6 +43,9 @@ const slice = createSlice({
         SET_PLAYLIST: (state, action: PayloadAction<Playlist>) => {
             state.currentPlaylist = action.payload
         },
+        SET_OWN_PLAYLISTS: (state, action: PayloadAction<PlaylistData[]>) => {
+            state.ownPlaylists = action.payload
+        },
     },
     extraReducers: {
         [createPlaylist.pending.type]: (state) => {
@@ -54,6 +58,22 @@ const slice = createSlice({
             state.loading.createPlaylistLoading = false
         }
     }
+})
+
+const getCurrentUserPlaylists = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >
+    ('playlists/getCurrentUserPlaylists',
+    async (payload, thunkApi) => {
+        const id = payload;
+        try {
+            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
+            thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
+            return 'fasza'
+        } catch (error) {
+            return thunkApi.rejectWithValue('not cool')
+        }
 })
 
 const subscribeToPlaylist = createAsyncThunk<
@@ -80,4 +100,8 @@ export default slice.reducer
 
 export const playlistsActions = slice.actions
 
-export const playlistsAsyncActions = { subscribeToPlaylist, createPlaylist }
+export const playlistsAsyncActions = { 
+    subscribeToPlaylist, 
+    createPlaylist, 
+    getCurrentUserPlaylists,
+}
