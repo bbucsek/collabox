@@ -11,7 +11,7 @@ export const Container = styled.div`
     width: 40vw;
     border-radius: 10px;
     background: ${({ theme }) => theme.colors.lightBlue};
-    box-shadow: -1px 4px 20px -6px rgba(0, 0, 0, 0.7);  
+    box-shadow: ${({ theme }) => theme.boxShadow};
 `
 
 export const Title = styled.div`
@@ -48,9 +48,10 @@ export const Button = styled.button`
     margin-bottom: 10px;
     min-height: 20px;
     outline: none;
+    transition: 0.3s ease-in-out;
     &:hover {
         transform: scale(1.1);
-      }   
+    } 
 `
 
 export const StyledInput = styled.input`

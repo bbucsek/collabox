@@ -8,14 +8,13 @@ const createPlaylist = async (owner: string, playlistName: string) => {
 
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
     const callback = (snapshot: any) => {
-        console.log(snapshot.data())
         const playlistData = snapshot.data()
         const id = snapshot.id
         const playlist = { id, ...playlistData }
     
         observer(playlist)
     }
-    await database.collection('playlists').doc(`${id}`).onSnapshot(callback)
+    await database.collection('playlists').doc(id).onSnapshot(callback)
 }
 
 export const firestoreApi = {

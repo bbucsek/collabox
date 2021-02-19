@@ -8,7 +8,8 @@ const theme = {
     blue: '#003f5a',
     lightBlue: '#e8f4fa',
     blueGreen: '#007a7a',
-  }
+  },
+  boxShadow: "-1px 4px 20px -6px rgba(0, 0, 0, 0.7)",
 }
 
 export default theme

@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, ThunkAction, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import PlaylistsState from './types/PlaylistsState'
 import { firestoreApi } from '../../../service/firestoreApi'
 import RootState from '../../RootState'
@@ -7,7 +7,6 @@ import Playlist from './types/Playlist'
 const initialState: PlaylistsState = {
     ownPlaylists: null,
     otherPlaylists: null,
-    CachedPlaylistData: null,  
     CurrentPlaylist: null,
     loading: {
         createPlaylistLoading: false,

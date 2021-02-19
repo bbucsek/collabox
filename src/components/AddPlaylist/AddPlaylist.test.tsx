@@ -31,7 +31,7 @@ describe("AddPlaylist component", () => {
         const helperText = getByTestId("helper-text");
         expect(helperText.textContent).toEqual("Too long name for the playlist!");
     });
-    it("shows helper text when given playlist name is too long", async () => {
+    it("shows helper text when given playlist is empty", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <AddPlaylist />{" "}
@@ -45,7 +45,7 @@ describe("AddPlaylist component", () => {
         const helperText = getByTestId("helper-text");
         expect(helperText.textContent).toEqual("Cannot be empty!");
     });
-    it("dispatches action when helper text is null and button clicked", async () => {
+    it("dispatches action when helper text is null and button is clicked", async () => {
         mockedDispatch.mockImplementation(() => {});
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
@@ -59,7 +59,7 @@ describe("AddPlaylist component", () => {
         await userEvent.click(button);
         expect(mockedDispatch).toBeCalled();
     });
-    it("does not dispatch action when helper text is not null and button clicked", async () => {
+    it("does not dispatch action when helper text is not null and button is clicked", async () => {
         mockedDispatch.mockImplementation(() => {});
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
