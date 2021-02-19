@@ -17,6 +17,13 @@ export const Title = styled.div`
     margin-bottom: 1rem;
 `
 
+export const Subtitle = styled.div`
+    font-size: 1rem;
+    font-weight: 500;
+    border-bottom: 1px solid #003f5a;
+    color: #003f5a;
+`
+
 export const Logout = styled.button`
     margin-top: 1rem;
     align-self: center;

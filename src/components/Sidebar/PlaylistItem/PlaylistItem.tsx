@@ -1,14 +1,15 @@
 import React from 'react'
+import PlaylistData from '../../../types/PlayListData'
 import { Container } from './styles'
 
 type IPlaylistProps = {
-    name: string,
+    playlist: PlaylistData,
 }
 
-const PlaylistItem = ({ name }: IPlaylistProps) => {
+const PlaylistItem = ({ playlist }: IPlaylistProps) => {
     return (
         <Container>
-            {name}
+            {playlist.playlistName}
         </Container>
     )
 }

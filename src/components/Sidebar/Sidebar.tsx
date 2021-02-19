@@ -1,18 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Title, Logout } from './styles'
+import { Container, Title, Logout, Subtitle } from './styles'
 import { signOut } from '../../service/authentication'
 import PlaylistItem from './PlaylistItem'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice'
 import Playlist from '../../types/Playlist'
 import { useDispatch } from 'react-redux'
 import { selectCurrentUser } from '../../store/slices/authentication/selectors'
+import { selectOwnPlaylists } from '../../store/slices/playlists/selectors'
 import { useSelector } from 'react-redux'
+import PlaylistData from '../../types/PlayListData'
 
 const Sidebar = () => {
 
     const [playlists, setPlaylists] = useState<Playlist>()
     const dispatch = useDispatch()
     const currentUser = useSelector(selectCurrentUser)
+    const ownPlaylists = useSelector(selectOwnPlaylists)
 
     useEffect(() => {
         dispatch(playlistsAsyncActions.getCurrentUserPlaylists(currentUser.id))
@@ -24,9 +27,10 @@ const Sidebar = () => {
     return (
         <Container>
             <Title>Collabox</Title>
-            <PlaylistItem name={'joszika playlist'} />
-            <PlaylistItem name={'pistike playlist'} />
-            <PlaylistItem name={'gabika playlist'} />
+            <Subtitle>My playlists</Subtitle>
+            {ownPlaylists?.map((playlists: PlaylistData) => {
+                return <PlaylistItem playlist={playlists} />
+            })}
             <Logout onClick={handleLogout}>logout</Logout>
         </Container>
     )
