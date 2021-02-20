@@ -75,6 +75,19 @@ describe("AddPlaylist component", () => {
 
         expect(mockedDispatch).not.toBeCalled();
     });
+it("does not dispatch action when helper text is null, but name is empty and button is clicked", async () => {
+        mockedDispatch.mockImplementation(() => {});
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddPlaylist />{" "}
+            </ThemeProvider>
+        );
+
+        const button = getByTestId("create-button");
+        await userEvent.click(button);
+
+        expect(mockedDispatch).not.toBeCalled();
+    });
     it("clears the input field when the playlist creation is started", async () => {
         mockedDispatch.mockImplementation(() => {});
         const { getByTestId } = render(
