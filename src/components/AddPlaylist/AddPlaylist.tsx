@@ -27,8 +27,12 @@ const AddPlaylist = () => {
         if (helperText) {
             return;
         }
+
+        if (name.length === 0) {
+            return;
+        }
         dispatch(playlistsAsyncActions.createPlaylist(name));
-        setName("")
+        setName("");
     };
 
     return (
@@ -44,7 +48,9 @@ const AddPlaylist = () => {
                         data-testid="name-input"
                     ></StyledInput>
                     <HelperText data-testid="helper-text">{helperText}</HelperText>
-                    <Button onClick={createPlaylist} data-testid="create-button">Create new playlist</Button>
+                    <Button onClick={createPlaylist} data-testid="create-button">
+                        Create new playlist
+                    </Button>
                 </FormContainer>
             </Container>
         </Wrapper>

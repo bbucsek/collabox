@@ -7,7 +7,7 @@ import Playlist from './types/Playlist'
 const initialState: PlaylistsState = {
     ownPlaylists: null,
     otherPlaylists: null,
-    CurrentPlaylist: null,
+    currentPlaylist: null,
     loading: {
         createPlaylistLoading: false,
     }
@@ -40,7 +40,7 @@ const slice = createSlice({
     initialState,
     reducers: {
         SET_PLAYLIST: (state, action: PayloadAction<Playlist>) => {
-            state.CurrentPlaylist = action.payload
+            state.currentPlaylist = action.payload
         },
     },
     extraReducers: {
