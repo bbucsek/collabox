@@ -11,6 +11,7 @@ const initialState: PlaylistsState = {
     currentPlaylist: null,
     loading: {
         createPlaylistLoading: false,
+        getPlaylists: false,
     }
 }
 
@@ -36,6 +37,22 @@ string,
         }
 })
 
+const getCurrentUserPlaylists = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >
+    ('playlists/getCurrentUserPlaylists',
+    async (payload, thunkApi) => {
+        const id = payload;
+        try {
+            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
+            thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
+            return 'sets own playlists'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+})
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
@@ -56,24 +73,17 @@ const slice = createSlice({
         },
         [createPlaylist.rejected.type]: (state) => {
             state.loading.createPlaylistLoading = false
-        }
+        },
+        [getCurrentUserPlaylists.rejected.type]: (state) => {
+            state.loading.getPlaylists = false
+        },
+        [getCurrentUserPlaylists.fulfilled.type]: (state) => {
+            state.loading.getPlaylists = false
+        },
+        [getCurrentUserPlaylists.pending.type]: (state) => {
+            state.loading.getPlaylists = true
+        },
     }
-})
-
-const getCurrentUserPlaylists = createAsyncThunk<
-    string,
-    string,
-    { state: RootState } >
-    ('playlists/getCurrentUserPlaylists',
-    async (payload, thunkApi) => {
-        const id = payload;
-        try {
-            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
-            thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
-            return 'fasza'
-        } catch (error) {
-            return thunkApi.rejectWithValue('not cool')
-        }
 })
 
 const subscribeToPlaylist = createAsyncThunk<
