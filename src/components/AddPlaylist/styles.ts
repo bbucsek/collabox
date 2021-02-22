@@ -3,7 +3,7 @@ import styled from 'styled-components'
 export const Container = styled.div`
     display:flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
     width: 40vw;
     border-radius: 10px;
     background: ${({ theme }) => theme.colors.lightBlue};
@@ -11,37 +11,32 @@ export const Container = styled.div`
 `
 
 export const Title = styled.div`
-    margin: auto;
     font-weight: 500;
     font-size: 1.4rem;
     color: ${({ theme }) => theme.colors.darkOrange};
 `
 
-export const FormContainer = styled.form`
+export const FormWrapper = styled.form`
     display: flex;
     flex-direction: column;  
-    justify-content: center;  
+    align-items: center;  
     width: 100%;
-    margin: auto;
     padding: 20px;
 `
 
 export const HelperText = styled.div`
-    margin: auto;
     color: ${({ theme }) => theme.colors.orange};
     font-size: 1rem;
     height: 1.5rem;
 `
 
 export const Button = styled.button`
-    margin: auto;
     border-radius: 5px;
     border-width: 0px;
     color: ${({ theme }) => theme.colors.backgroundLight};
     background-color:  ${({ theme }) => theme.colors.orange};
     font-size: 1.2rem;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px 0;
     min-height: 20px;
     outline: none;
     transition: 0.3s ease-in-out;
