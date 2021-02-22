@@ -8,10 +8,12 @@ import { selectCurrentUser } from '../../store/slices/authentication/selectors'
 import { selectOwnPlaylists } from '../../store/slices/playlists/selectors'
 import { useSelector } from 'react-redux'
 import PlaylistData from '../../types/PlaylistData'
+import { useHistory } from 'react-router-dom';
 
 const Sidebar = () => {
 
     const dispatch = useDispatch()
+    const history = useHistory()
     const currentUser = useSelector(selectCurrentUser)
     const ownPlaylists = useSelector(selectOwnPlaylists)
 
@@ -22,9 +24,14 @@ const Sidebar = () => {
     const handleLogout = () => {
         signOut()
     }
+
+    const handleTitleClick = () => {
+        history.push('/')
+    }
+
     return (
         <Container>
-            <Title>Collabox</Title>
+            <Title onClick={handleTitleClick}>Collabox</Title>
             <Subtitle>My playlists</Subtitle>
             {ownPlaylists?.map((playlist: PlaylistData) => {
                 return <PlaylistItem key={playlist.id} playlist={playlist} />

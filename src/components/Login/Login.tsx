@@ -15,7 +15,7 @@ export default function Login() {
         <Title>
           Collabox
         </Title>
-        <SignUp onClick={handleClick}>Sing up with google</SignUp>
+        <SignUp onClick={handleClick}>Sign up with google</SignUp>
       </Wrapper>
     </Container>)
 }

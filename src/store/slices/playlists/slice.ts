@@ -47,7 +47,7 @@ const getCurrentUserPlaylists = createAsyncThunk<
         try {
             const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
             thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
-            return 'sets own playlists'
+            return 'sets_own_playlists'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
         }

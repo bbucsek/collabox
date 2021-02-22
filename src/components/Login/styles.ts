@@ -19,8 +19,8 @@ export const Title = styled.div`
 export const SignUp = styled.button`
     width: fit-content;
     align-self: center;
-    background: #003f5a;
-    color: #ebd9c8;
+    background: ${({ theme }) => theme.colors.blue};
+    color: ${({ theme }) => theme.colors.whiteFontColor};
     border-radius: 10px;
     padding: 10px 15px;
     border-width: 0;
@@ -28,6 +28,6 @@ export const SignUp = styled.button`
     cursor: pointer;
 
     &:hover {
-        background: #024c6b;
+        background: ${({ theme }) => theme.colors.blueActive};
     }
 `

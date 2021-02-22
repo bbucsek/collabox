@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route, BrowserRouter } from 'react-router-dom'
+import { Switch, Route } from 'react-router-dom'
 import Landing from '../../components/Landing'
 import PlaylistPage from '../../components/PlaylistPage'
 import Sidebar from '../../components/Sidebar'
