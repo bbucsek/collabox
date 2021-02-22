@@ -21,13 +21,12 @@ const AddSong = () => {
 
     const submitSongUrl = (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        console.log("will disp");
-        if (helperText ) {
+        if (helperText) {
             return;
         }
 
         if (url.length === 0) {
-            return
+            return;
         }
         dispatch(playlistsAsyncActions.verifyUrl(url));
         setUrl("");
@@ -43,7 +42,7 @@ const AddSong = () => {
                         placeholder="Youtube url"
                         onChange={saveSongUrl}
                         value={url}
-                        data-testid="name-input"
+                        data-testid="url-input"
                     ></StyledInput>
                     <HelperText data-testid="helper-text">{helperText}</HelperText>
                     <Button onClick={submitSongUrl} data-testid="submit-button">

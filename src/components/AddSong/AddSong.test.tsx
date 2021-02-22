@@ -18,4 +18,76 @@ describe("AddPlaylist component", () => {
             </ThemeProvider>
         );
     });
+    it("shows helper text when given input is empty", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddSong />{" "}
+            </ThemeProvider>
+        );
+
+        const input = getByTestId("url-input");
+        await userEvent.type(input, "Oopps");
+        await userEvent.clear(input);
+
+        const helperText = getByTestId("helper-text");
+        expect(helperText.textContent).toEqual("Cannot be empty!");
+    });
+    it("dispatches action when helper text is null, url is not null and button is clicked", async () => {
+        mockedDispatch.mockImplementation(() => {});
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddSong />{" "}
+            </ThemeProvider>
+        );
+
+        const input = getByTestId("url-input");
+        await userEvent.type(input, "fake url");
+        const button = getByTestId("submit-button");
+        await userEvent.click(button);
+        expect(mockedDispatch).toBeCalled();
+    });
+    it("does not dispatch action when helper text is not null and button is clicked", async () => {
+        mockedDispatch.mockImplementation(() => {});
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddSong />{" "}
+            </ThemeProvider>
+        );
+
+        const input = getByTestId("url-input");
+        await userEvent.type(input, "www.");
+        await userEvent.clear(input);
+        const button = getByTestId("submit-button");
+        await userEvent.click(button);
+
+        expect(mockedDispatch).not.toBeCalled();
+    });
+    it("does not dispatch action when helper text is null, but inpput is empty and button is clicked", async () => {
+        mockedDispatch.mockImplementation(() => {});
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddSong />{" "}
+            </ThemeProvider>
+        );
+
+        const button = getByTestId("submit-button");
+        await userEvent.click(button);
+
+        expect(mockedDispatch).not.toBeCalled();
+    });
+    it("clears the input field when the playlist creation is started", async () => {
+        mockedDispatch.mockImplementation(() => {});
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <AddSong />{" "}
+            </ThemeProvider>
+        );
+
+        const input = getByTestId("url-input");
+        await userEvent.type(input, "fake url");
+        const button = getByTestId("submit-button");
+        await userEvent.click(button);
+
+        expect(input.textContent).toEqual("");
+    });
 });

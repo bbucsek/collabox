@@ -21,12 +21,12 @@ const state: PlaylistsState = {
 const newState: PlaylistsState = {
     ownPlaylists: null,
     otherPlaylists: null,
-    currentPlaylist: {
-      id: "fake_playlist_id",
-      playlistName: "My cool playlist",
-      owner: "fake_user_id",
-      users: null,
-      songs: null,
+  currentPlaylist: {
+    id: "fake_playlist_id",
+    playlistName: "My cool playlist",
+    owner: "fake_user_id",
+    users: [],
+    songs: [],
     },
     loading: {
       createPlaylistLoading: false,
@@ -52,8 +52,7 @@ const store = mockStore({
   playlists: {
     ownPlaylists: null,
     otherPlaylists: null,
-    CachedPlaylistData: null,
-    CurrentPlaylist: null,
+    currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
     }
@@ -67,8 +66,8 @@ describe('Playlists slice', () => {
         id: "fake_playlist_id",
         playlistName: "My cool playlist",
         owner: "fake_user_id",
-        users: null,
-        songs: null
+        users: [],
+        songs: []
       }
       const nextState = playlistsReducer(state, playlistsActions.SET_PLAYLIST(updatedPlaylist))
 
@@ -86,9 +85,8 @@ describe('CreatePlaylist slice async action', () => {
       await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
     const actions = store.getActions()
-
-    expect(actions[2].type).toEqual('playlists/createPlaylist/fulfilled')
-    expect(actions[3].type).toEqual('playlists/subscribeToPlaylist/fulfilled')
+    expect(actions[3].type).toEqual('playlists/createPlaylist/fulfilled')
+      expect(actions[4].type).toEqual('playlists/subscribeToPlaylist/fulfilled')
   })
 
   it("sets loading to true when action is pending", () => {
