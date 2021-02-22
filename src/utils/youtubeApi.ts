@@ -1,7 +1,6 @@
-import axios from 'axios'
-import moment from 'moment'
+import axios from 'axios';
 
-export const getVideoDetails = async (youtubeId: string) => {   
+const getVideoDetails = async (youtubeId: string) => {   
     const response = await axios.get(`https://youtube.googleapis.com/youtube/v3/videos?id=${youtubeId}&key=${process.env.REACT_APP_FIREBASE_API_KEY}&part=snippet,contentDetails`)
     const video = response.data.items[0]
     const { title } = video.snippet
@@ -14,6 +13,4 @@ export const getVideoDetails = async (youtubeId: string) => {
     return videoDetails
 }
 
-export const checkIfVideoDurationIsOk = (duration: string) => {
-    return moment.duration(duration).asSeconds() < 600
-}
+export default getVideoDetails

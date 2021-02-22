@@ -6,7 +6,12 @@ import { firestoreApi } from "../../../service/firestoreApi"
 import PlaylistData from "../../../types/PlaylistData";
 
 jest.mock("../../../service/firestoreApi")
-const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi >
+const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi>
+
+const mockedGetVideoDetails = jest.fn()
+jest.mock('../../../utils/youtubeApi', () => ({
+  getVideoDetails: () => mockedGetVideoDetails,
+}))
 
 const state: PlaylistsState = {
     ownPlaylists: null,
@@ -15,6 +20,7 @@ const state: PlaylistsState = {
     loading: {
       createPlaylistLoading: false,
       getPlaylists: false,
+      addSongLoading: false,
     }
 }
 
@@ -31,6 +37,7 @@ const newState: PlaylistsState = {
     loading: {
       createPlaylistLoading: false,
       getPlaylists: false,
+      addSongLoading: false,
     }
 }
 
@@ -52,9 +59,22 @@ const store = mockStore({
   playlists: {
     ownPlaylists: null,
     otherPlaylists: null,
-    currentPlaylist: null,
+    currentPlaylist: {
+      id: "fake_playlist_id",
+      playlistName: "My cool playlist",
+      owner: "fake_user_id",
+      users: [],
+      songs: [{
+        id: "fake_id",
+        youtubeId: "fake_url",
+        title: "Title",
+        votes: 0,
+        userId: "fake_user_id"
+      }],
+    },
     loading: {
       createPlaylistLoading: false,
+      addSongLoading: false,
     }
   }
 });
@@ -72,6 +92,41 @@ describe('Playlists slice', () => {
       const nextState = playlistsReducer(state, playlistsActions.SET_PLAYLIST(updatedPlaylist))
 
       expect(nextState).toEqual(newState)
+    })
+  })
+  describe('SET_SONGS action', () => {
+    it('sets the state with the correct value', () => {
+      const updatedSongs = [{
+          id: "fake_id",
+          youtubeId: "fake_url",
+          title: "Title", 
+          votes: 0,
+          userId: "fake_user_id"
+      }]
+      const expectedState = {
+        ownPlaylists: null,
+        otherPlaylists: null,
+      currentPlaylist: {
+        id: "fake_playlist_id",
+        playlistName: "My cool playlist",
+        owner: "fake_user_id",
+        users: [],
+        songs: [{
+          id: "fake_id",
+          youtubeId: "fake_url",
+          title: "Title", 
+          votes: 0,
+          userId: "fake_user_id"
+      }]
+        },
+        loading: {
+          createPlaylistLoading: false,
+          addSongLoading: false,
+        }
+    }
+      const nextState = playlistsReducer(newState, playlistsActions.SET_SONGS(updatedSongs))
+
+      expect(nextState).toEqual(expectedState)
     })
   })
 })
@@ -122,6 +177,29 @@ describe('CreatePlaylist slice async action', () => {
 
     expect(actions[1].type).toEqual('playlists/createPlaylist/rejected')
     expect(actions[1].payload).toEqual('database_error')
+    })
+})
+
+describe('VerifyUrl slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns error action if url is not valid', async () => {
+    await store.dispatch(playlistsAsyncActions.verifyUrl("www.bad"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
+    expect(actions[1].payload).toEqual("no_youtube_url")
+  })
+  fit('returns error action if song is too long', async () => {
+    mockedGetVideoDetails.mockReturnValueOnce({ title: "Title", duration: "PT15M", youtubeId: "fake_youtubeId" })
+    await store.dispatch(playlistsAsyncActions.verifyUrl("https://www.youtube.com/watch?v=rVgkIGzGzaU&ab_channel=SevenBeatsMusic"))
+
+
+    const actions = store.getActions()
+    console.log(actions)
+    expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
+    expect(actions[1].payload).toEqual("video_too_long")
     })
 })
 

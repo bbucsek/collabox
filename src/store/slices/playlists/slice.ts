@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import getYoutubeId from 'get-youtube-id'
 import PlaylistsState from './types/PlaylistsState'
 import { firestoreApi } from '../../../service/firestoreApi'
-import { checkIfVideoDurationIsOk, getVideoDetails } from '../../../utils/getVideoDetails'
+import checkIfVideoDurationIsOk  from '../../../utils/checkIfVideoDurationIsOk'
+import getVideoDetails from '../../../utils/youtubeApi'
 import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
@@ -15,6 +16,7 @@ const initialState: PlaylistsState = {
     loading: {
         createPlaylistLoading: false,
         getPlaylists: false,
+        addSongLoading: false,
     }
 }
 
@@ -48,25 +50,20 @@ const verifyUrl = createAsyncThunk<
     >
     ('playlists/verifyUrl',
         async (payload: string, thunkApi) => {
-            const state = thunkApi.getState()
-
             const url = payload
             const youtubeId = getYoutubeId(url)
             if (!youtubeId) {
-                return "not_valid_youtube_url"
+                return thunkApi.rejectWithValue("no_youtube_url")
             }
             const videoDetails = await getVideoDetails(youtubeId)
-
             const videoDurationIsOk = checkIfVideoDurationIsOk(videoDetails.duration)
-
+            console.log(videoDurationIsOk)
             if (!videoDurationIsOk) {
-                return "video_too_long"
+                return thunkApi.rejectWithValue("video_too_long")
             }
 
             thunkApi.dispatch(addSong({youtubeId, title: videoDetails.title}))
-
             return "url_verified"
-
     })
 
 const addSong = createAsyncThunk<
@@ -80,14 +77,14 @@ const addSong = createAsyncThunk<
             const { authentication } = state
             const { currentUser } = authentication
             if (!currentUser) {
-                return "no_currentUser"
+                return thunkApi.rejectWithValue("no_currentUser")
             }
             const userId = currentUser.id
             
             const { playlists } = state
             const { currentPlaylist } = playlists
             if (!currentPlaylist) {
-                return "no_currentPlaylist"
+                return thunkApi.rejectWithValue("no_currentPlaylist")
             }
             const playlistId = currentPlaylist.id
             const { youtubeId, title } = payload
@@ -99,7 +96,7 @@ const addSong = createAsyncThunk<
             }
             try {
                 await firestoreApi.addSong(playlistId, song)
-                return 'playlist_created'
+                return 'song_added'
             } catch (error) {
                 return thunkApi.rejectWithValue('database_error')
             }
@@ -154,6 +151,15 @@ const slice = createSlice({
         [getCurrentUserPlaylists.pending.type]: (state) => {
             state.loading.getPlaylists = true
         },
+        [addSong.pending.type]: (state) => {
+            state.loading.addSongLoading = true
+        },
+        [addSong.fulfilled.type]: (state) => {
+            state.loading.addSongLoading = false
+        },
+        [addSong.rejected.type]: (state) => {
+            state.loading.addSongLoading = false
+        }
     }
 })
 

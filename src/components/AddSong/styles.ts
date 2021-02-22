@@ -1,13 +1,9 @@
 import styled from 'styled-components'
 
-export const Wrapper = styled.div`
-    margin: auto;
-`
-
 export const Container = styled.div`
     display:flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
     width: 40vw;
     border-radius: 10px;
     background: ${({ theme }) => theme.colors.lightBlue};
@@ -15,23 +11,21 @@ export const Container = styled.div`
 `
 
 export const Title = styled.div`
-    margin: auto;
     font-weight: 500;
     font-size: 1.4rem;
     color: ${({ theme }) => theme.colors.darkOrange};
 `
 
-export const FormContainer = styled.form`
+export const Form = styled.form`
     display: flex;
     flex-direction: column;  
-    justify-content: center;  
+    align-items: center; 
     width: 100%;
     margin: auto;
     padding: 20px;
 `
 
 export const HelperText = styled.div`
-    margin: auto;
     color: ${({ theme }) => theme.colors.orange};
     font-size: 1rem;
     height: 1.5rem;

@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
-import { Button, Container, FormContainer, HelperText, StyledInput, Title, Wrapper } from "./styles";
+import { Button, Form, HelperText, StyledInput, Title, Container } from "./styles";
 
 const AddSong = () => {
     const [url, setUrl] = useState<string>("");
@@ -33,24 +33,22 @@ const AddSong = () => {
     };
 
     return (
-        <Wrapper>
-            <Container>
-                <Title>Add a new song</Title>
-                <FormContainer>
-                    <StyledInput
-                        type="text"
-                        placeholder="Youtube url"
-                        onChange={saveSongUrl}
-                        value={url}
-                        data-testid="url-input"
-                    ></StyledInput>
-                    <HelperText data-testid="helper-text">{helperText}</HelperText>
-                    <Button onClick={submitSongUrl} data-testid="submit-button">
-                        Submit song
-                    </Button>
-                </FormContainer>
-            </Container>
-        </Wrapper>
+        <Container>
+            <Title>Add a new song</Title>
+            <Form>
+                <StyledInput
+                    type="text"
+                    placeholder="Youtube url"
+                    onChange={saveSongUrl}
+                    value={url}
+                    data-testid="url-input"
+                ></StyledInput>
+                <HelperText data-testid="helper-text">{helperText}</HelperText>
+                <Button onClick={submitSongUrl} data-testid="submit-button">
+                    Submit song
+                </Button>
+            </Form>
+        </Container>
     );
 };
 
