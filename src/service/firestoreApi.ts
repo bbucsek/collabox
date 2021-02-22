@@ -1,5 +1,4 @@
 import 'firebase/firestore'
-import PlaylistData from '../types/PlayListData'
 import database from "./database"
 
 const createPlaylist = async (owner: string, playlistName: string) => {

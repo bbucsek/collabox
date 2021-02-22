@@ -1,5 +1,5 @@
 import React from 'react'
-import PlaylistData from '../../../types/PlayListData'
+import PlaylistData from '../../../types/PlaylistData'
 import { Container } from './styles'
 
 type IPlaylistProps = {

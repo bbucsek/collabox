@@ -4,8 +4,9 @@ export const Container = styled.div`
     cursor: pointer;
     margin-bottom: 1rem;
     color: #003f5a;
-    font-weight: 600;
-    font-size: 1.2rem;
+    font-weight: 400;
+    font-size: 1rem;
+    margin-left: 1rem;
     transition: 0.2s ease-in-out;
 
     &:hover {

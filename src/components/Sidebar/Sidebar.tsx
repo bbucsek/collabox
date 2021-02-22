@@ -1,18 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Container, Title, Logout, Subtitle } from './styles'
 import { signOut } from '../../service/authentication'
 import PlaylistItem from './PlaylistItem'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice'
-import Playlist from '../../types/Playlist'
 import { useDispatch } from 'react-redux'
 import { selectCurrentUser } from '../../store/slices/authentication/selectors'
 import { selectOwnPlaylists } from '../../store/slices/playlists/selectors'
 import { useSelector } from 'react-redux'
-import PlaylistData from '../../types/PlayListData'
+import PlaylistData from '../../types/PlaylistData'
 
 const Sidebar = () => {
 
-    const [playlists, setPlaylists] = useState<Playlist>()
     const dispatch = useDispatch()
     const currentUser = useSelector(selectCurrentUser)
     const ownPlaylists = useSelector(selectOwnPlaylists)

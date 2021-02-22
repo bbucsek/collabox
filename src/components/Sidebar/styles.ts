@@ -5,7 +5,6 @@ export const Container = styled.div`
     display: flex;
     flex: 1.5;
     flex-direction: column;
-    align-items: center;
     border-right: solid 1px black;
     padding: 1rem;
     background: #058585;
@@ -15,13 +14,14 @@ export const Title = styled.div`
     font-size: 2rem;
     font-weight: 900;
     margin-bottom: 1rem;
+    align-self: center;
 `
 
 export const Subtitle = styled.div`
-    font-size: 1rem;
-    font-weight: 500;
-    border-bottom: 1px solid #003f5a;
+    font-size: 1.2rem;
+    font-weight: 600;
     color: #003f5a;
+    margin-bottom: 1rem;
 `
 
 export const Logout = styled.button`

@@ -1,5 +1,5 @@
-import PlaylistData from "../../../../types/PlayListData"
-import Playlist from "./Playlist"
+import PlaylistData from "../../../../types/PlaylistData"
+import Playlist from '../../../../types/Playlist'
 
 type PlaylistsState = {
   ownPlaylists: PlaylistData[] | null,
