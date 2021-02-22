@@ -26,8 +26,8 @@ const Sidebar = () => {
         <Container>
             <Title>Collabox</Title>
             <Subtitle>My playlists</Subtitle>
-            {ownPlaylists?.map((playlists: PlaylistData) => {
-                return <PlaylistItem playlist={playlists} />
+            {ownPlaylists?.map((playlist: PlaylistData) => {
+                return <PlaylistItem key={playlist.id} playlist={playlist} />
             })}
             <Logout onClick={handleLogout}>logout</Logout>
         </Container>
