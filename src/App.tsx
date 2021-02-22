@@ -19,15 +19,13 @@ function App() {
   }, [dispatch])
 
   if (loading) {
-    return (
-      <Loading />
-    )
+    return <Loading />
   }
 
   if (currentUser) {
     return <PrivateRoutes />
   }
-  
+
   return <Login />
 }
 
