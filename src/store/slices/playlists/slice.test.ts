@@ -163,7 +163,6 @@ describe('SubscribeToPlaylist slice async action', () => {
   
       const actions = store.getActions()
       
-      console.log(actions)
       expect(actions[1].type).toEqual('playlists/SET_OWN_PLAYLISTS')
       expect(actions[1].payload).toEqual([ownPlaylistData])
     })
