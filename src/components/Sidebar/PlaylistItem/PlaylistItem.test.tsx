@@ -2,6 +2,8 @@ import React from "react";
 import { render } from "@testing-library/react";
 import PlaylistItem from "./PlaylistItem";
 import PlaylistData from "../../../types/PlaylistData";
+import { ThemeProvider } from "styled-components";
+import theme from "../../../theme/theme";
 
 const item: PlaylistData = {
     id: 'test-id',
@@ -11,12 +13,18 @@ const item: PlaylistData = {
 
 describe("PlaylistItem component", () => {
     it("renders without crashing", () => {
-        render(<PlaylistItem playlist={item}/>);
+        render(
+            <ThemeProvider theme={theme}>
+                <PlaylistItem playlist={item}/>
+            </ThemeProvider>
+        );
     });
 
     it("renders the name of the playlist", () => {
         const { getByText } = render(
-            <PlaylistItem playlist={item}/>
+            <ThemeProvider theme={theme}>
+                <PlaylistItem playlist={item}/>
+            </ThemeProvider>
         );
         const playListName = getByText('test-name')
 

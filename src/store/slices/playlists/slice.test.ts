@@ -176,5 +176,32 @@ describe('SubscribeToPlaylist slice async action', () => {
       expect(actions[1].type).toEqual('playlists/getCurrentUserPlaylists/rejected')
       expect(actions[1].payload).toEqual('database_error')
     })
+
+    it("sets loading to false when action is rejected", () => {
+      const nextState = playlistsReducer(
+        state,
+        playlistsAsyncActions.getCurrentUserPlaylists.rejected()
+      )
+  
+      expect(nextState.loading.getPlaylists).toBe(false)
+    })
+
+    it("sets loading to true when action is pending", () => {
+      const nextState = playlistsReducer(
+        state,
+        playlistsAsyncActions.getCurrentUserPlaylists.pending()
+      )
+  
+      expect(nextState.loading.getPlaylists).toBe(true)
+    })
+
+    it("sets loading to false when action is fulfilled", () => {
+      const nextState = playlistsReducer(
+        state,
+        playlistsAsyncActions.getCurrentUserPlaylists.fulfilled()
+      )
+  
+      expect(nextState.loading.getPlaylists).toBe(false)
+    })
   })
 })
