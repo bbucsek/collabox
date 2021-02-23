@@ -11,24 +11,26 @@ const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi >
 const state: PlaylistsState = {
     ownPlaylists: null,
     otherPlaylists: null,
-    CurrentPlaylist: null,
+    currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
+      getPlaylists: false,
     }
 }
 
 const newState: PlaylistsState = {
     ownPlaylists: null,
     otherPlaylists: null,
-    CurrentPlaylist: {
-    id: "fake_playlist_id",
-    playlistName: "My cool playlist",
-    owner: "fake_user_id",
-    users: null,
-    songs: null,
+    currentPlaylist: {
+      id: "fake_playlist_id",
+      playlistName: "My cool playlist",
+      owner: "fake_user_id",
+      users: null,
+      songs: null,
     },
     loading: {
       createPlaylistLoading: false,
+      getPlaylists: false,
     }
 }
 
