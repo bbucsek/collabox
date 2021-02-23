@@ -1,4 +1,4 @@
-import Song from "../store/slices/playlists/types/Song"
+import Song from "./Song"
 import User from "./User"
 
 type Playlist = {

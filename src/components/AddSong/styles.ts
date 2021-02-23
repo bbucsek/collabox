@@ -13,13 +13,14 @@ export const Container = styled.div`
 export const Title = styled.div`
     font-weight: 500;
     font-size: 1.4rem;
+    margin-top: 10px;
     color: ${({ theme }) => theme.colors.darkOrange};
 `
 
-export const FormWrapper = styled.form`
+export const Form = styled.form`
     display: flex;
     flex-direction: column;  
-    align-items: center;  
+    align-items: center; 
     width: 100%;
     padding: 20px;
 `
@@ -31,12 +32,14 @@ export const HelperText = styled.div`
 `
 
 export const Button = styled.button`
+    margin: auto;
     border-radius: 5px;
     border-width: 0px;
     color: ${({ theme }) => theme.colors.backgroundLight};
     background-color:  ${({ theme }) => theme.colors.orange};
     font-size: 1.2rem;
-    margin: 10px 0;
+    margin-top: 10px;
+    margin-bottom: 10px;
     min-height: 20px;
     outline: none;
     transition: 0.3s ease-in-out;

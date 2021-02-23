@@ -8,6 +8,7 @@ type PlaylistsState = {
   loading: {
     createPlaylistLoading: boolean,
     getPlaylists: boolean,
+    addSongLoading: boolean,
   }
   }
   
