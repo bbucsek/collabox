@@ -1,6 +1,7 @@
 import thunk from "redux-thunk";
 import configureMockStore from "redux-mock-store";
 import PlaylistsState from './types/PlaylistsState'
+import youtubeApi from "../../../utils/youtubeApi"
 import playlistsReducer, { playlistsActions, playlistsAsyncActions } from './slice'
 import { firestoreApi } from "../../../service/firestoreApi"
 import PlaylistData from "../../../types/PlaylistData";
@@ -8,10 +9,8 @@ import PlaylistData from "../../../types/PlaylistData";
 jest.mock("../../../service/firestoreApi")
 const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi>
 
-const mockedGetVideoDetails = jest.fn()
-jest.mock('../../../utils/youtubeApi', () => ({
-  getVideoDetails: () => mockedGetVideoDetails,
-}))
+jest.mock('../../../utils/youtubeApi')
+const mockedYoutubeApi = youtubeApi as jest.Mocked<typeof youtubeApi>
 
 const state: PlaylistsState = {
     ownPlaylists: null,
@@ -72,6 +71,40 @@ const store = mockStore({
         userId: "fake_user_id"
       }],
     },
+    loading: {
+      createPlaylistLoading: false,
+      addSongLoading: false,
+    }
+  }
+});
+
+const storeWithoutUser = mockStore({
+  authentication: {
+    currentUser: null,
+  },
+  playlists: {
+    ownPlaylists: null,
+    otherPlaylists: null,
+    currentPlaylist: null,
+    loading: {
+      createPlaylistLoading: false,
+      addSongLoading: false,
+    }
+  }
+});
+
+const storeWithoutCurrentPlaylist = mockStore({
+  authentication: {
+    currentUser: {
+      name: 'Test User',
+      email: 'testuser@gmail.com',
+      id: 'uuid01234',
+    } 
+  },
+  playlists: {
+    ownPlaylists: null,
+    otherPlaylists: null,
+    currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
       addSongLoading: false,
@@ -191,16 +224,61 @@ describe('VerifyUrl slice async action', () => {
     expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
     expect(actions[1].payload).toEqual("no_youtube_url")
   })
-  fit('returns error action if song is too long', async () => {
-    mockedGetVideoDetails.mockReturnValueOnce({ title: "Title", duration: "PT15M", youtubeId: "fake_youtubeId" })
+  it('returns error action if song is too long', async () => {
+    (mockedYoutubeApi as any as jest.Mock).mockResolvedValueOnce({ title: "Title", duration: "PT15M", youtubeId: "fake_youtubeId" })
     await store.dispatch(playlistsAsyncActions.verifyUrl("https://www.youtube.com/watch?v=rVgkIGzGzaU&ab_channel=SevenBeatsMusic"))
 
 
     const actions = store.getActions()
-    console.log(actions)
     expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
     expect(actions[1].payload).toEqual("video_too_long")
+  })
+  it('returns the right action if the song is verified', async () => {
+    (mockedYoutubeApi as any as jest.Mock).mockResolvedValueOnce({ title: "Title", duration: "PT1M", youtubeId: "fake_youtubeId" })
+    await store.dispatch(playlistsAsyncActions.verifyUrl("https://www.youtube.com/watch?v=rVgkIGzGzaU&ab_channel=SevenBeatsMusic"))
+    
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/pending')
+    expect(actions[2].type).toEqual('playlists/verifyUrl/fulfilled')
+    expect(actions[2].payload).toEqual('url_verified')
     })
+})
+
+describe('AddSong slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns error action if there is no logged in user', async () => {
+    await storeWithoutUser.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = storeWithoutUser.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/rejected')
+    expect(actions[1].payload).toEqual("no_currentUser")
+  })
+  it('returns error action if there is no current playlist', async () => {
+    await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = storeWithoutCurrentPlaylist.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/rejected')
+    expect(actions[1].payload).toEqual("no_currentPlaylist")
+  })
+  it('returns the right action if the song is added', async () => {
+    mockedFirestoreApi.addSong.mockResolvedValueOnce('fake_firestore_id')
+    await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/fulfilled')
+    expect(actions[1].payload).toEqual('song_added')
+  })
+  it('returns error action if there is database error', async () => {
+    mockedFirestoreApi.addSong.mockRejectedValueOnce('firestore error')
+    await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
 })
 
 describe('SubscribeToPlaylist slice async action', () => {

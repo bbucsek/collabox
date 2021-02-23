@@ -10,7 +10,6 @@ const createPlaylist = async (owner: string, playlistName: string) => {
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
     const callback = (snapshot: any) => {
         const playlistData = snapshot.data()
-        console.log(playlistData)
         const id = snapshot.id
         const playlist = { id, ...playlistData }
     
@@ -36,12 +35,10 @@ const getUserOwnPlayLists = async (userId: string) => {
 
 const subscribeToSongsCollection = async (id: string, observer: (playlist: any) => void) => {
     const callback = (snapshot: any) => {
-        console.log(snapshot.docs)
         const songList = snapshot.docs.map((doc: any) => {
             const song = { ...doc.data(), id: doc.id }
             return song
         })
-        console.log(songList)
         observer(songList)
     }
     await database.collection('playlists').doc(id).collection('songs').onSnapshot(callback)

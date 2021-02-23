@@ -57,7 +57,6 @@ const verifyUrl = createAsyncThunk<
             }
             const videoDetails = await getVideoDetails(youtubeId)
             const videoDurationIsOk = checkIfVideoDurationIsOk(videoDetails.duration)
-            console.log(videoDurationIsOk)
             if (!videoDurationIsOk) {
                 return thunkApi.rejectWithValue("video_too_long")
             }
