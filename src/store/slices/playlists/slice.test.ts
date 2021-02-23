@@ -155,6 +155,7 @@ describe('Playlists slice', () => {
         loading: {
           createPlaylistLoading: false,
           addSongLoading: false,
+          getPlaylists: false,
         }
     }
       const nextState = playlistsReducer(newState, playlistsActions.SET_SONGS(updatedSongs))
