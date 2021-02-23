@@ -14,6 +14,11 @@ const PlaylistPage = () => {
     useEffect(() => {
         dispatch(playlistsAsyncActions.subscribeToPlaylist(id));
         dispatch(playlistsAsyncActions.subscribeToSongsCollection(id));
+
+        return () => {
+            dispatch(playlistsAsyncActions.unsubscribeFromPlaylist(id));
+            dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection(id));
+        };
     }, [dispatch, id]);
 
     return (

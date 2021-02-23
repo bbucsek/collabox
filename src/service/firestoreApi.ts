@@ -2,6 +2,9 @@ import 'firebase/firestore'
 import Song from '../types/Song'
 import database from "./database"
 
+let unsubscribeFromP: (id: string) => void | undefined;
+let unsubscribeFromS: (id: string) => void | undefined;
+
 const createPlaylist = async (owner: string, playlistName: string) => {
     const response = await database.collection('playlists').add({ owner, playlistName })
     return response.id
@@ -15,7 +18,11 @@ const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void
     
         observer(playlist)
     }
-    await database.collection('playlists').doc(id).onSnapshot(callback)
+    unsubscribeFromP = await database.collection('playlists').doc(id).onSnapshot(callback)
+}
+
+const unsubscribeFromPlaylist = (id: string) => {
+    unsubscribeFromP(id)
 }
 
 const getUserOwnPlayLists = async (userId: string) => {
@@ -41,7 +48,11 @@ const subscribeToSongsCollection = async (id: string, observer: (playlist: any) 
         })
         observer(songList)
     }
-    await database.collection('playlists').doc(id).collection('songs').onSnapshot(callback)
+    unsubscribeFromS = await database.collection('playlists').doc(id).collection('songs').onSnapshot(callback)
+}
+
+const unsubscribeFromSongsCollection = (id: string) => {
+    unsubscribeFromS(id)
 }
 
 const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
@@ -52,7 +63,9 @@ const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
 export const firestoreApi = {
     createPlaylist, 
     subscribeToPlaylist,
+    unsubscribeFromPlaylist,
     getUserOwnPlayLists,
     subscribeToSongsCollection,
+    unsubscribeFromSongsCollection,
     addSong
 }

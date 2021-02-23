@@ -182,6 +182,23 @@ const subscribeToPlaylist = createAsyncThunk<
     }
 )
 
+const unsubscribeFromPlaylist = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >(
+    'playlists/unsubscribeFromPlaylist',
+        async (payload, thunkApi) => {
+        const id = payload;
+        
+        try {
+            await firestoreApi.unsubscribeFromPlaylist(id)
+            return 'unsubscribed_from_playlist'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+    }
+)
+
 const subscribeToSongsCollection = createAsyncThunk<
     string,
     string,
@@ -203,13 +220,32 @@ const subscribeToSongsCollection = createAsyncThunk<
 )
 
 
+const unsubscribeFromSongsCollection = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >(
+    'playlists/unsubscribeFromSongsCollection',
+        async (payload, thunkApi) => {
+        const id = payload;
+        
+        try {
+            await firestoreApi.unsubscribeFromSongsCollection(id)
+            return 'unsubscribed_from_songs_collection'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+    }
+)
+
 export default slice.reducer
 
 export const playlistsActions = slice.actions
 
 export const playlistsAsyncActions = { 
     subscribeToPlaylist, 
+    unsubscribeFromPlaylist,
     subscribeToSongsCollection,
+    unsubscribeFromSongsCollection,
     createPlaylist, 
     getCurrentUserPlaylists,
     verifyUrl,
