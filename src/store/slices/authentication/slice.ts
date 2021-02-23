@@ -7,19 +7,8 @@ import { subscribeToAuthentication } from '../../../service/authentication'
 const initialState: AuthState = {
     currentUser: null,
     errorMessage: null,
-    loading: false,
+    loading: true,
 }
-
-const slice = createSlice({
-    name: 'authentication',
-    initialState,
-    reducers: {
-        SET_CURRENT_USER: (state, action: PayloadAction<User | null>) => {
-            state.currentUser = action.payload
-            state.loading = false
-        },
-    },
-})
 
 const subscribeToAuthChanges = createAsyncThunk(
     'authentication/subscribeToAuthChanges',
@@ -43,6 +32,17 @@ const subscribeToAuthChanges = createAsyncThunk(
         }
     }
 )
+
+const slice = createSlice({
+    name: 'authentication',
+    initialState,
+    reducers: {
+        SET_CURRENT_USER: (state, action: PayloadAction<User | null>) => {
+            state.currentUser = action.payload
+            state.loading = false
+        },
+    },
+})
 
 export default slice.reducer
 

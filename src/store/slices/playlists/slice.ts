@@ -2,7 +2,8 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import PlaylistsState from './types/PlaylistsState'
 import { firestoreApi } from '../../../service/firestoreApi'
 import RootState from '../../RootState'
-import Playlist from './types/Playlist'
+import Playlist from '../../../types/Playlist'
+import PlaylistData from '../../../types/PlaylistData'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -10,6 +11,7 @@ const initialState: PlaylistsState = {
     currentPlaylist: null,
     loading: {
         createPlaylistLoading: false,
+        getPlaylists: false,
     }
 }
 
@@ -35,12 +37,31 @@ string,
         }
 })
 
+const getCurrentUserPlaylists = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >
+    ('playlists/getCurrentUserPlaylists',
+    async (payload, thunkApi) => {
+        const id = payload;
+        try {
+            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
+            thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
+            return 'sets_own_playlists'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+})
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
     reducers: {
         SET_PLAYLIST: (state, action: PayloadAction<Playlist>) => {
             state.currentPlaylist = action.payload
+        },
+        SET_OWN_PLAYLISTS: (state, action: PayloadAction<PlaylistData[]>) => {
+            state.ownPlaylists = action.payload
         },
     },
     extraReducers: {
@@ -52,7 +73,16 @@ const slice = createSlice({
         },
         [createPlaylist.rejected.type]: (state) => {
             state.loading.createPlaylistLoading = false
-        }
+        },
+        [getCurrentUserPlaylists.rejected.type]: (state) => {
+            state.loading.getPlaylists = false
+        },
+        [getCurrentUserPlaylists.fulfilled.type]: (state) => {
+            state.loading.getPlaylists = false
+        },
+        [getCurrentUserPlaylists.pending.type]: (state) => {
+            state.loading.getPlaylists = true
+        },
     }
 })
 
@@ -80,4 +110,8 @@ export default slice.reducer
 
 export const playlistsActions = slice.actions
 
-export const playlistsAsyncActions = { subscribeToPlaylist, createPlaylist }
+export const playlistsAsyncActions = { 
+    subscribeToPlaylist, 
+    createPlaylist, 
+    getCurrentUserPlaylists,
+}

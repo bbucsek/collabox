@@ -1,5 +1,5 @@
-import User from "../../../../types/User"
-import Song from "./Song"
+import Song from "../store/slices/playlists/types/Song"
+import User from "./User"
 
 type Playlist = {
     id: string,

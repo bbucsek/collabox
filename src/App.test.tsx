@@ -4,6 +4,8 @@ import App from "./App";
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
+import theme from './theme';
+import { ThemeProvider } from 'styled-components'
 
 const mockStore = configureMockStore([thunk]);
 
@@ -58,7 +60,9 @@ describe("App component", () => {
      it("renders without crashing", () => {
         render(
             <Provider store={store}>
-                <App />
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
             </Provider>
         );
     });
@@ -66,7 +70,9 @@ describe("App component", () => {
     it("renders Login component when loading state is false and currentUser is null", () => {
         const { getByTestId } = render(
             <Provider store={storeLoadingFalse}>
-                <App />
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
             </Provider>
         );
 
@@ -77,7 +83,9 @@ describe("App component", () => {
     it("renders Loading component when loading state is true", () => {
         const { getByTestId } = render(
             <Provider store={store}>
-                <App />
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
             </Provider>
         );
 
@@ -88,7 +96,9 @@ describe("App component", () => {
     it("renders PrivateRoutes when loading is false and user is not null", () => {
         const { getByTestId } = render(
             <Provider store={storeWithUser}>
-                <App />
+                <ThemeProvider theme={theme}>
+                    <App />
+                </ThemeProvider>
             </Provider>
         );
 
