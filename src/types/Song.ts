@@ -3,7 +3,8 @@ type Song = {
     youtubeId: string,
     title: string, 
     votes: number,
-    userId: string
+    userId: string,
+    userName: string,
 }
 
 export default Song

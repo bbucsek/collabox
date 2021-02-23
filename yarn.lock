@@ -1101,9 +1101,15 @@
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.3.1", "@babel/runtime@^7.4.4", "@babel/runtime@^7.8.3", "@babel/runtime@^7.8.7":
+<<<<<<< HEAD
   version "7.13.6"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.6.tgz#86e0fad6cbb46a680e21c1aa4748717a058d345a"
   integrity sha512-Y/DEVhSQ91u27rxq7D0EH/sewS6+x06p/MgO1VppbDHMzYXLZrAR5cFjCom78e9RUw1BQAq6qJg6fXc/ep7glA==
+=======
+  version "7.13.4"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.4.tgz#a2f5b5304d6f98a94053e6737321501347325617"
+  integrity sha512-pZLFG10nRL1hPF9J0/WdxjVuLEanSge8W3Ct+Kls9fNhD4vOi9bhuAU8DdNARvBE9GTg6UhQFcEIF1XhIZd9ZA==
+>>>>>>> feat: add material ui and songitem style
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -2414,6 +2420,7 @@
   dependencies:
     "@types/react" "*"
 
+<<<<<<< HEAD
 "@types/react-youtube@^7.6.2":
   version "7.6.2"
   resolved "https://registry.yarnpkg.com/@types/react-youtube/-/react-youtube-7.6.2.tgz#7d25d696d120e3c092f63c4df240ac84246fff8a"
@@ -2421,6 +2428,8 @@
   dependencies:
     "@types/react" "*"
 
+=======
+>>>>>>> feat: add material ui and songitem style
 "@types/react@*", "@types/react@^17.0.0":
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.2.tgz#3de24c4efef902dd9795a49c75f760cbe4f7a5a8"
@@ -11725,6 +11734,7 @@ react-transition-group@^4.4.0:
     loose-envify "^1.4.0"
     prop-types "^15.6.2"
 
+<<<<<<< HEAD
 react-youtube@^7.13.1:
   version "7.13.1"
   resolved "https://registry.yarnpkg.com/react-youtube/-/react-youtube-7.13.1.tgz#3b327599a687bf22e071468818522920b36bcb57"
@@ -11734,6 +11744,8 @@ react-youtube@^7.13.1:
     prop-types "15.7.2"
     youtube-player "5.5.2"
 
+=======
+>>>>>>> feat: add material ui and songitem style
 react@^17.0.1:
   version "17.0.1"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.1.tgz#6e0600416bd57574e3f86d92edba3d9008726127"
