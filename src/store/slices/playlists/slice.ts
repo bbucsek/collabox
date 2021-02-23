@@ -209,7 +209,7 @@ const subscribeToSongsCollection = createAsyncThunk<
         
         try {
             const observer = (songs: Song[]) => {
-            thunkApi.dispatch(slice.actions.SET_SONGS(songs)) 
+                thunkApi.dispatch(slice.actions.SET_SONGS(songs)) 
             }
             await firestoreApi.subscribeToSongsCollection(id, observer)
             return 'subscribed_to_songscollection'

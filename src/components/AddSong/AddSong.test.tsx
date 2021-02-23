@@ -62,7 +62,7 @@ describe("AddPlaylist component", () => {
 
         expect(mockedDispatch).not.toBeCalled();
     });
-    it("does not dispatch action when helper text is null, but inpput is empty and button is clicked", async () => {
+    it("does not dispatch action when helper text is null, but input is empty and button is clicked", async () => {
         mockedDispatch.mockImplementation(() => {});
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>

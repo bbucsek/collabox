@@ -18,7 +18,10 @@ const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void
     
         observer(playlist)
     }
-    unsubscribeFromP = await database.collection('playlists').doc(id).onSnapshot(callback)
+    unsubscribeFromP = await database
+        .collection('playlists')
+        .doc(id)
+        .onSnapshot(callback)
 }
 
 const unsubscribeFromPlaylist = async (id: string) => {
@@ -48,7 +51,11 @@ const subscribeToSongsCollection = async (id: string, observer: (playlist: any) 
         })
         observer(songList)
     }
-    unsubscribeFromS = await database.collection('playlists').doc(id).collection('songs').onSnapshot(callback)
+    unsubscribeFromS = await database
+        .collection('playlists')
+        .doc(id)
+        .collection('songs')
+        .onSnapshot(callback)
 }
 
 const unsubscribeFromSongsCollection = async (id: string) => {

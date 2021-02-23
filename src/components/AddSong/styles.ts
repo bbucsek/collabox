@@ -13,6 +13,7 @@ export const Container = styled.div`
 export const Title = styled.div`
     font-weight: 500;
     font-size: 1.4rem;
+    margin-top: 10px;
     color: ${({ theme }) => theme.colors.darkOrange};
 `
 
@@ -21,7 +22,6 @@ export const Form = styled.form`
     flex-direction: column;  
     align-items: center; 
     width: 100%;
-    margin: auto;
     padding: 20px;
 `
 
