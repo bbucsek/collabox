@@ -230,7 +230,7 @@ const unsubscribeFromSongsCollection = createAsyncThunk<
         
         try {
             await firestoreApi.unsubscribeFromSongsCollection(id)
-            return 'unsubscribed_from_songs_collection'
+            return 'unsubscribed_from_songscollection'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
         }

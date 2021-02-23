@@ -305,6 +305,82 @@ describe('SubscribeToPlaylist slice async action', () => {
     expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
+})
+
+describe('UnsubscribeFromPlaylist slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if unsubscribed from playlist', async () => {
+    mockedFirestoreApi.unsubscribeFromPlaylist.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/fulfilled')
+    expect(actions[1].payload).toEqual('unsubscribed_from_playlist')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.unsubscribeFromPlaylist.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('SubscribeToSongsCollection slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if subscribed to songs collection', async () => {
+    mockedFirestoreApi.subscribeToSongsCollection.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/fulfilled')
+    expect(actions[1].payload).toEqual('subscribed_to_songscollection')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.subscribeToSongsCollection.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('UnsubscribeFromSongsCollection slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if unsubscribed from songs collection', async () => {
+    mockedFirestoreApi.unsubscribeFromSongsCollection.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/fulfilled')
+    expect(actions[1].payload).toEqual('unsubscribed_from_songscollection')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.unsubscribeFromSongsCollection.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
 
   describe('getOwnPlaylists async action', () => {
     beforeEach(() => {
@@ -358,4 +434,3 @@ describe('SubscribeToPlaylist slice async action', () => {
       expect(nextState.loading.getPlaylists).toBe(false)
     })
   })
-})

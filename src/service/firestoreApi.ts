@@ -21,8 +21,8 @@ const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void
     unsubscribeFromP = await database.collection('playlists').doc(id).onSnapshot(callback)
 }
 
-const unsubscribeFromPlaylist = (id: string) => {
-    unsubscribeFromP(id)
+const unsubscribeFromPlaylist = async (id: string) => {
+    await unsubscribeFromP(id)
 }
 
 const getUserOwnPlayLists = async (userId: string) => {
@@ -51,8 +51,8 @@ const subscribeToSongsCollection = async (id: string, observer: (playlist: any) 
     unsubscribeFromS = await database.collection('playlists').doc(id).collection('songs').onSnapshot(callback)
 }
 
-const unsubscribeFromSongsCollection = (id: string) => {
-    unsubscribeFromS(id)
+const unsubscribeFromSongsCollection = async (id: string) => {
+    await unsubscribeFromS(id)
 }
 
 const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
