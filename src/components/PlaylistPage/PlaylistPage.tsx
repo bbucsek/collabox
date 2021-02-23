@@ -7,6 +7,7 @@ import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import AddSong from "../AddSong";
 import PlaySongs from "../PlaySongs";
 import { Button, Container, Title } from "./styles";
+import Songlist from "../Songlist";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -46,6 +47,7 @@ return (
             {currentPlaylist && <Title> {currentPlaylist.playlistName} </Title>}
             <PlaySongs/>
             <AddSong />
+            <Songlist />
         </Container>
     );
 };

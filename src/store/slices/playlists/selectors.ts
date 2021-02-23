@@ -4,3 +4,4 @@ export const selectOwnPlaylists = (state: RootState) => state.playlists.ownPlayl
 export const selectOtherPlaylists = (state: RootState) => state.playlists.otherPlaylists
 export const selectCurrentPlaylist = (state: RootState) => state.playlists.currentPlaylist
 export const selectSongs = (state: RootState) => state.playlists.currentPlaylist?.songs
+export const selectCurrentPlaylistSongs = (state: RootState) => state.playlists.currentPlaylist?.songs || null
