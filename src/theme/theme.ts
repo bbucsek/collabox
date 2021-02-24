@@ -11,6 +11,7 @@ const theme = {
     blueGreen: '#007a7a',
     whiteFontColor: '#ebd9c8',
     lightGreen: '#058585',
+    yellow: '#fcba03',
 
   },
   boxShadow: "-1px 4px 20px -6px rgba(0, 0, 0, 0.7)",
