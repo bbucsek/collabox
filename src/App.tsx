@@ -5,8 +5,6 @@ import { authenticationAsyncActions } from "./store/slices/authentication/slice"
 import Login from "./components/Login";
 import PrivateRoutes from "./modules/PrivateRoutes/PrivateRoutes";
 import Loading from "./components/Loading";
-import AddSong from "./components/AddSong";
-import AddPlaylist from "./components/AddPlaylist";
 
 function App() {
     const dispatch = useDispatch();

@@ -35,8 +35,8 @@ export const Button = styled.button`
     margin: auto;
     border-radius: 5px;
     border-width: 0px;
-    color: ${({ theme }) => theme.colors.backgroundLight};
-    background-color:  ${({ theme }) => theme.colors.orange};
+    color: white;
+    background-color:  ${({ theme }) => theme.colors.yellow};
     font-size: 1.2rem;
     margin-top: 10px;
     margin-bottom: 10px;
