@@ -43,7 +43,7 @@ const PlaySongs = () => {
         setCanChangeSong(true);
     };
 
-    const onEnd = (event: any) => {
+    const onEnd = () => {
         if (currentSong) {
             setPlayedSongs([...playedSongs, currentSong]);
         }

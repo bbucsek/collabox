@@ -1,12 +1,12 @@
 import React from "react";
-import { queryByTestId, render } from "@testing-library/react";
+import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import PlaySongs from "./PlaySongs";
 import theme from "../../theme";
-import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -68,8 +68,8 @@ describe("PlaySongs", () => {
 
         const playbackButton = queryByTestId("playback-button");
         const playbackContainer = queryByTestId("playback-container");
-        expect(playbackContainer).toBeNull();
         expect(playbackButton).not.toBeNull();
+        expect(playbackContainer).toBeNull();
     });
     it("hides listen button and shows playback container when playback is started", async () => {
         const { queryByTestId, getByTestId } = render(
@@ -85,8 +85,8 @@ describe("PlaySongs", () => {
 
         const playbackButtonAgain = queryByTestId("playback-button");
         const playbackContainer = queryByTestId("playback-container");
-        expect(playbackContainer).not.toBeNull();
         expect(playbackButtonAgain).toBeNull();
+        expect(playbackContainer).not.toBeNull();
     });
     it("disables volumeup button and skipback button when playback is started", async () => {
         const { queryByTestId, getByTestId } = render(
