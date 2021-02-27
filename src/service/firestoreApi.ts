@@ -5,8 +5,8 @@ import database from "./database"
 let unsubscribeFromP: (id: string) => void | undefined;
 let unsubscribeFromS: (id: string) => void | undefined;
 
-const createPlaylist = async (owner: string, playlistName: string) => {
-    const response = await database.collection('playlists').add({ owner, playlistName })
+const createPlaylist = async (owner: string, ownerName: string, playlistName: string) => {
+    const response = await database.collection('playlists').add({ owner, ownerName, playlistName })
     return response.id
 }
 

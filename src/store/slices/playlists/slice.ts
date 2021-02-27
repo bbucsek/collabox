@@ -33,8 +33,9 @@ string,
         const {currentUser} = authentication
         const playlistName = payload
         try {
-            const id = await firestoreApi.createPlaylist(currentUser!.id, playlistName)
+            const id = await firestoreApi.createPlaylist(currentUser!.id, currentUser!.name, playlistName)
             if (id) {
+                thunkApi.dispatch(getCurrentUserPlaylists(currentUser!.id))
                 thunkApi.dispatch(subscribeToPlaylist(id))
                 thunkApi.dispatch(subscribeToSongsCollection(id))
             }
@@ -135,9 +136,9 @@ const getCurrentUserPlaylists = createAsyncThunk<
     { state: RootState } >
     ('playlists/getCurrentUserPlaylists',
     async (payload, thunkApi) => {
-        const id = payload;
+        const userId = payload;
         try {
-            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(id)
+            const currentUserOwnPlaylists = await firestoreApi.getUserOwnPlayLists(userId)
             thunkApi.dispatch(slice.actions.SET_OWN_PLAYLISTS(currentUserOwnPlaylists))
             return 'sets_own_playlists'
         } catch (error) {
