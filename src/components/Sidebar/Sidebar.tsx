@@ -19,6 +19,7 @@ const Sidebar = () => {
 
     useEffect(() => {
         dispatch(playlistsAsyncActions.getCurrentUserPlaylists(currentUser.id))
+        dispatch(playlistsAsyncActions.getCurrentUserOtherPlaylists(currentUser.id))
     }, [dispatch, currentUser])
 
     const handleLogout = () => {

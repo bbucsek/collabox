@@ -10,6 +10,26 @@ const createPlaylist = async (owner: string, playlistName: string) => {
     return response.id
 }
 
+const getPlaylistDetails = async(playlistId: string) => {
+    return await database
+    .collection('playlists')
+    .doc(playlistId)
+    .get()
+    .then((doc) => {
+        return doc.data()
+
+    })
+}
+
+const joinPlaylist = async (userId: string, ownerName: string, playlistId: string, playlistName: string) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .doc(playlistId)
+    .set({ ownerName, playlistName })
+}
+
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
     const callback = (snapshot: any) => {
         const playlistData = snapshot.data()
@@ -41,6 +61,21 @@ const getUserOwnPlayLists = async (userId: string) => {
             return data
 
         })
+}
+
+const getUserOtherPlayLists = async (userId: string) => {
+    return database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .get()
+    .then((querySnapshot) => {
+        let data: any = []
+        querySnapshot.forEach((doc) => {
+            data.push({id: doc.id, ...doc.data()})
+        })
+        return data
+    })
 }
 
 const subscribeToSongsCollection = async (id: string, observer: (playlist: any) => void) => {
@@ -79,10 +114,13 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
 }
 
 export const firestoreApi = {
-    createPlaylist, 
+    createPlaylist,
+    getPlaylistDetails, 
+    joinPlaylist,
     subscribeToPlaylist,
     unsubscribeFromPlaylist,
     getUserOwnPlayLists,
+    getUserOtherPlayLists,
     subscribeToSongsCollection,
     unsubscribeFromSongsCollection,
     addSong, 

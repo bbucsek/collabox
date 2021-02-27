@@ -8,6 +8,7 @@ import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
+import thunk from 'redux-thunk'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -144,6 +145,47 @@ const getCurrentUserPlaylists = createAsyncThunk<
         }
 })
 
+const joinPlaylist = createAsyncThunk<
+string,
+string,
+{ state: RootState }
+>
+('playlists/joinPlaylist',
+    async (payload: string, thunkApi) => {
+        const state = thunkApi.getState()
+        const { authentication } = state
+        const {currentUser} = authentication
+        const playlistId = payload
+        try {
+            const playlistDetails: any = await firestoreApi.getPlaylistDetails(playlistId)
+            console.log(playlistDetails)
+            const {ownerName, playlistName } = playlistDetails
+            await firestoreApi.joinPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
+            thunkApi.dispatch(getCurrentUserOtherPlaylists(currentUser!.id))
+            thunkApi.dispatch(subscribeToPlaylist(playlistId))
+            thunkApi.dispatch(subscribeToSongsCollection(playlistId))
+            return 'playlist_joined'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+    })
+
+const getCurrentUserOtherPlaylists = createAsyncThunk<
+    string,
+    string,
+    { state: RootState } >
+    ('playlists/getCurrentUserOtherPlaylists',
+    async (payload, thunkApi) => {
+        const id = payload;
+        try {
+            const currentUserOtherPlaylists = await firestoreApi.getUserOtherPlayLists(id)
+            thunkApi.dispatch(slice.actions.SET_OTHER_PLAYLISTS(currentUserOtherPlaylists))
+            return 'other_playlists_set'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+})
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
@@ -153,6 +195,9 @@ const slice = createSlice({
         },
         SET_OWN_PLAYLISTS: (state, action: PayloadAction<PlaylistData[]>) => {
             state.ownPlaylists = action.payload
+        },
+        SET_OTHER_PLAYLISTS: (state, action: PayloadAction<PlaylistData[]>) => {
+            state.otherPlaylists = action.payload
         },
         SET_SONGS: (state, action: PayloadAction<Song[]>) => {
             state.currentPlaylist!.songs = action.payload
@@ -275,7 +320,9 @@ export const playlistsAsyncActions = {
     unsubscribeFromSongsCollection,
     createPlaylist, 
     getCurrentUserPlaylists,
+    getCurrentUserOtherPlaylists,
     verifyUrl,
     addSong, 
-    checkIfSongExists
+    checkIfSongExists,
+    joinPlaylist
 }
