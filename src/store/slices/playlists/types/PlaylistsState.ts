@@ -2,12 +2,12 @@ import PlaylistData from "../../../../types/PlaylistData"
 import Playlist from '../../../../types/Playlist'
 
 type PlaylistsState = {
-  ownPlaylists: PlaylistData[] | null,
+  ownPlaylists: Pick<PlaylistData, 'id'| 'playlistName'>[] | null,
   otherPlaylists: PlaylistData[] | null, 
   currentPlaylist: Playlist | null,
   loading: {
     createPlaylistLoading: boolean,
-    getPlaylists: boolean,
+    joinPlaylistLoading: boolean,
     addSongLoading: boolean,
   }
   }
