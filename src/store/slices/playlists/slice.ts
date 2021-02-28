@@ -8,7 +8,6 @@ import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
-import thunk from 'redux-thunk'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -39,7 +38,7 @@ string,
                 thunkApi.dispatch(subscribeToPlaylist(id))
                 thunkApi.dispatch(subscribeToSongsCollection(id))
             }
-            return 'playlist_created'
+            return id
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
         }
@@ -159,7 +158,6 @@ string,
         const playlistId = payload
         try {
             const playlistDetails: any = await firestoreApi.getPlaylistDetails(playlistId)
-            console.log(playlistDetails)
             const {ownerName, playlistName } = playlistDetails
             await firestoreApi.joinPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
             thunkApi.dispatch(getCurrentUserOtherPlaylists(currentUser!.id))

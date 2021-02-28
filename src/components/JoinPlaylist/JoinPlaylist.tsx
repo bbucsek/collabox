@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
 
@@ -7,6 +8,7 @@ const JoinPlaylist = () => {
     const [id, setId] = useState<string>("");
     const [helperText, setHelperText] = useState<string | null>(null);
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const saveId = (event: ChangeEvent<HTMLInputElement>) => {
         let id = event.target.value.trim();
@@ -22,7 +24,13 @@ const JoinPlaylist = () => {
         }
     };
 
-    const createPlaylist = (event: FormEvent<HTMLButtonElement>) => {
+
+    const joinPlaylist = async () => {
+        await dispatch(playlistsAsyncActions.joinPlaylist(id));
+        history.push(`/playlist/${id}`)
+
+    } 
+    const submit = (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (helperText) {
             return;
@@ -36,9 +44,9 @@ const JoinPlaylist = () => {
             setHelperText("The playlist Id must be 20 character long!")
             return;
         }
-        console.log('will dispatch')
-        dispatch(playlistsAsyncActions.joinPlaylist(id));
         setId("");
+        joinPlaylist();
+
     };
 
     return (
@@ -53,7 +61,7 @@ const JoinPlaylist = () => {
                     data-testid="id-input"
                 ></StyledInput>
                 <HelperText data-testid="helper-text">{helperText}</HelperText>
-                <Button onClick={createPlaylist} data-testid="join-button">Join a playlist</Button>
+                <Button onClick={submit} data-testid="join-button">Join a playlist</Button>
             </FormWrapper>
         </Container>
     );
