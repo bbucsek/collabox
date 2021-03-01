@@ -149,6 +149,27 @@ string,
     })
 
 
+const unfollowPlaylist = createAsyncThunk<
+    string,
+    string,
+    { state: RootState }
+    >
+    ('playlists/unfollowPlaylist',
+        async (payload: string, thunkApi) => {
+            const state = thunkApi.getState()
+            const { authentication } = state
+            const {currentUser} = authentication
+            const playlistId = payload
+            try {
+                await firestoreApi.unfollowPlaylist(currentUser!.id, playlistId)
+                thunkApi.dispatch(unsubscribeFromPlaylist(playlistId))
+                thunkApi.dispatch(unsubscribeFromSongsCollection(playlistId))
+                return 'playlist_unfollowed'
+            } catch (error) {
+                return thunkApi.rejectWithValue('database_error')
+            }
+        })
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
@@ -359,5 +380,6 @@ export const playlistsAsyncActions = {
     verifyUrl,
     addSong, 
     checkIfSongExists,
-    followPlaylist
+    followPlaylist,
+    unfollowPlaylist
 }

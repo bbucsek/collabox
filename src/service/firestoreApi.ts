@@ -41,6 +41,15 @@ const followPlaylist = async (userId: string, ownerName: string, playlistId: str
     .set({ ownerName, playlistName })
 }
 
+const unfollowPlaylist = async (userId: string, playlistId: string) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .doc(playlistId)
+    .delete()
+}
+
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
     const callback = (snapshot: any) => {
         const playlistData = snapshot.data()
@@ -143,6 +152,7 @@ export const firestoreApi = {
     createPlaylist,
     getPlaylistDetails, 
     followPlaylist,
+    unfollowPlaylist,
     subscribeToPlaylist,
     unsubscribeFromPlaylist,
     subscribeToOwnPlaylists,
