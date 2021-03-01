@@ -4,7 +4,6 @@ import PlaylistsState from './types/PlaylistsState'
 import youtubeApi from "../../../utils/youtubeApi"
 import playlistsReducer, { playlistsActions, playlistsAsyncActions } from './slice'
 import { firestoreApi } from "../../../service/firestoreApi"
-import PlaylistData from "../../../types/PlaylistData";
 
 jest.mock("../../../service/firestoreApi")
 const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi>
@@ -38,12 +37,6 @@ const newState: PlaylistsState = {
       followPlaylistLoading: false,
       addSongLoading: false,
     }
-}
-
-const ownPlaylistData: PlaylistData = {
-  id: 'test-song-id',
-  ownerName: 'Test User',
-  playlistName: 'test-playlist'
 }
 
 const mockStore = configureMockStore([thunk]);
@@ -327,6 +320,149 @@ describe('CheckIfSongExists slice async action', () => {
 
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
+  })
+})
+
+describe('FollowPlaylist slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns the right actions if the playlist is followed', async () => {
+    mockedFirestoreApi.getPlaylistDetails.mockResolvedValueOnce({ownerName: "fake_player", playlistName:"Cool playlist"})
+    mockedFirestoreApi.followPlaylist.mockResolvedValueOnce()
+    mockedFirestoreApi.subscribeToPlaylist.mockResolvedValueOnce()
+    mockedFirestoreApi.subscribeToSongsCollection.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/pending')
+    expect(actions[2].type).toEqual('playlists/subscribeToSongsCollection/pending')
+    expect(actions[3].type).toEqual('playlists/followPlaylist/fulfilled')
+  })
+  it('returns error action if the database is down', async () => {
+    mockedFirestoreApi.getPlaylistDetails.mockRejectedValueOnce("database down")
+    await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/followPlaylist/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('UnfollowPlaylist slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns the right actions if the playlist is unfollowed', async () => {
+    mockedFirestoreApi.unfollowPlaylist.mockResolvedValueOnce()
+    mockedFirestoreApi.unsubscribeFromPlaylist.mockResolvedValueOnce()
+    mockedFirestoreApi.unsubscribeFromSongsCollection.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.unfollowPlaylist("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/pending')
+    expect(actions[2].type).toEqual('playlists/unsubscribeFromSongsCollection/pending')
+    expect(actions[3].type).toEqual('playlists/unfollowPlaylist/fulfilled')
+  })
+  it('returns error action if the database is down', async () => {
+    mockedFirestoreApi.unfollowPlaylist.mockRejectedValueOnce("database down")
+    await store.dispatch(playlistsAsyncActions.unfollowPlaylist("fake_playlistId"))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/unfollowPlaylist/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('SubscribeToOwnPlaylists slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if subscribed to own playlists', async () => {
+    mockedFirestoreApi.subscribeToOwnPlaylists.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.subscribeToOwnPlaylists("fake_userid"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/subscribeToOwnPlaylists/fulfilled')
+    expect(actions[1].payload).toEqual('subscribed_to_own_playlists')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.subscribeToOwnPlaylists.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.subscribeToOwnPlaylists("fake_userid"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/subscribeToOwnPlaylists/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('UnsubscribeFromOwnPlaylists slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if unsubscribed from own playlists', async () => {
+    mockedFirestoreApi.unsubscribeFromOwnPlaylists.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromOwnPlaylists("fake_userid"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromOwnPlaylists/fulfilled')
+    expect(actions[1].payload).toEqual('unsubscribed_from_own_playlists')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.unsubscribeFromOwnPlaylists.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromOwnPlaylists("fake_userid"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromOwnPlaylists/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('SubscribeToOtherPlaylists slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if subscribed to other playlists', async () => {
+    mockedFirestoreApi.subscribeToOtherPlaylists.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.subscribeToOtherPlaylists("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/subscribeToOtherPlaylists/fulfilled')
+    expect(actions[1].payload).toEqual('subscribed_to_other_playlists')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.subscribeToOtherPlaylists.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.subscribeToOtherPlaylists("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/subscribeToOtherPlaylists/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('UnsubscribeFromOtherPlaylists slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  it('returns the right action if unsubscribed from other playlists', async () => {
+    mockedFirestoreApi.unsubscribeFromOtherPlaylists.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromOtherPlaylists("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromOtherPlaylists/fulfilled')
+    expect(actions[1].payload).toEqual('unsubscribed_from_other_playlists')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.unsubscribeFromOtherPlaylists.mockRejectedValueOnce("database error")
+    await store.dispatch(playlistsAsyncActions.unsubscribeFromOtherPlaylists("fake_playlistId"))
+
+    const actions = store.getActions()
+
+    expect(actions[1].type).toEqual('playlists/unsubscribeFromOtherPlaylists/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
 })

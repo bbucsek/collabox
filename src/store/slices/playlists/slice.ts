@@ -124,7 +124,6 @@ string,
         }   
 })
 
-
 const followPlaylist = createAsyncThunk<
 string,
 string,
@@ -147,7 +146,6 @@ string,
             return thunkApi.rejectWithValue('database_error')
         }
     })
-
 
 const unfollowPlaylist = createAsyncThunk<
     string,
@@ -344,7 +342,6 @@ const subscribeToSongsCollection = createAsyncThunk<
         }
     }
 )
-
 
 const unsubscribeFromSongsCollection = createAsyncThunk<
     string,
