@@ -15,7 +15,7 @@ const initialState: PlaylistsState = {
     currentPlaylist: null,
     loading: {
         createPlaylistLoading: false,
-        joinPlaylistLoading: false,
+        followPlaylistLoading: false,
         addSongLoading: false,
     }
 }
@@ -125,12 +125,12 @@ string,
 })
 
 
-const joinPlaylist = createAsyncThunk<
+const followPlaylist = createAsyncThunk<
 string,
 string,
 { state: RootState }
 >
-('playlists/joinPlaylist',
+('playlists/followPlaylist',
     async (payload: string, thunkApi) => {
         const state = thunkApi.getState()
         const { authentication } = state
@@ -139,10 +139,10 @@ string,
         try {
             const playlistDetails: any = await firestoreApi.getPlaylistDetails(playlistId)
             const {ownerName, playlistName } = playlistDetails
-            await firestoreApi.joinPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
+            await firestoreApi.followPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
             thunkApi.dispatch(subscribeToPlaylist(playlistId))
             thunkApi.dispatch(subscribeToSongsCollection(playlistId))
-            return 'playlist_joined'
+            return 'playlist_followed'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
         }
@@ -176,14 +176,14 @@ const slice = createSlice({
         [createPlaylist.rejected.type]: (state) => {
             state.loading.createPlaylistLoading = false
         },
-        [joinPlaylist.pending.type]: (state) => {
-            state.loading.joinPlaylistLoading = true
+        [followPlaylist.pending.type]: (state) => {
+            state.loading.followPlaylistLoading = true
         },
-        [joinPlaylist.fulfilled.type]: (state) => {
-            state.loading.joinPlaylistLoading = false
+        [followPlaylist.fulfilled.type]: (state) => {
+            state.loading.followPlaylistLoading = false
         },
-        [joinPlaylist.rejected.type]: (state) => {
-            state.loading.joinPlaylistLoading = false
+        [followPlaylist.rejected.type]: (state) => {
+            state.loading.followPlaylistLoading = false
         },
         [addSong.pending.type]: (state) => {
             state.loading.addSongLoading = true
@@ -359,5 +359,5 @@ export const playlistsAsyncActions = {
     verifyUrl,
     addSong, 
     checkIfSongExists,
-    joinPlaylist
+    followPlaylist
 }

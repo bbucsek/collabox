@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
 
-const JoinPlaylist = () => {
+const FollowPlaylist = () => {
     const [id, setId] = useState<string>("");
     const [helperText, setHelperText] = useState<string | null>(null);
     const dispatch = useDispatch();
@@ -25,8 +25,8 @@ const JoinPlaylist = () => {
     };
 
 
-    const joinPlaylist = async () => {
-        await dispatch(playlistsAsyncActions.joinPlaylist(id));
+    const followPlaylist = async () => {
+        await dispatch(playlistsAsyncActions.followPlaylist(id));
         history.push(`/playlist/${id}`)
 
     } 
@@ -45,13 +45,13 @@ const JoinPlaylist = () => {
             return;
         }
         setId("");
-        joinPlaylist();
+        followPlaylist();
 
     };
 
     return (
         <Container>
-            <Title>Join a playlist</Title>
+            <Title>Follow a playlist</Title>
             <FormWrapper>
                 <StyledInput
                     type="text"
@@ -61,10 +61,10 @@ const JoinPlaylist = () => {
                     data-testid="id-input"
                 ></StyledInput>
                 <HelperText data-testid="helper-text">{helperText}</HelperText>
-                <Button onClick={submit} data-testid="join-button">Join a playlist</Button>
+                <Button onClick={submit} data-testid="follow-button">Follow a playlist</Button>
             </FormWrapper>
         </Container>
     );
 };
 
-export default JoinPlaylist;
+export default FollowPlaylist;

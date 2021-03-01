@@ -32,7 +32,7 @@ const getPlaylistDetails = async(playlistId: string) => {
     })
 }
 
-const joinPlaylist = async (userId: string, ownerName: string, playlistId: string, playlistName: string) => {
+const followPlaylist = async (userId: string, ownerName: string, playlistId: string, playlistName: string) => {
     await database
     .collection('users')
     .doc(userId)
@@ -142,7 +142,7 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
 export const firestoreApi = {
     createPlaylist,
     getPlaylistDetails, 
-    joinPlaylist,
+    followPlaylist,
     subscribeToPlaylist,
     unsubscribeFromPlaylist,
     subscribeToOwnPlaylists,

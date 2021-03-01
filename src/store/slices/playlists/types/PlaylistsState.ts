@@ -7,7 +7,7 @@ type PlaylistsState = {
   currentPlaylist: Playlist | null,
   loading: {
     createPlaylistLoading: boolean,
-    joinPlaylistLoading: boolean,
+    followPlaylistLoading: boolean,
     addSongLoading: boolean,
   }
   }
