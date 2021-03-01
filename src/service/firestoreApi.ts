@@ -75,7 +75,6 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
     .where('youtubeId', '==', youtubeId)
     .get()
 
-    console.log(!(querySnapshot.docs.length === 0))
     return !(querySnapshot.docs.length === 0)
 }
 

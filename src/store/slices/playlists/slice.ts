@@ -108,12 +108,6 @@ string,
 ('playlists/checkIfSongExists',
     async (payload, thunkApi) => {
         const state = thunkApi.getState()
-        const { authentication } = state
-        const { currentUser } = authentication
-        if (!currentUser) {
-            return thunkApi.rejectWithValue("no_currentUser")
-        }
-        
         const { playlists } = state
         const { currentPlaylist } = playlists
         if (!currentPlaylist) {
@@ -131,8 +125,7 @@ string,
 
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
-        }
-       
+        }   
 })
 
 const getCurrentUserPlaylists = createAsyncThunk<
