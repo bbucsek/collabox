@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { Container, Title, Logout, Subtitle } from './styles'
+import { Container, Title, Logout, Subtitle, Wrapper } from './styles'
 import { signOut } from '../../service/authentication'
 import PlaylistItem from './PlaylistItem'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice'
@@ -36,14 +36,24 @@ const Sidebar = () => {
         history.push('/')
     }
 
+    const createPlaylist = () => {
+        history.push('/')
+    }
+
+    const followPlaylist = () => {
+        history.push('/follow')
+    }
+
     return (
         <Container>
             <Title onClick={handleTitleClick}>Collabox</Title>
             <Subtitle>My playlists</Subtitle>
+            <Wrapper onClick={createPlaylist}>+ Create a new playlist</Wrapper>
             {ownPlaylists?.map((playlist: PlaylistData) => {
                 return <PlaylistItem key={playlist.id} playlist={playlist} />
             })}
             <Subtitle>Others' playlists</Subtitle>
+            <Wrapper onClick={followPlaylist}>+ Follow a playlist</Wrapper>
             {otherPlaylists?.map((otherPlaylist: PlaylistData) => {
                 return <PlaylistItem key={otherPlaylist.id} playlist={otherPlaylist} />
             })}

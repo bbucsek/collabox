@@ -2,7 +2,7 @@ import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
-import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
+import { Button, Container, FormWrapper, HelperText, StyledInput, Title, Wrapper } from "./styles";
 
 const FollowPlaylist = () => {
     const [id, setId] = useState<string>("");
@@ -51,18 +51,20 @@ const FollowPlaylist = () => {
 
     return (
         <Container>
-            <Title>Follow a playlist</Title>
-            <FormWrapper>
-                <StyledInput
-                    type="text"
-                    placeholder="Playlist Id"
-                    onChange={saveId}
-                    value={id}
-                    data-testid="id-input"
-                ></StyledInput>
-                <HelperText data-testid="helper-text">{helperText}</HelperText>
-                <Button onClick={submit} data-testid="follow-button">Follow a playlist</Button>
-            </FormWrapper>
+            <Wrapper>
+                <Title>Follow a playlist</Title>
+                <FormWrapper>
+                    <StyledInput
+                        type="text"
+                        placeholder="Playlist Id"
+                        onChange={saveId}
+                        value={id}
+                        data-testid="id-input"
+                    />
+                    <HelperText data-testid="helper-text">{helperText}</HelperText>
+                    <Button onClick={submit} data-testid="follow-button">Follow a playlist</Button>
+                </FormWrapper>
+            </Wrapper>
         </Container>
     );
 };

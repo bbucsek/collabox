@@ -1,5 +1,6 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
+import FollowPlaylist from "../../components/FollowPlaylist";
 import Landing from "../../components/Landing";
 import PlaylistPage from "../../components/PlaylistPage";
 import Sidebar from "../../components/Sidebar";
@@ -11,6 +12,7 @@ export default function PrivateRoutes() {
             <Sidebar />
             <Switch>
                 <Route exact path="/" component={Landing} />
+                <Route exact path="/follow" component={FollowPlaylist} />
                 <Route exact path="/playlist/:id" component={PlaylistPage} />
             </Switch>
         </Container>

@@ -4,6 +4,15 @@ export const Container = styled.div`
     display:flex;
     flex-direction: column;
     align-items: center;
+    flex: 8.5;
+    height: 100vh;
+    margin-top: 1rem;
+`
+
+export const Wrapper = styled.div`
+    display:flex;
+    flex-direction: column;
+    align-items: center;
     width: 40vw;
     border-radius: 10px;
     background: ${({ theme }) => theme.colors.lightBlue};
