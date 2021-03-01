@@ -67,6 +67,17 @@ const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
     return response.id
 }
 
+const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
+    const querySnapshot = await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .where('youtubeId', '==', youtubeId)
+    .get()
+
+    return !(querySnapshot.docs.length === 0)
+}
+
 export const firestoreApi = {
     createPlaylist, 
     subscribeToPlaylist,
@@ -74,5 +85,6 @@ export const firestoreApi = {
     getUserOwnPlayLists,
     subscribeToSongsCollection,
     unsubscribeFromSongsCollection,
-    addSong
+    addSong, 
+    checkIfSongExists
 }
