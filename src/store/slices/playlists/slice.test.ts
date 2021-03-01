@@ -240,9 +240,9 @@ describe('VerifyUrl slice async action', () => {
     
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/addSong/pending')
-    expect(actions[2].type).toEqual('playlists/verifyUrl/fulfilled')
-    expect(actions[2].payload).toEqual('url_verified')
+    expect(actions[1].type).toEqual('playlists/checkIfSongExists/pending')
+    expect(actions[3].type).toEqual('playlists/verifyUrl/fulfilled')
+    expect(actions[3].payload).toEqual('url_verified')
     })
 })
 
@@ -278,6 +278,53 @@ describe('AddSong slice async action', () => {
 
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/addSong/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('CheckIfSongExists slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+      storeWithoutCurrentPlaylist.clearActions()
+      storeWithoutUser.clearActions()
+})
+  it('returns error action if there is no logged in user', async () => {
+    await storeWithoutUser.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = storeWithoutUser.getActions()
+    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
+    expect(actions[1].payload).toEqual("no_currentUser")
+  })
+  it('returns error action if there is no current playlist', async () => {
+    await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = storeWithoutCurrentPlaylist.getActions()
+    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
+    expect(actions[1].payload).toEqual("no_currentPlaylist")
+  })
+  it('returns error action if the song is duplicate', async () => {
+    mockedFirestoreApi.checkIfSongExists.mockResolvedValueOnce(true)
+    await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/checkIfSongExists/fulfilled')
+    expect(actions[1].payload).toEqual('duplicate_song')
+  })
+  it('returns the right actions if the song is not a duplicate', async () => {
+    mockedFirestoreApi.checkIfSongExists.mockResolvedValueOnce(false)
+    await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/addSong/pending')
+    expect(actions[2].type).toEqual('playlists/checkIfSongExists/fulfilled')
+    expect(actions[2].payload).toEqual('not_duplicate_song')
+  })
+  it('returns error action if there is database error', async () => {
+    mockedFirestoreApi.checkIfSongExists.mockRejectedValueOnce('firestore error')
+    await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
 })

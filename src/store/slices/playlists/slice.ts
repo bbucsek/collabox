@@ -60,8 +60,7 @@ const verifyUrl = createAsyncThunk<
             if (!videoDurationIsOk) {
                 return thunkApi.rejectWithValue("video_too_long")
             }
-
-            thunkApi.dispatch(addSong({youtubeId, title: videoDetails.title}))
+            thunkApi.dispatch(checkIfSongExists({youtubeId, title: videoDetails.title}))
             return "url_verified"
     })
 
@@ -100,6 +99,41 @@ const addSong = createAsyncThunk<
                 return thunkApi.rejectWithValue('database_error')
             }
     })
+
+const checkIfSongExists  = createAsyncThunk<
+string,
+{youtubeId: string, title: string},
+{ state: RootState }
+>
+('playlists/checkIfSongExists',
+    async (payload, thunkApi) => {
+        const state = thunkApi.getState()
+        const { authentication } = state
+        const { currentUser } = authentication
+        if (!currentUser) {
+            return thunkApi.rejectWithValue("no_currentUser")
+        }
+        
+        const { playlists } = state
+        const { currentPlaylist } = playlists
+        if (!currentPlaylist) {
+            return thunkApi.rejectWithValue("no_currentPlaylist")
+        }
+        const playlistId = currentPlaylist.id
+        const { youtubeId, title } = payload
+        try{
+            const songExists = await firestoreApi.checkIfSongExists(playlistId, youtubeId)
+            if (songExists) {
+                return 'duplicate_song'
+            }
+            thunkApi.dispatch(addSong({youtubeId, title}))
+            return 'not_duplicate_song'
+
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+       
+})
 
 const getCurrentUserPlaylists = createAsyncThunk<
     string,
@@ -249,5 +283,6 @@ export const playlistsAsyncActions = {
     createPlaylist, 
     getCurrentUserPlaylists,
     verifyUrl,
-    addSong
+    addSong, 
+    checkIfSongExists
 }
