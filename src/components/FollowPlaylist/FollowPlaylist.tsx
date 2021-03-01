@@ -26,8 +26,12 @@ const FollowPlaylist = () => {
 
 
     const followPlaylist = async () => {
-        await dispatch(playlistsAsyncActions.followPlaylist(id));
-        history.push(`/playlist/${id}`)
+        try {
+            await dispatch(playlistsAsyncActions.followPlaylist(id));
+            history.push(`/playlist/${id}`)
+        } catch (error) {
+            return
+        }
 
     } 
     const submit = (event: FormEvent<HTMLButtonElement>) => {

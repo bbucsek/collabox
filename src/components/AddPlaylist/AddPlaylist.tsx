@@ -29,8 +29,13 @@ const AddPlaylist = () => {
     };
 
     const createPlaylist = async () => {
-        const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
-        history.push(`playlist/${promise.payload}`)
+        try {
+            const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
+            history.push(`playlist/${promise.payload}`)
+        } catch (error) {
+            return
+        }
+
     } 
 
     const submit = (event: FormEvent<HTMLButtonElement>) => {
@@ -46,13 +51,6 @@ const AddPlaylist = () => {
         createPlaylist();
     };
 
-
-    useEffect(() => {
-        if (!createdPlaylist?.id){
-            return
-        }
-        
-    },[createdPlaylist])
 
     return (
         <Container>

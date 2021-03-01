@@ -48,11 +48,11 @@ export const Button = styled.button`
     margin: 10px 0;
     min-height: 20px;
     outline: none;
+    cursor: pointer;
     transition: 0.3s ease-in-out;
     &:hover {
         transform: scale(1.1);
     } 
-    cursor: pointer;
 `
 
 export const StyledInput = styled.input`
