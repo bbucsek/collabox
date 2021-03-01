@@ -18,7 +18,7 @@ const state: PlaylistsState = {
     currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
-      getPlaylists: false,
+      followPlaylistLoading: false,
       addSongLoading: false,
     }
 }
@@ -35,14 +35,14 @@ const newState: PlaylistsState = {
     },
     loading: {
       createPlaylistLoading: false,
-      getPlaylists: false,
+      followPlaylistLoading: false,
       addSongLoading: false,
     }
 }
 
 const ownPlaylistData: PlaylistData = {
   id: 'test-song-id',
-  owner: 'Test User',
+  ownerName: 'Test User',
   playlistName: 'test-playlist'
 }
 
@@ -73,6 +73,7 @@ const store = mockStore({
     },
     loading: {
       createPlaylistLoading: false,
+      followPlaylistLoading: false,
       addSongLoading: false,
     }
   }
@@ -88,6 +89,7 @@ const storeWithoutUser = mockStore({
     currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
+      followPlaylistLoading: false,
       addSongLoading: false,
     }
   }
@@ -107,6 +109,7 @@ const storeWithoutCurrentPlaylist = mockStore({
     currentPlaylist: null,
     loading: {
       createPlaylistLoading: false,
+      followPlaylistLoading: false,
       addSongLoading: false,
     }
   }
@@ -155,7 +158,7 @@ describe('Playlists slice', () => {
         loading: {
           createPlaylistLoading: false,
           addSongLoading: false,
-          getPlaylists: false,
+          followPlaylistLoading: false,
         }
     }
       const nextState = playlistsReducer(newState, playlistsActions.SET_SONGS(updatedSongs))
@@ -169,13 +172,12 @@ describe('CreatePlaylist slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
-  it('returns the right actions if playlist is created', async () => {
+  it('returns the right action if playlist is created', async () => {
     mockedFirestoreApi.createPlaylist.mockResolvedValueOnce("new_ID")
       await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
     const actions = store.getActions()
-    expect(actions[3].type).toEqual('playlists/createPlaylist/fulfilled')
-      expect(actions[4].type).toEqual('playlists/subscribeToPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('playlists/createPlaylist/fulfilled')
   })
 
   it("sets loading to true when action is pending", () => {
@@ -429,55 +431,4 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
   })
 })
 
-  describe('getOwnPlaylists async action', () => {
-    beforeEach(() => {
-      store.clearActions()
-    })
-  
-    it('returns the right action and payload if gets own playlists', async () => {
-      mockedFirestoreApi.getUserOwnPlayLists.mockResolvedValueOnce([ownPlaylistData])
-      await store.dispatch(playlistsAsyncActions.getCurrentUserPlaylists("fake_id"))
-  
-      const actions = store.getActions()
-      
-      expect(actions[1].type).toEqual('playlists/SET_OWN_PLAYLISTS')
-      expect(actions[1].payload).toEqual([ownPlaylistData])
-    })
 
-    it('returns error action if database is down', async () => {
-      mockedFirestoreApi.getUserOwnPlayLists.mockRejectedValueOnce("database error")
-      await store.dispatch(playlistsAsyncActions.getCurrentUserPlaylists("fake_id"))
-  
-      const actions = store.getActions()
-  
-      expect(actions[1].type).toEqual('playlists/getCurrentUserPlaylists/rejected')
-      expect(actions[1].payload).toEqual('database_error')
-    })
-
-    it("sets loading to false when action is rejected", () => {
-      const nextState = playlistsReducer(
-        state,
-        playlistsAsyncActions.getCurrentUserPlaylists.rejected()
-      )
-  
-      expect(nextState.loading.getPlaylists).toBe(false)
-    })
-
-    it("sets loading to true when action is pending", () => {
-      const nextState = playlistsReducer(
-        state,
-        playlistsAsyncActions.getCurrentUserPlaylists.pending()
-      )
-  
-      expect(nextState.loading.getPlaylists).toBe(true)
-    })
-
-    it("sets loading to false when action is fulfilled", () => {
-      const nextState = playlistsReducer(
-        state,
-        playlistsAsyncActions.getCurrentUserPlaylists.fulfilled()
-      )
-  
-      expect(nextState.loading.getPlaylists).toBe(false)
-    })
-  })
