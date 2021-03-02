@@ -6,7 +6,7 @@ import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import AddSong from "../AddSong";
 import PlaySongs from "../PlaySongs";
-import { Button, Container, Title } from "./styles";
+import { Button, Container, Subtitle, Title } from "./styles";
 import Songlist from "../Songlist";
 
 const PlaylistPage = () => {
@@ -46,6 +46,7 @@ if (currentPlaylist && currentUser && (currentPlaylist.owner !== currentUser.id)
 return (
         <Container>
             {currentPlaylist && <Title> {currentPlaylist.playlistName} </Title>}
+            {currentPlaylist && <Subtitle> Playlist Id: {currentPlaylist.id} </Subtitle>}
             {currentPlaylist && currentPlaylist.songs && currentPlaylist.songs.length > 0 && <PlaySongs/>}
             <AddSong />
             <Songlist />
