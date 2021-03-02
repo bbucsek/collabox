@@ -9,12 +9,13 @@ import PauseIcon from "@material-ui/icons/PauseRounded";
 import StopIcon from "@material-ui/icons/StopRounded";
 import VolumeUpIcon from "@material-ui/icons/VolumeUpRounded";
 import VolumeOffIcon from "@material-ui/icons/VolumeOffRounded";
-import { selectSongs } from "../../store/slices/playlists/selectors";
+import { selectCurrentPlaylist, selectSongs } from "../../store/slices/playlists/selectors";
 import { Container, ControlWrapper, Title, ButtonCanBeDisabled, YoutubeWrapper, Button, PlaybackButton } from "./styles";
 import Song from "../../types/Song";
 
 const PlaySongs = () => {
     const songs = useSelector(selectSongs);
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
     const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
     const [player, setPlayer] = useState<any | undefined>();
     const [currentSong, setCurrentSong] = useState<Song | undefined>();
@@ -36,6 +37,9 @@ const PlaySongs = () => {
 
     const startPlayback = () => {
         setPlaybackStarted(true);
+        if (songs.length === 1) {
+            setCanSkipForward(false)
+        }
     };
 
     const onReady = (event: any) => {
@@ -128,6 +132,10 @@ const PlaySongs = () => {
 
         setCanChangeSong(false);
     }, [songs, currentSongForwardIndex, currentSongBackwardIndex, canChangeSong, playedSongs]);
+
+    useEffect(() => {
+        setPlaybackStarted(false)
+    }, [currentPlaylist && currentPlaylist.id])
 
     if (!playbackStarted) {
         return (

@@ -46,7 +46,7 @@ if (currentPlaylist && currentUser && (currentPlaylist.owner !== currentUser.id)
 return (
         <Container>
             {currentPlaylist && <Title> {currentPlaylist.playlistName} </Title>}
-            <PlaySongs/>
+            {currentPlaylist && currentPlaylist.songs && currentPlaylist.songs.length > 0 && <PlaySongs/>}
             <AddSong />
             <Songlist />
         </Container>
