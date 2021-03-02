@@ -334,17 +334,21 @@ describe('FollowPlaylist slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
-  it('returns the right actions if the playlist is followed', async () => {
+  it('returns the right action if the playlist is followed', async () => {
     mockedFirestoreApi.getPlaylistDetails.mockResolvedValueOnce({ownerName: "fake_player", playlistName:"Cool playlist"})
     mockedFirestoreApi.followPlaylist.mockResolvedValueOnce()
-    mockedFirestoreApi.subscribeToPlaylist.mockResolvedValueOnce()
-    mockedFirestoreApi.subscribeToSongsCollection.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/pending')
-    expect(actions[2].type).toEqual('playlists/subscribeToSongsCollection/pending')
-    expect(actions[3].type).toEqual('playlists/followPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('playlists/followPlaylist/fulfilled')
+  })
+  it('returns error action if there is no such playlist', async () => {
+    mockedFirestoreApi.getPlaylistDetails.mockResolvedValueOnce(undefined)
+    await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/followPlaylist/rejected')
+    expect(actions[1].payload).toEqual('no_such_playlist')
   })
   it('returns error action if the database is down', async () => {
     mockedFirestoreApi.getPlaylistDetails.mockRejectedValueOnce("database down")
@@ -360,16 +364,12 @@ describe('UnfollowPlaylist slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
-  it('returns the right actions if the playlist is unfollowed', async () => {
+  it('returns the right action if the playlist is unfollowed', async () => {
     mockedFirestoreApi.unfollowPlaylist.mockResolvedValueOnce()
-    mockedFirestoreApi.unsubscribeFromPlaylist.mockResolvedValueOnce()
-    mockedFirestoreApi.unsubscribeFromSongsCollection.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.unfollowPlaylist("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/pending')
-    expect(actions[2].type).toEqual('playlists/unsubscribeFromSongsCollection/pending')
-    expect(actions[3].type).toEqual('playlists/unfollowPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('playlists/unfollowPlaylist/fulfilled')
   })
   it('returns error action if the database is down', async () => {
     mockedFirestoreApi.unfollowPlaylist.mockRejectedValueOnce("database down")
