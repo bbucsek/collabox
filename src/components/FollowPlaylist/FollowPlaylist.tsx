@@ -28,14 +28,12 @@ const FollowPlaylist = () => {
 
 
     const followPlaylist = async () => {
-        try {
-            await dispatch(playlistsAsyncActions.followPlaylist(id));
+        const result = await dispatch(playlistsAsyncActions.followPlaylist(id));
+        if (result.payload === 'playlist_followed'){
             history.push(`/playlist/${id}`)
-        } catch (error) {
-            return
         }
-
     } 
+
     const submit = (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (helperText) {

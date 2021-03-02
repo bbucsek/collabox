@@ -139,10 +139,11 @@ string,
         const playlistId = payload
         try {
             const playlistDetails: any = await firestoreApi.getPlaylistDetails(playlistId)
+            if (!playlistDetails) {
+                return thunkApi.rejectWithValue('no_such_playlist')
+            }
             const {ownerName, playlistName } = playlistDetails
             await firestoreApi.followPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
-            thunkApi.dispatch(subscribeToPlaylist(playlistId))
-            thunkApi.dispatch(subscribeToSongsCollection(playlistId))
             return 'playlist_followed'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
@@ -162,8 +163,6 @@ const unfollowPlaylist = createAsyncThunk<
             const playlistId = payload
             try {
                 await firestoreApi.unfollowPlaylist(currentUser!.id, playlistId)
-                thunkApi.dispatch(unsubscribeFromPlaylist(playlistId))
-                thunkApi.dispatch(unsubscribeFromSongsCollection(playlistId))
                 return 'playlist_unfollowed'
             } catch (error) {
                 return thunkApi.rejectWithValue('database_error')
