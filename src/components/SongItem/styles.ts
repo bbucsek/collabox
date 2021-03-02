@@ -10,12 +10,16 @@ export const Container = styled.div`
     box-shadow: ${({ theme }) => theme.boxShadow};
     width: 100%;
     padding: 1rem;
-    margin-top: 0.5rem;
+    margin: 0.5rem;
 `
 
 export const SongTitle = styled.div`
     font-size: 0.8rem;
     flex: 5;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 4px;
 `
 
 export const AddedBy = styled.div`

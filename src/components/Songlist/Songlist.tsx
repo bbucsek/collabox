@@ -12,7 +12,7 @@ const Songlist = () => {
     return (
         <Container>
             {songs?.map((song) => {
-                return <SongItem song={song} />
+                return <SongItem key={song.id} song={song} />
             })}
         </Container>
     )
