@@ -294,14 +294,6 @@ describe('CheckIfSongExists slice async action', () => {
       storeWithoutUser.clearActions()
 })
 
-  it('returns error action if there is no logged in user', async () => {
-    await storeWithoutUser.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
-
-    const actions = storeWithoutUser.getActions()
-    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
-    expect(actions[1].payload).toEqual("no_currentUser")
-  })
-
   it('returns error action if there is no current playlist', async () => {
     await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
