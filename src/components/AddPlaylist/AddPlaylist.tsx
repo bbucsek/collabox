@@ -1,12 +1,18 @@
-import React, { ChangeEvent, FormEvent, useState } from "react";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
+import {useHistory} from "react-router-dom";
+import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
+import Playlist from "../../types/Playlist";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
 
 const AddPlaylist = () => {
     const [name, setName] = useState<string>("");
     const [helperText, setHelperText] = useState<string | null>(null);
     const dispatch = useDispatch();
+    const history = useHistory();
+    const createdPlaylist: Playlist = useSelector(selectCurrentPlaylist)
 
     const savePlaylistName = (event: ChangeEvent<HTMLInputElement>) => {
         let name = event.target.value;
@@ -22,7 +28,17 @@ const AddPlaylist = () => {
         }
     };
 
-    const createPlaylist = (event: FormEvent<HTMLButtonElement>) => {
+    const createPlaylist = async () => {
+        try {
+            const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
+            history.push(`playlist/${promise.payload}`)
+        } catch (error) {
+            return
+        }
+
+    } 
+
+    const submit = (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (helperText) {
             return;
@@ -31,9 +47,10 @@ const AddPlaylist = () => {
         if (name.length === 0) {
             return;
         }
-        dispatch(playlistsAsyncActions.createPlaylist(name));
         setName("");
+        createPlaylist();
     };
+
 
     return (
         <Container>
@@ -47,7 +64,7 @@ const AddPlaylist = () => {
                     data-testid="name-input"
                 ></StyledInput>
                 <HelperText data-testid="helper-text">{helperText}</HelperText>
-                <Button onClick={createPlaylist} data-testid="create-button">Create new playlist</Button>
+                <Button onClick={submit} data-testid="create-button">Create new playlist</Button>
             </FormWrapper>
         </Container>
     );

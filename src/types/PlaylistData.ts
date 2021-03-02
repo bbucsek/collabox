@@ -1,6 +1,6 @@
 type PlaylistData = {
     id: string,
-    owner: string,
+    ownerName: string,
     playlistName: string,
 }
 

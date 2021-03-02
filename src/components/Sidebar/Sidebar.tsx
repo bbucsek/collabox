@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
-import { Container, Title, Logout, Subtitle } from './styles'
+import { Container, Title, Logout, Subtitle, Wrapper } from './styles'
 import { signOut } from '../../service/authentication'
 import PlaylistItem from './PlaylistItem'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice'
 import { useDispatch } from 'react-redux'
 import { selectCurrentUser } from '../../store/slices/authentication/selectors'
-import { selectOwnPlaylists } from '../../store/slices/playlists/selectors'
+import { selectOtherPlaylists, selectOwnPlaylists } from '../../store/slices/playlists/selectors'
 import { useSelector } from 'react-redux'
 import PlaylistData from '../../types/PlaylistData'
 import { useHistory } from 'react-router-dom';
@@ -16,9 +16,16 @@ const Sidebar = () => {
     const history = useHistory()
     const currentUser = useSelector(selectCurrentUser)
     const ownPlaylists = useSelector(selectOwnPlaylists)
+    const otherPlaylists = useSelector(selectOtherPlaylists)
 
     useEffect(() => {
-        dispatch(playlistsAsyncActions.getCurrentUserPlaylists(currentUser.id))
+        dispatch(playlistsAsyncActions.subscribeToOwnPlaylists(currentUser.id))
+        dispatch(playlistsAsyncActions.subscribeToOtherPlaylists(currentUser.id))
+
+        return () => {
+            dispatch(playlistsAsyncActions.unsubscribeFromOwnPlaylists(currentUser.id))
+            dispatch(playlistsAsyncActions.unsubscribeFromOtherPlaylists(currentUser.id))
+        }
     }, [dispatch, currentUser])
 
     const handleLogout = () => {
@@ -29,12 +36,26 @@ const Sidebar = () => {
         history.push('/')
     }
 
+    const createPlaylist = () => {
+        history.push('/')
+    }
+
+    const followPlaylist = () => {
+        history.push('/follow')
+    }
+
     return (
         <Container>
             <Title onClick={handleTitleClick}>Collabox</Title>
             <Subtitle>My playlists</Subtitle>
+            <Wrapper onClick={createPlaylist}>+ Create a new playlist</Wrapper>
             {ownPlaylists?.map((playlist: PlaylistData) => {
                 return <PlaylistItem key={playlist.id} playlist={playlist} />
+            })}
+            <Subtitle>Others' playlists</Subtitle>
+            <Wrapper onClick={followPlaylist}>+ Follow a playlist</Wrapper>
+            {otherPlaylists?.map((otherPlaylist: PlaylistData) => {
+                return <PlaylistItem key={otherPlaylist.id} playlist={otherPlaylist} />
             })}
             <Logout onClick={handleLogout}>logout</Logout>
         </Container>

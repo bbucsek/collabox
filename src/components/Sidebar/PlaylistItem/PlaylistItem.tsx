@@ -10,10 +10,17 @@ type IPlaylistProps = {
 const PlaylistItem = ({ playlist }: IPlaylistProps) => {
 
     const history = useHistory();
-    
+
+
     const handleClick = () => {
         history.push(`/playlist/${playlist.id}`)
     }
+
+    if (playlist.ownerName) return (
+        <Container onClick={handleClick}>
+            {playlist.playlistName} by {playlist.ownerName}
+        </Container>
+    )
 
     return (
         <Container onClick={handleClick}>

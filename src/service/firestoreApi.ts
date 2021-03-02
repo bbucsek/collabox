@@ -1,13 +1,53 @@
 import 'firebase/firestore'
+import PlaylistData from '../types/PlaylistData';
 import Song from '../types/Song'
 import database from "./database"
 
 let unsubscribeFromP: (id: string) => void | undefined;
 let unsubscribeFromS: (id: string) => void | undefined;
+let unsubscribeFromOwnP: (id: string) => void | undefined;
+let unsubscribeFromOtherP: (id: string) => void | undefined;
 
-const createPlaylist = async (owner: string, playlistName: string) => {
-    const response = await database.collection('playlists').add({ owner, playlistName })
-    return response.id
+const createPlaylist = async (owner: string, ownerName: string, playlistName: string) => {
+    const response = await database.collection('playlists').add({ owner, ownerName, playlistName })
+    const playlistId = response.id
+    await database
+    .collection('users')
+    .doc(owner)
+    .collection('ownPlaylists')
+    .doc(playlistId)
+    .set({playlistName})
+    
+    return playlistId
+}
+
+const getPlaylistDetails = async(playlistId: string) => {
+    return await database
+    .collection('playlists')
+    .doc(playlistId)
+    .get()
+    .then((doc) => {
+        return doc.data()
+
+    })
+}
+
+const followPlaylist = async (userId: string, ownerName: string, playlistId: string, playlistName: string) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .doc(playlistId)
+    .set({ ownerName, playlistName })
+}
+
+const unfollowPlaylist = async (userId: string, playlistId: string) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .doc(playlistId)
+    .delete()
 }
 
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
@@ -28,19 +68,49 @@ const unsubscribeFromPlaylist = async (id: string) => {
     await unsubscribeFromP(id)
 }
 
-const getUserOwnPlayLists = async (userId: string) => {
-    return database
-        .collection('playlists')
-        .where('owner', '==', userId)
-        .get()
-        .then((querySnapshot) => {
-            let data: any = []
-            querySnapshot.forEach((doc) => {
-                data = [...data, { id: doc.id, ...doc.data() }]
-            });
-            return data
-
+const subscribeToOwnPlaylists = async (userId: string, 
+    observer: (playlists: Pick<PlaylistData, 'id'| 'playlistName'>[]) => void) => {
+    const callback = (snapshot: any) => {
+        const playlistsDocs = snapshot.docs
+        let playlists : Pick<PlaylistData, 'id'| 'playlistName'>[] = []
+       
+        playlistsDocs.forEach((doc: any) => {
+            playlists.push({id: doc.id, ...doc.data()})
         })
+        observer(playlists)
+    }
+
+    unsubscribeFromOwnP = await database
+    .collection('users')
+    .doc(userId)
+    .collection('ownPlaylists')
+    .onSnapshot(callback) 
+}
+
+const unsubscribeFromOwnPlaylists = async (userId: string) => {
+    await unsubscribeFromOwnP(userId)
+}
+
+const subscribeToOtherPlaylists = async (userId: string, observer: (playlists: any) => void) => {
+    const callback = (snapshot: any) => {
+        const playlistsDocs = snapshot.docs
+        let playlists : PlaylistData[] = []
+       
+        playlistsDocs.forEach((doc: any) => {
+            playlists.push({id: doc.id, ...doc.data()})
+        })
+        observer(playlists)
+    }
+
+    unsubscribeFromOtherP = await database
+    .collection('users')
+    .doc(userId)
+    .collection('otherPlaylists')
+    .onSnapshot(callback) 
+}
+
+const unsubscribeFromOtherPlaylists = async (userId: string) => {
+    await unsubscribeFromOtherP(userId)
 }
 
 const subscribeToSongsCollection = async (id: string, observer: (playlist: any) => void) => {
@@ -79,10 +149,16 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
 }
 
 export const firestoreApi = {
-    createPlaylist, 
+    createPlaylist,
+    getPlaylistDetails, 
+    followPlaylist,
+    unfollowPlaylist,
     subscribeToPlaylist,
     unsubscribeFromPlaylist,
-    getUserOwnPlayLists,
+    subscribeToOwnPlaylists,
+    unsubscribeFromOwnPlaylists,
+    subscribeToOtherPlaylists,
+    unsubscribeFromOtherPlaylists,
     subscribeToSongsCollection,
     unsubscribeFromSongsCollection,
     addSong, 

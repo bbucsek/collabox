@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import AddPlaylist from "./AddPlaylist";
+import FollowPlaylist from "./FollowPlaylist";
 import { ThemeProvider } from "styled-components";
 import theme from "../../theme";
 import userEvent from "@testing-library/user-event";
@@ -31,7 +31,7 @@ jest.mock('react-router-dom', () => ({
 }))
 
 
-describe("AddPlaylist component", () => {
+describe("FollowPlaylist component", () => {
     beforeEach(() => {
         store.clearActions();
     })
@@ -39,106 +39,90 @@ describe("AddPlaylist component", () => {
         render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
     });
-    it("shows helper text when given playlist name is too long", async () => {
+    it("shows helper text when given playlistid is too long", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
 
-        const input = getByTestId("name-input");
-        await userEvent.type(input, "Looooooooooooooooooooooooooooooooooooooooooooooooooonnnng playlist name");
+        const input = getByTestId("id-input");
+        await userEvent.type(input, "1111111111111111111111111111111111111111111111111111111111111111111");
 
         const helperText = getByTestId("helper-text");
-        expect(helperText.textContent).toEqual("Too long name for the playlist!");
+        expect(helperText.textContent).toEqual("The playlist Id cannot be more that 20 characters!");
     });
     it("shows helper text when given playlist is empty", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
 
-        const input = getByTestId("name-input");
-        await userEvent.type(input, "Oopps");
+        const input = getByTestId("id-input");
+        await userEvent.type(input, "1111");
         await userEvent.clear(input);
 
         const helperText = getByTestId("helper-text");
         expect(helperText.textContent).toEqual("Cannot be empty!");
     });
-    it("dispatches action when helper text is null and button is clicked", async () => {
+    it("dispatches action when helper text is null, id is given and button is clicked", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
 
-        const input = getByTestId("name-input");
-        await userEvent.type(input, "My cool playlist");
-        const button = getByTestId("create-button");
+        const input = getByTestId("id-input");
+        await userEvent.type(input, "iVod41jo1VLHH9Eb4fXA");
+        const button = getByTestId("follow-button");
         await userEvent.click(button);
 
         const actions = store.getActions();
-        expect(actions[0].type).toEqual('playlists/createPlaylist/pending');
+        expect(actions[0].type).toEqual('playlists/followPlaylist/pending');
     });
     it("does not dispatch action when helper text is not null and button is clicked", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
 
-        const input = getByTestId("name-input");
+        const input = getByTestId("id-input");
         await userEvent.type(input, "Oopps");
         await userEvent.clear(input);
-        const button = getByTestId("create-button");
+        const button = getByTestId("follow-button");
         await userEvent.click(button);
 
         const actions = store.getActions();
         expect(actions[0]).toBeUndefined();
     });
-it("does not dispatch action when helper text is null, but name is empty and button is clicked", async () => {
+it("does not dispatch action when helper text is null, but id is empty and button is clicked", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <AddPlaylist />
+                    <FollowPlaylist />
                 </Provider>
             </ThemeProvider>
         );
 
-        const button = getByTestId("create-button");
+        const button = getByTestId("follow-button");
         await userEvent.click(button);
 
         const actions = store.getActions();
         expect(actions[0]).toBeUndefined();
-    });
-    it("clears the input field when the playlist creation is started", async () => {
-        const { getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <AddPlaylist />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const input = getByTestId("name-input");
-        await userEvent.type(input, "My cool playlist");
-        const button = getByTestId("create-button");
-        await userEvent.click(button);
-
-        expect(input.textContent).toEqual("");
     });
 });
