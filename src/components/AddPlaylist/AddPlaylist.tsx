@@ -1,10 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {useHistory} from "react-router-dom";
-import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
-import Playlist from "../../types/Playlist";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
 
 const AddPlaylist = () => {

@@ -135,7 +135,7 @@ const PlaySongs = () => {
 
     useEffect(() => {
         setPlaybackStarted(false)
-    }, [currentPlaylist && currentPlaylist.id])
+    }, [currentPlaylist.id])
 
     if (!playbackStarted) {
         return (
