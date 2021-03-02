@@ -39,6 +39,7 @@ if (currentPlaylist && currentUser && (currentPlaylist.owner !== currentUser.id)
         {currentPlaylist.ownerName && <Button onClick={unFollow}> Unfollow</Button> }
         <PlaySongs/>
         <AddSong />
+        <Songlist />
     </Container>)
 }
 
