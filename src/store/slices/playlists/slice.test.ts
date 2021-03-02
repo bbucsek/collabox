@@ -165,7 +165,8 @@ describe('CreatePlaylist slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
-  it('returns the right action if playlist is created', async () => {
+
+  it('returns the right actions if playlist is created', async () => {
     mockedFirestoreApi.createPlaylist.mockResolvedValueOnce("new_ID")
       await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
@@ -181,6 +182,7 @@ describe('CreatePlaylist slice async action', () => {
 
     expect(nextState.loading.createPlaylistLoading).toBe(true)
   })
+
   it("sets loading to false when action is fulfilled", () => {
     const nextState = playlistsReducer(
       state,
@@ -189,6 +191,7 @@ describe('CreatePlaylist slice async action', () => {
 
     expect(nextState.loading.createPlaylistLoading).toBe(false)
   })
+
   it("sets loading to false when action is rejected", () => {
     const nextState = playlistsReducer(
       state,
@@ -213,6 +216,7 @@ describe('VerifyUrl slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
+
   it('returns error action if url is not valid', async () => {
     await store.dispatch(playlistsAsyncActions.verifyUrl("www.bad"))
 
@@ -220,6 +224,7 @@ describe('VerifyUrl slice async action', () => {
     expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
     expect(actions[1].payload).toEqual("no_youtube_url")
   })
+
   it('returns error action if song is too long', async () => {
     (mockedYoutubeApi as any as jest.Mock).mockResolvedValueOnce({ title: "Title", duration: "PT15M", youtubeId: "fake_youtubeId" })
     await store.dispatch(playlistsAsyncActions.verifyUrl("https://www.youtube.com/watch?v=rVgkIGzGzaU&ab_channel=SevenBeatsMusic"))
@@ -229,6 +234,7 @@ describe('VerifyUrl slice async action', () => {
     expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
     expect(actions[1].payload).toEqual("video_too_long")
   })
+
   it('returns the right action if the song is verified', async () => {
     (mockedYoutubeApi as any as jest.Mock).mockResolvedValueOnce({ title: "Title", duration: "PT1M", youtubeId: "fake_youtubeId" })
     await store.dispatch(playlistsAsyncActions.verifyUrl("https://www.youtube.com/watch?v=rVgkIGzGzaU&ab_channel=SevenBeatsMusic"))
@@ -245,6 +251,7 @@ describe('AddSong slice async action', () => {
   beforeEach(() => {
       store.clearActions()
 })
+
   it('returns error action if there is no logged in user', async () => {
     await storeWithoutUser.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
@@ -252,6 +259,7 @@ describe('AddSong slice async action', () => {
     expect(actions[1].type).toEqual('playlists/addSong/rejected')
     expect(actions[1].payload).toEqual("no_currentUser")
   })
+
   it('returns error action if there is no current playlist', async () => {
     await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
@@ -259,6 +267,7 @@ describe('AddSong slice async action', () => {
     expect(actions[1].type).toEqual('playlists/addSong/rejected')
     expect(actions[1].payload).toEqual("no_currentPlaylist")
   })
+
   it('returns the right action if the song is added', async () => {
     mockedFirestoreApi.addSong.mockResolvedValueOnce('fake_firestore_id')
     await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
@@ -267,6 +276,7 @@ describe('AddSong slice async action', () => {
     expect(actions[1].type).toEqual('playlists/addSong/fulfilled')
     expect(actions[1].payload).toEqual('song_added')
   })
+
   it('returns error action if there is database error', async () => {
     mockedFirestoreApi.addSong.mockRejectedValueOnce('firestore error')
     await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
@@ -283,13 +293,7 @@ describe('CheckIfSongExists slice async action', () => {
       storeWithoutCurrentPlaylist.clearActions()
       storeWithoutUser.clearActions()
 })
-  it('returns error action if there is no logged in user', async () => {
-    await storeWithoutUser.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
-    const actions = storeWithoutUser.getActions()
-    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
-    expect(actions[1].payload).toEqual("no_currentUser")
-  })
   it('returns error action if there is no current playlist', async () => {
     await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
@@ -297,6 +301,7 @@ describe('CheckIfSongExists slice async action', () => {
     expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
     expect(actions[1].payload).toEqual("no_currentPlaylist")
   })
+
   it('returns error action if the song is duplicate', async () => {
     mockedFirestoreApi.checkIfSongExists.mockResolvedValueOnce(true)
     await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
@@ -305,6 +310,7 @@ describe('CheckIfSongExists slice async action', () => {
     expect(actions[1].type).toEqual('playlists/checkIfSongExists/fulfilled')
     expect(actions[1].payload).toEqual('duplicate_song')
   })
+
   it('returns the right actions if the song is not a duplicate', async () => {
     mockedFirestoreApi.checkIfSongExists.mockResolvedValueOnce(false)
     await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
@@ -314,6 +320,7 @@ describe('CheckIfSongExists slice async action', () => {
     expect(actions[2].type).toEqual('playlists/checkIfSongExists/fulfilled')
     expect(actions[2].payload).toEqual('not_duplicate_song')
   })
+
   it('returns error action if there is database error', async () => {
     mockedFirestoreApi.checkIfSongExists.mockRejectedValueOnce('firestore error')
     await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
@@ -471,6 +478,7 @@ describe('SubscribeToPlaylist slice async action', () => {
   beforeEach(() => {
     store.clearActions()
   })
+
   it('returns the right action if subscribed to playlist', async () => {
     mockedFirestoreApi.subscribeToPlaylist.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
@@ -496,6 +504,7 @@ describe('UnsubscribeFromPlaylist slice async action', () => {
   beforeEach(() => {
     store.clearActions()
   })
+
   it('returns the right action if unsubscribed from playlist', async () => {
     mockedFirestoreApi.unsubscribeFromPlaylist.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
@@ -521,6 +530,7 @@ describe('SubscribeToSongsCollection slice async action', () => {
   beforeEach(() => {
     store.clearActions()
   })
+
   it('returns the right action if subscribed to songs collection', async () => {
     mockedFirestoreApi.subscribeToSongsCollection.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
@@ -546,6 +556,7 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
   beforeEach(() => {
     store.clearActions()
   })
+  
   it('returns the right action if unsubscribed from songs collection', async () => {
     mockedFirestoreApi.unsubscribeFromSongsCollection.mockResolvedValueOnce()
     await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))

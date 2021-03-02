@@ -133,7 +133,11 @@ const unsubscribeFromSongsCollection = async (id: string) => {
 }
 
 const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
-    const response = await database.collection('playlists').doc(playlistId).collection('songs').add(song)
+    const response = await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .add(song)
     return response.id
 }
 

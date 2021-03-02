@@ -7,6 +7,7 @@ import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import AddSong from "../AddSong";
 import PlaySongs from "../PlaySongs";
 import { Button, Container, Title } from "./styles";
+import Songlist from "../Songlist";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -38,6 +39,7 @@ if (currentPlaylist && currentUser && (currentPlaylist.owner !== currentUser.id)
         {currentPlaylist.ownerName && <Button onClick={unFollow}> Unfollow</Button> }
         <PlaySongs/>
         <AddSong />
+        <Songlist />
     </Container>)
 }
 
@@ -46,6 +48,7 @@ return (
             {currentPlaylist && <Title> {currentPlaylist.playlistName} </Title>}
             <PlaySongs/>
             <AddSong />
+            <Songlist />
         </Container>
     );
 };

@@ -74,6 +74,7 @@ const addSong = createAsyncThunk<
                 return thunkApi.rejectWithValue("no_currentUser")
             }
             const userId = currentUser.id
+            const userName = currentUser.name
             
             const { playlists } = state
             const { currentPlaylist } = playlists
@@ -86,7 +87,8 @@ const addSong = createAsyncThunk<
                 youtubeId,
                 title,
                 votes: 0,
-                userId
+                userId,
+                userName,
             }
             try {
                 await firestoreApi.addSong(playlistId, song)
