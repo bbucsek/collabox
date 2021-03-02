@@ -5,7 +5,6 @@ export const Container = styled.div`
     flex-direction: column;
     align-items: center;
     flex: 8.5;
-    background-color: ${({ theme }) => theme.colors.whiteFontColor};
     overflow: scroll;
 `
 
