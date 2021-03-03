@@ -79,6 +79,7 @@ const PlaySongs = () => {
     };
 
     const onEnd = () => {
+        console.log("song ended")
         if (currentSong) {
             setPlayedSongs([...playedSongs, {youtubeId: currentSong.youtubeId, title: currentSong.title}]);
         }
@@ -178,11 +179,21 @@ const PlaySongs = () => {
             return;
         }
 
+        if (partyJoined && !owner) {
+            return
+        }
+
+        const endParty =  async() => {
+            await dispatch(playlistsAsyncActions.endParty(currentPlaylist.id))
+        }
+
         if (currentSongBackwardIndex > 0) {
             setCurrentSong(playedSongs[playedSongs.length - currentSongBackwardIndex]);
         } else {
             const playedSongsYoutubeIds = playedSongs.map((playedSong: Pick<Song, 'youtubeId' | 'title'>) => playedSong.youtubeId);
             const notPlayedSongs = songs.filter((song: Song) => !playedSongsYoutubeIds.includes(song.youtubeId));
+            console.log("will set canchangesong to false and set currentsong to: ")
+            console.log(notPlayedSongs[0])
             setCurrentSong(notPlayedSongs[0]);
             setCanChangeSong(false);
             if (notPlayedSongs.length === 0) {
