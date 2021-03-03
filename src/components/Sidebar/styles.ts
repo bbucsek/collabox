@@ -9,8 +9,12 @@ export const Container = styled.div`
 `
 
 export const Title = styled.div`
+    background: -webkit-linear-gradient(-20deg, ${({ theme }) => theme.colors.secondary} 0%, ${({ theme }) => theme.colors.primary} 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-family: Megrim;
     font-size: 3rem;
-    font-weight: 100;
+    font-weight: 300;
     margin-bottom: 1rem;
     align-self: center;
     cursor: pointer;
@@ -27,7 +31,7 @@ export const Subtitle = styled.div`
 
 export const Logout = styled.button`
     margin-top: 1rem;
-    align-self: center;
+    align-self: flex-start;
     background: ${({ theme }) => theme.colors.blue};
     color: ${({ theme }) => theme.colors.whiteFontColor};
     border-radius: 10px;

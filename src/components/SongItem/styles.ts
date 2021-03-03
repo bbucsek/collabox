@@ -5,7 +5,7 @@ export const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     border-radius: 20px;
-    background: ${({ theme }) => theme.colors.lightGreen};
+    background: ${({ theme }) => theme.colors.secondaryLight};
     color: ${({ theme }) => theme.colors.whiteFontColor};
     box-shadow: ${({ theme }) => theme.boxShadow};
     width: 100%;

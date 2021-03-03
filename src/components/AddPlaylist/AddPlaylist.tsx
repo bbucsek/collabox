@@ -25,10 +25,10 @@ const AddPlaylist = () => {
     };
 
     const createPlaylist = async () => {
-            const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
-            if (promise.payload !== 'database_error') {
-                history.push(`playlist/${promise.payload}`)
-            }
+        const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
+        if (promise.payload !== 'database_error') {
+            history.push(`playlist/${promise.payload}`)
+        }
     } 
 
     const submit = (event: FormEvent<HTMLButtonElement>) => {

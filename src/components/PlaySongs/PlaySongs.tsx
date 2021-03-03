@@ -140,7 +140,7 @@ const PlaySongs = () => {
     if (!playbackStarted) {
         return (
 
-                <PlaybackButton onClick={startPlayback} data-testid="playback-button">Listen to the playlist</PlaybackButton>
+            <PlaybackButton onClick={startPlayback} data-testid="playback-button">Listen to the playlist</PlaybackButton>
 
         );
     }
