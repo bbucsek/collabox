@@ -16,12 +16,6 @@ const PlaylistItem = ({ playlist }: IPlaylistProps) => {
         history.push(`/playlist/${playlist.id}`)
     }
 
-    if (playlist.ownerName) return (
-        <Container onClick={handleClick}>
-            {playlist.playlistName} by {playlist.ownerName}
-        </Container>
-    )
-
     return (
         <Container onClick={handleClick}>
             {playlist.playlistName}
