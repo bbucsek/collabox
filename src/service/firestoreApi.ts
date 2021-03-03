@@ -1,3 +1,4 @@
+import firebase from 'firebase';
 import 'firebase/firestore'
 import PlaylistData from '../types/PlaylistData';
 import Song from '../types/Song'
@@ -152,6 +153,24 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
     return !(querySnapshot.docs.length === 0)
 }
 
+const startParty = async (playlistId: string, youtubeId: string, title: string) => {
+    const partySong = { partySong: {youtubeId, title, startTime:Date.now()}}
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .set(partySong, {merge: true})
+}
+
+const endParty = async (playlistId: string) => {
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .update({
+        partySong: firebase.firestore.FieldValue.delete()
+    })
+
+}
+
 export const firestoreApi = {
     createPlaylist,
     getPlaylistDetails, 
@@ -166,5 +185,7 @@ export const firestoreApi = {
     subscribeToSongsCollection,
     unsubscribeFromSongsCollection,
     addSong, 
-    checkIfSongExists
+    checkIfSongExists, 
+    startParty,
+    endParty
 }

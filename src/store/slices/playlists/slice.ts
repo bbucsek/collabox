@@ -169,12 +169,44 @@ const unfollowPlaylist = createAsyncThunk<
             }
         })
 
+const startParty = createAsyncThunk<
+    string, 
+    {playlistId: string, currentSong: Pick<Song, 'youtubeId' | 'title'>}, 
+    {state: RootState}
+    >('playlist/startParty', 
+        async (payload: {playlistId: string, currentSong: Pick<Song, 'youtubeId' | 'title'>}, thunkApi) => {
+            const { playlistId, currentSong } = payload;
+            try{
+                await firestoreApi.startParty(playlistId, currentSong.youtubeId, currentSong.title)
+                return 'party_started'
+            } catch{
+                return thunkApi.rejectWithValue('database_error')
+            }
+})
+
+const endParty = createAsyncThunk<
+    string, 
+    string, 
+    {state: RootState}
+    >('playlist/endParty', 
+        async (payload: string, thunkApi) => {
+            const playlistId = payload;
+            try{
+                await firestoreApi.endParty(playlistId)
+                return 'party_ended'
+            } catch{
+                return thunkApi.rejectWithValue('database_error')
+            }
+})
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
     reducers: {
         SET_PLAYLIST: (state, action: PayloadAction<Playlist>) => {
-            state.currentPlaylist = action.payload
+            const currentPlaylistProperties = action.payload
+            const newState: any = {...currentPlaylistProperties, songs: state?.currentPlaylist?.songs}
+            state.currentPlaylist = newState
         },
         SET_OWN_PLAYLISTS: (state, action: PayloadAction<Pick<PlaylistData, 'id'| 'playlistName'>[]>) => {
             state.ownPlaylists = action.payload
@@ -379,5 +411,7 @@ export const playlistsAsyncActions = {
     addSong, 
     checkIfSongExists,
     followPlaylist,
-    unfollowPlaylist
+    unfollowPlaylist,
+    startParty,
+    endParty
 }
