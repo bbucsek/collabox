@@ -1,10 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import {useHistory} from "react-router-dom";
-import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
-import Playlist from "../../types/Playlist";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title } from "./styles";
 
 const AddPlaylist = () => {
@@ -28,13 +25,10 @@ const AddPlaylist = () => {
     };
 
     const createPlaylist = async () => {
-        try {
             const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
-            history.push(`playlist/${promise.payload}`)
-        } catch (error) {
-            return
-        }
-
+            if (promise.payload !== 'database_error') {
+                history.push(`playlist/${promise.payload}`)
+            }
     } 
 
     const submit = (event: FormEvent<HTMLButtonElement>) => {

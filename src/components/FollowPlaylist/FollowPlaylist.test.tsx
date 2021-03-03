@@ -11,8 +11,8 @@ import userEvent from "@testing-library/user-event";
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
     playlists: {
-        ownPlaylists: null,
-        otherPlaylists: null,
+        ownPlaylists: [],
+        otherPlaylists: [],
         currentPlaylist: {
             id: "fake_playlist_id",
             playlistName: "My cool playlist",
@@ -110,7 +110,7 @@ describe("FollowPlaylist component", () => {
         const actions = store.getActions();
         expect(actions[0]).toBeUndefined();
     });
-it("does not dispatch action when helper text is null, but id is empty and button is clicked", async () => {
+    it("does not dispatch action when helper text is null, but id is empty and button is clicked", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>

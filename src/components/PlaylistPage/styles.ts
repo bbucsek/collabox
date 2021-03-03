@@ -16,6 +16,12 @@ export const Title = styled.div`
     margin-bottom: 3rem;
 `
 
+export const Subtitle = styled.div`
+    color: ${({ theme }) => theme.colors.lightGreen};
+    font-size: 0.8rem;
+    margin-bottom: 0.5rem;
+`
+
 export const Button = styled.button`
     border-radius: 5px;
     border-width: 0px;

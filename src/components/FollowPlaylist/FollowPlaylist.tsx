@@ -1,10 +1,12 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { selectOwnPlaylistIds } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import { Button, Container, FormWrapper, HelperText, StyledInput, Title, Wrapper } from "./styles";
 
 const FollowPlaylist = () => {
+    const ownPlaylistIds = useSelector(selectOwnPlaylistIds);
     const [id, setId] = useState<string>("");
     const [helperText, setHelperText] = useState<string | null>(null);
     const dispatch = useDispatch();
@@ -26,14 +28,12 @@ const FollowPlaylist = () => {
 
 
     const followPlaylist = async () => {
-        try {
-            await dispatch(playlistsAsyncActions.followPlaylist(id));
+        const result = await dispatch(playlistsAsyncActions.followPlaylist(id));
+        if (result.payload === 'playlist_followed'){
             history.push(`/playlist/${id}`)
-        } catch (error) {
-            return
         }
-
     } 
+
     const submit = (event: FormEvent<HTMLButtonElement>) => {
         event.preventDefault();
         if (helperText) {
@@ -48,6 +48,12 @@ const FollowPlaylist = () => {
             setHelperText("The playlist Id must be 20 character long!")
             return;
         }
+        
+        if (ownPlaylistIds.includes(id)) {
+            setHelperText("You cannot follow your own playlist!")
+            return;
+        }
+
         setId("");
         followPlaylist();
 
