@@ -1,6 +1,6 @@
 import React from 'react'
 import { signIn } from '../../service/authentication'
-import { Container, Title, SignUp, Wrapper } from './styles'
+import { Container, Title, SignUp } from './styles'
 
 export default function Login() {
 
@@ -11,11 +11,9 @@ export default function Login() {
 
   return (
     <Container>
-      <Wrapper>
-        <Title>
-          Collabox
-        </Title>
-        <SignUp onClick={handleClick}>Sign up with google</SignUp>
-      </Wrapper>
+      <Title>
+        Collabox
+      </Title>
+      <SignUp onClick={handleClick}>Sign up with google</SignUp>
     </Container>)
 }
