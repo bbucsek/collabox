@@ -21,14 +21,14 @@ export const Title = styled.div`
 `
 
 export const Subtitle = styled.div`
-    color: ${({ theme }) => theme.colors.lightGreen};
-    font-size: 0.8rem;
-    margin-bottom: 0.5rem;
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 1rem;
 `
 
 export const IconWrapper = styled.div`
     display: flex;
     flex-direction: row;
+    align-items: center;
     width: 80%;
     padding: 1rem;
 `

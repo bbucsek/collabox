@@ -23,8 +23,7 @@ export const Form = styled.form`
 
 export const HelperText = styled.div`
     color: ${({ theme }) => theme.colors.whiteFontColor};
-    font-size: 1rem;
-    height: 1.5rem;
+    font-size: 0.8rem;
 `
 
 export const Button = styled.button`

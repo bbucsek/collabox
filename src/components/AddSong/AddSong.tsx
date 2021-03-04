@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { useDispatch } from "react-redux";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
-import { Button, Form, StyledInput, Container } from "./styles";
+import { Button, Form, StyledInput, Container, HelperText } from "./styles";
 
 const AddSong = () => {
     const [url, setUrl] = useState<string>("");
@@ -44,6 +44,7 @@ const AddSong = () => {
                 />
                 <Button onClick={submitSongUrl} data-testid="submit-button" />
             </Form>
+            <HelperText>{helperText}</HelperText>
         </Container>
     );
 };
