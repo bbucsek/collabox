@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import CloseIcon from '@material-ui/icons/Close';
 
 
 export const PlaybackButton = styled.button`
@@ -40,6 +41,8 @@ export const Container = styled.div`
     }
 `
 
+
+
 export const YoutubeWrapper = styled.div`
     display: none;
 `
@@ -63,7 +66,6 @@ export const Title = styled.div`
     color: ${({ theme }) => theme.colors.blueGreen};
     font-size: 1.2rem;
     line-height: 1.6rem;
-    margin-top: 15px;
     margin-bottom: 15px;
     &:hover {
         overflow: visible;
@@ -74,5 +76,16 @@ export const Button = styled.button`
 export const ButtonCanBeDisabled = styled.button<{disabled: boolean}>`
     svg {
         color: ${({ theme, disabled }) => disabled === true? "grey": theme.colors.blue};
+    }
+`
+
+export const Close = styled(CloseIcon)`
+    align-self: flex-end;
+    margin: 5px 5px 0px 0px;
+    color: ${({ theme }) => theme.colors.whiteFontColor};
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
+    &:hover {
+        transform: scale(1.1);
     }
 `
