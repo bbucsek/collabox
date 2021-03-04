@@ -21,7 +21,7 @@ const PlaySongs = () => {
     const songs = useSelector(selectSongs);
     const currentPlaylist: Playlist = useSelector(selectCurrentPlaylist);
     const currentUser: User = useSelector(selectCurrentUser);
-    const [owner, setOwner] = useState<boolean | null>();
+    const isOwner = currentUser.id === currentPlaylist.owner;
     const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
     const [partyJoined, setPartyJoined] = useState<boolean>(false);
     const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
@@ -159,18 +159,10 @@ const PlaySongs = () => {
         setCanSkipBackward(false)
         setPlayedSongs([])
         setCanChangeSong(true)
-        if (owner && partyJoined) {
+        if (isOwner && partyJoined) {
             endParty();
         }
-    }, [endParty, owner, partyJoined])
-
-    useEffect(() => {
-        if (currentUser.id === currentPlaylist.owner) {
-            setOwner(true)
-        } else {
-            setOwner(false)
-        }
-    }, [currentUser, currentPlaylist])
+    }, [endParty, partyJoined, isOwner])
 
     useEffect(() => {
         if (currentPlaylist.partySong) {
@@ -182,7 +174,7 @@ const PlaySongs = () => {
     }, [currentPlaylist])
 
     useEffect(() => {
-        if (!songs || !canChangeSong || (partyJoined && !owner)) {
+        if (!songs || !canChangeSong || (partyJoined && !isOwner)) {
             return;
         }
 
@@ -197,26 +189,26 @@ const PlaySongs = () => {
                 closePlayer();
             }
         }
-    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, owner, partyJoined, 
+    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, partyJoined, 
         currentPlaylist.id, dispatch, playbackStarted, closePlayer]);
 
     useEffect(() => {
         const startParty = async () => {
-            if(partyJoined && owner && currentSong) {
+            if(partyJoined && isOwner && currentSong) {
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
             }
         }
             startParty();
-    }, [partyJoined, owner, dispatch, currentSong, currentPlaylist.id])
+    }, [partyJoined, isOwner, dispatch, currentSong, currentPlaylist.id])
 
     useEffect(() => {
-        if (!owner && partyJoined && player && currentPlaylist.partySong) {
+        if (!isOwner && partyJoined && player && currentPlaylist.partySong) {
             const startSecond = (Date.now()-Number(currentPlaylist.partySong.startTime))/1000
             player.loadVideoById(currentPlaylist.partySong.youtubeId, startSecond)
-        } else if (!owner && partyJoined && player && !currentPlaylist.partySong) {
+        } else if (!isOwner && partyJoined && player && !currentPlaylist.partySong) {
             closePlayer();
         }
-    }, [currentPlaylist.partySong, partyJoined, player, owner, closePlayer])
+    }, [currentPlaylist.partySong, partyJoined, player, isOwner, closePlayer])
 
     useEffect(() => {
         setPlaybackStarted(false)
@@ -227,8 +219,8 @@ const PlaySongs = () => {
         return (
             <>
                 <PlaybackButton onClick={startPlayback} data-testid="playback-button">Listen to the playlist</PlaybackButton>
-                {owner && <PlaybackButton onClick={startParty} data-testid="start-party-button">Start a party</PlaybackButton>}
-                {!owner && partyOngoing && <PlaybackButton onClick={joinParty} data-testid="join-party-button">Join the party</PlaybackButton>}
+                {isOwner && <PlaybackButton onClick={startParty} data-testid="start-party-button">Start a party</PlaybackButton>}
+                {!isOwner && partyOngoing && <PlaybackButton onClick={joinParty} data-testid="join-party-button">Join the party</PlaybackButton>}
             </>
         );
     }
