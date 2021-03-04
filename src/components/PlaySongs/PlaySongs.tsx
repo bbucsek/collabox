@@ -24,7 +24,6 @@ const PlaySongs = () => {
     const [owner, setOwner] = useState<boolean | null>();
     const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
     const [partyJoined, setPartyJoined] = useState<boolean>(false);
-    const [startSecond, setStartSecond] = useState<number>(0);
     const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
     const [player, setPlayer] = useState<any | undefined>();
     const [currentSong, setCurrentSong] = useState<Pick<Song, 'youtubeId'| 'title'> | undefined>();
@@ -59,7 +58,6 @@ const PlaySongs = () => {
         }
         await dispatch(playlistsAsyncActions.updatePartySong(
             {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
-        console.log("will set party joined to true")
         setPartyJoined(true);
     };
 
@@ -71,7 +69,6 @@ const PlaySongs = () => {
         if (!currentPlaylist.partySong) {
             return
         }
-        setStartSecond((Date.now()-Number(currentPlaylist.partySong.startTime))/1000)
         setPlaybackStarted(true);
         setPartyJoined(true);
     };
@@ -82,7 +79,6 @@ const PlaySongs = () => {
     };
 
     const onEnd = () => {
-        console.log("song ended")
         if (currentSong) {
             setPlayedSongs([...playedSongs, {youtubeId: currentSong.youtubeId, title: currentSong.title}]);
         }
@@ -152,7 +148,6 @@ const PlaySongs = () => {
     };
 
     const closePlayer = useCallback(() => {
-        console.log("no more songs")
         setPartyJoined(false)
         setPlaybackStarted(false)
         setPlayedSongs([])
@@ -192,8 +187,6 @@ const PlaySongs = () => {
         } else {
             const playedSongsYoutubeIds = playedSongs.map((playedSong: Pick<Song, 'youtubeId' | 'title'>) => playedSong.youtubeId);
             const notPlayedSongs = songs.filter((song: Song) => !playedSongsYoutubeIds.includes(song.youtubeId));
-            console.log("will set canchangesong to false and set currentsong to: ")
-            console.log(notPlayedSongs[0])
             setCurrentSong(notPlayedSongs[0]);
             setCanChangeSong(false);
             if (notPlayedSongs.length === 0) {
@@ -206,7 +199,6 @@ const PlaySongs = () => {
     useEffect(() => {
         const startParty = async () => {
             if(partyJoined && owner && currentSong) {
-            console.log("dispatch partysong")
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
             }
         }
@@ -215,12 +207,12 @@ const PlaySongs = () => {
 
     useEffect(() => {
         if (!owner && partyJoined && player && currentPlaylist.partySong) {
-            console.log('will join')
+            const startSecond = (Date.now()-Number(currentPlaylist.partySong.startTime))/1000
             player.loadVideoById(currentPlaylist.partySong.youtubeId, startSecond)
         } else if (!owner && partyJoined && player && !currentPlaylist.partySong) {
             closePlayer();
         }
-    }, [currentPlaylist.partySong, partyJoined, player, startSecond, owner, closePlayer])
+    }, [currentPlaylist.partySong, partyJoined, player, owner, closePlayer])
 
     useEffect(() => {
         setPlaybackStarted(false)
