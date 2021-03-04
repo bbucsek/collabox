@@ -180,6 +180,7 @@ it("shows start party button for own playlist", async () => {
         expect(startPartyButton).not.toBeNull();
     });
 fit("hides start party button and shows playback container when party is started", async () => {
+
         const { queryByTestId, getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -191,10 +192,12 @@ fit("hides start party button and shows playback container when party is started
         const startPartyButton = getByTestId("start-party-button");
         await userEvent.click(startPartyButton);
 
-        const startPartyButtonAgain = queryByTestId("start-party-button");
-        const partyPlaybackContainer = queryByTestId("playback-container-party");
-        expect(startPartyButtonAgain).toBeNull();
-        expect(partyPlaybackContainer).not.toBeNull();
+        setTimeout(() => {
+            const startPartyButtonAgain = queryByTestId("start-party-button");
+            const partyPlaybackContainer = queryByTestId("playback-container-party");
+            expect(startPartyButtonAgain).toBeNull();
+            expect(partyPlaybackContainer).not.toBeNull();
+        }, 1000); 
     });
 it("hides join party button and shows playback container when party is joined", async () => {
         const { queryByTestId, getByTestId } = render(
