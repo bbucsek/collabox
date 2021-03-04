@@ -27,7 +27,7 @@ const AddPlaylist = () => {
     const createPlaylist = async () => {
         const promise = await dispatch(playlistsAsyncActions.createPlaylist(name));
         if (promise.payload !== 'database_error') {
-            history.push(`playlist/${promise.payload}`)
+            history.push(`/playlist/${promise.payload}`)
         }
     } 
 

@@ -25,8 +25,10 @@ const PlaylistPage = () => {
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
     const [playerActive, setPlayerActive] = useState(false);
+    const isOwner = currentUser?.name === currentPlaylist?.ownerName;
     const dispatch = useDispatch();
     const history = useHistory();
+
 
     const unFollow = async () => {
         await dispatch(playlistsAsyncActions.unfollowPlaylist(id))
@@ -48,9 +50,9 @@ const PlaylistPage = () => {
                 <Title> {currentPlaylist?.playlistName} </Title>
                 <IconWrapper>
                     <AddIcon onClick={() => setAddSongActive(!addSongActive)}/>
-                    <PlayIcon onClick={() => setPlayerActive(!playerActive)}/>
+                    {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)}/>}
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)}/>
-                    <UnsubscribeIcon onClick={unFollow}/>
+                    {!isOwner && <UnsubscribeIcon onClick={unFollow}/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
                 </IconWrapper>
                 {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
