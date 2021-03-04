@@ -150,11 +150,15 @@ const PlaySongs = () => {
     const closePlayer = useCallback(() => {
         setPartyJoined(false)
         setPlaybackStarted(false)
-        setPlayedSongs([])
-        setCanChangeSong(true)
+        setPlayer(null)
+        setCurrentSongForwardIndex(0)
+        setCurrentSongBackwardIndex(0)
         setIsMuted(false)
         setIsPlaying(false)
-        setPlayer(null)
+        setCanSkipBackward(true)
+        setCanSkipBackward(false)
+        setPlayedSongs([])
+        setCanChangeSong(true)
         if (owner && partyJoined) {
             endParty();
         }
