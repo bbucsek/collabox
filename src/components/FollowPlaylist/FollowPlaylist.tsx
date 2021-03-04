@@ -43,6 +43,7 @@ const FollowPlaylist = () => {
         if (id.length === 0) {
             return;
         }
+        
 
         if (id.length < 20) {
             setHelperText("The playlist Id must be 20 character long!")

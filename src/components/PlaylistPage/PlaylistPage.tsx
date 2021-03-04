@@ -24,6 +24,7 @@ const PlaylistPage = () => {
     const currentUser = useSelector(selectCurrentUser);
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
+    const [playerActive, setPlayerActive] = useState(false);
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -45,14 +46,14 @@ const PlaylistPage = () => {
     return (
             <Container>
                 <Title> {currentPlaylist?.playlistName} </Title>
-                {currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 <IconWrapper>
                     <AddIcon onClick={() => setAddSongActive(!addSongActive)}/>
-                    <PlayIcon />
+                    <PlayIcon onClick={() => setPlayerActive(!playerActive)}/>
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)}/>
                     <UnsubscribeIcon onClick={unFollow}/>
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
                 </IconWrapper>
+                {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 {addSongActive && <AddSong />}
                 <Songlist />
             </Container>

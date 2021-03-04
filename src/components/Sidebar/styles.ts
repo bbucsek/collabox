@@ -29,19 +29,17 @@ export const Subtitle = styled.div`
     margin-bottom: 1rem;
 `
 
-export const Logout = styled.button`
+export const Logout = styled.div`
     margin-top: 1rem;
     align-self: flex-start;
-    background: ${({ theme }) => theme.colors.blue};
-    color: ${({ theme }) => theme.colors.whiteFontColor};
-    border-radius: 10px;
-    padding: 10px 15px;
-    border-width: 0;
+    margin-top: 2rem;
+    font-size: 1.2rem;
     font-weight: 600;
+    color: ${({ theme }) => theme.colors.primary};
+    margin-bottom: 1rem;
     cursor: pointer;
-
     &:hover {
-        background: ${({ theme }) => theme.colors.blueActive};
+        color: ${({ theme }) => theme.colors.secondaryLight};
     }
 `
 

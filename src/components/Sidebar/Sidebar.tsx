@@ -37,7 +37,7 @@ const Sidebar = () => {
     }
 
     const createPlaylist = () => {
-        history.push('/')
+        history.push('/playlist/add')
     }
 
     const followPlaylist = () => {
