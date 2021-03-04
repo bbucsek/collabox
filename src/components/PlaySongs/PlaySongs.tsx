@@ -179,14 +179,6 @@ const PlaySongs = () => {
             return;
         }
 
-        if (partyJoined && !owner) {
-            return
-        }
-
-        const endParty =  async() => {
-            await dispatch(playlistsAsyncActions.endParty(currentPlaylist.id))
-        }
-
         if (currentSongBackwardIndex > 0) {
             setCurrentSong(playedSongs[playedSongs.length - currentSongBackwardIndex]);
         } else {
