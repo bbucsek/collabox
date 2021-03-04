@@ -141,14 +141,14 @@ const PlaySongs = () => {
         setCanChangeSong(true);
     };
 
-    const mute = () => {
-        player.mute();
-        setIsMuted(true);
-    };
-
-    const unmute = () => {
-        player.unMute();
-        setIsMuted(false);
+    const toggleMute = () => {
+        if (!isMuted) {
+            player.mute()
+          }
+          if (isMuted) {
+            player.unMute()
+          }
+          setIsMuted(!isMuted)
     };
 
     const closePlayer = useCallback(() => {
@@ -246,12 +246,9 @@ const PlaySongs = () => {
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
             </YoutubeWrapper>
             <ControlWrapper>
-                <ButtonCanBeDisabled onClick={mute} disabled={isMuted} data-testid="volume-off">
-                    <VolumeOffIcon />
-                </ButtonCanBeDisabled>
-                <ButtonCanBeDisabled onClick={unmute} disabled={!isMuted} data-testid="volume-up">
-                    <VolumeUpIcon />
-                </ButtonCanBeDisabled>
+                <Button onClick={toggleMute} data-testid="mute-button">
+                    {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                </Button>
             </ControlWrapper>
         </Container>
         )
@@ -280,12 +277,9 @@ const PlaySongs = () => {
                 <ButtonCanBeDisabled disabled={!canSkipForward}>
                     <SkipNextIcon onClick={skipToNext} />
                 </ButtonCanBeDisabled>
-                <ButtonCanBeDisabled onClick={mute} disabled={isMuted} data-testid="volume-off">
-                    <VolumeOffIcon />
-                </ButtonCanBeDisabled>
-                <ButtonCanBeDisabled onClick={unmute} disabled={!isMuted} data-testid="volume-up">
-                    <VolumeUpIcon />
-                </ButtonCanBeDisabled>
+                <Button onClick={toggleMute} data-testid="mute-button">
+                    {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                </Button>
             </ControlWrapper>
         </Container>
     );
