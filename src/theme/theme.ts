@@ -13,6 +13,14 @@ const theme = {
     lightGreen: '#058585',
     yellow: '#fcba03',
 
+    primary: '#3CCFC6',
+    primaryLight: '#43e0d7',
+    primaryDark: '#40b8b0',
+
+    secondary: '#B415B7',
+    secondaryLight: '#c912cc',
+    secondaryDark: '#a616a8',
+
   },
   boxShadow: "-1px 4px 20px -6px rgba(0, 0, 0, 0.7)",
 }

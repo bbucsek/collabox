@@ -5,7 +5,7 @@ export const Container = styled.div`
     justify-content: space-between;
     align-items: center;
     border-radius: 20px;
-    background: ${({ theme }) => theme.colors.lightGreen};
+    background: ${({ theme }) => theme.colors.secondaryLight};
     color: ${({ theme }) => theme.colors.whiteFontColor};
     box-shadow: ${({ theme }) => theme.boxShadow};
     width: 100%;
@@ -14,7 +14,7 @@ export const Container = styled.div`
 `
 
 export const SongTitle = styled.div`
-    font-size: 0.8rem;
+    font-size: 1rem;
     flex: 5;
     overflow: hidden;
     white-space: nowrap;
@@ -23,12 +23,12 @@ export const SongTitle = styled.div`
 `
 
 export const AddedBy = styled.div`
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     flex: 1;
 `
 
 export const VoteCount = styled.div`
-    font-size: 0.5rem;
+    font-size: 0.7rem;
     flex: 1;
 `
 
