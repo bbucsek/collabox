@@ -227,7 +227,7 @@ const PlaySongs = () => {
 
     if (partyJoined) {
         return (
-            <Container data-testid="playback-container">
+            <Container data-testid="playback-container-party">
                 <Close onClick={closePlayer}/>
             <Title>{ currentPlaylist?.partySong?.title}</Title>
             <YoutubeWrapper>
@@ -265,8 +265,8 @@ const PlaySongs = () => {
                 <ButtonCanBeDisabled disabled={!canSkipForward}>
                     <SkipNextIcon onClick={skipToNext} />
                 </ButtonCanBeDisabled>
-                <Button onClick={toggleMute} data-testid="mute-button">
-                    {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                <Button onClick={toggleMute}>
+                    {isMuted ? <VolumeUpIcon  data-testid="unmute-icon"/> : <VolumeOffIcon  data-testid="mute-icon"/>}
                 </Button>
             </ControlWrapper>
         </Container>
