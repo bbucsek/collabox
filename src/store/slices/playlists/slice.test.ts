@@ -22,15 +22,15 @@ const state: PlaylistsState = {
     }
 }
 
-const newState: PlaylistsState = {
+const newState = {
     ownPlaylists: null,
     otherPlaylists: null,
-  currentPlaylist: {
+    currentPlaylist: {
     id: "fake_playlist_id",
     playlistName: "My cool playlist",
     owner: "fake_user_id",
+    partySong: null,
     users: [],
-    songs: [],
     },
     loading: {
       createPlaylistLoading: false,
@@ -55,6 +55,7 @@ const store = mockStore({
       id: "fake_playlist_id",
       playlistName: "My cool playlist",
       owner: "fake_user_id",
+      partySong: null,
       users: [],
       songs: [{
         id: "fake_id",
@@ -115,6 +116,7 @@ describe('Playlists slice', () => {
         id: "fake_playlist_id",
         playlistName: "My cool playlist",
         owner: "fake_user_id",
+        partySong: null,
         users: [],
         songs: []
       }
@@ -127,10 +129,11 @@ describe('Playlists slice', () => {
     it('sets the state with the correct value', () => {
       const updatedSongs = [{
           id: "fake_id",
-          youtubeId: "fake_url",
+          youtubeId: "fake_youtubeId",
           title: "Title", 
           votes: 0,
-          userId: "fake_user_id"
+          userId: "fake_user_id",
+          userName: "fake_user"
       }]
       const expectedState = {
         ownPlaylists: null,
@@ -139,13 +142,15 @@ describe('Playlists slice', () => {
         id: "fake_playlist_id",
         playlistName: "My cool playlist",
         owner: "fake_user_id",
+        partySong: null,
         users: [],
         songs: [{
           id: "fake_id",
-          youtubeId: "fake_url",
+          youtubeId: "fake_youtubeId",
           title: "Title", 
           votes: 0,
-          userId: "fake_user_id"
+          userId: "fake_user_id",
+          userName: "fake_user"
       }]
         },
         loading: {
@@ -377,6 +382,50 @@ describe('UnfollowPlaylist slice async action', () => {
     
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/unfollowPlaylist/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('UpdatePartySong slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns the right action if the partysong is updated', async () => {
+    mockedFirestoreApi.updatePartySong.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.updatePartySong({playlistId: "fake_playlistId", 
+    currentSong: {youtubeId: "fake_youtubeId", title: "fake_title"}}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/updatePartySong/fulfilled')
+  })
+  it('returns error action if the database is down', async () => {
+    mockedFirestoreApi.updatePartySong.mockRejectedValueOnce("database down")
+    await store.dispatch(playlistsAsyncActions.updatePartySong({playlistId: "fake_playlistId", 
+    currentSong: {youtubeId: "fake_youtubeId", title: "fake_title"}}))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/updatePartySong/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+  })
+})
+
+describe('EndParty slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns the right action if the party is ended', async () => {
+    mockedFirestoreApi.endParty.mockResolvedValueOnce()
+    await store.dispatch(playlistsAsyncActions.endParty("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/endParty/fulfilled')
+  })
+  it('returns error action if the database is down', async () => {
+    mockedFirestoreApi.endParty.mockRejectedValueOnce("database down")
+    await store.dispatch(playlistsAsyncActions.endParty("fake_playlistId"))
+    
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/endParty/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
 })
