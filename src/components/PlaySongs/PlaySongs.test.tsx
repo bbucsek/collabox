@@ -71,38 +71,6 @@ const storeWithParty = mockStore({
     },
 });
 
-const storeWithParty = mockStore({
-    authentication: {
-        currentUser: {
-            id: "test-id",
-            name: "test-user",
-            email: "test-user-email",
-        },
-        loading: false,
-    },
-    playlists: {
-        ownPlaylists: null,
-        otherPlaylists: null,
-        currentPlaylist: {
-            id: "fake_playlist_id",
-            playlistName: "My cool playlist",
-            owner: "fake_user_id",
-            users: [],
-            partySong:{ 
-                youtubeId: "fake_id",
-                title: "Title",},
-            songs: [
-                {
-                    id: "fake_id",
-                    youtubeId: "fake_id",
-                    title: "Title",
-                    votes: 0,
-                    userId: "fake_user_id",
-                },
-            ],
-        },
-    },
-});
 
 describe("PlaySongs", () => {
     beforeEach(() => {
