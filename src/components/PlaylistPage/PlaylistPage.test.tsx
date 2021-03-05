@@ -67,8 +67,8 @@ describe("PlaylistPage", () => {
             </ThemeProvider>
         );
 
-        const playbackButton = getByTestId("playback-button")
-        expect(playbackButton).not.toBeNull()
+        const playbackIcon = getByTestId("playback-icon")
+        expect(playbackIcon).not.toBeNull()
     });
     it("shows the title of the playlist", () => {
         const {getByTestId} = render(

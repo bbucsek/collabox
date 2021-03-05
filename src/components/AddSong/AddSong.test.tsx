@@ -10,7 +10,7 @@ jest.mock("react-redux", () => ({
     useDispatch: () => mockedDispatch,
 }));
 
-describe("AddPlaylist component", () => {
+describe("AddSong component", () => {
     it("renders without crashing", () => {
         render(
             <ThemeProvider theme={theme}>

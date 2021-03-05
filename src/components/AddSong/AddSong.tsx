@@ -44,7 +44,7 @@ const AddSong = () => {
                 />
                 <Button onClick={submitSongUrl} data-testid="submit-button" />
             </Form>
-            <HelperText>{helperText}</HelperText>
+            <HelperText data-testid="helper-text">{helperText}</HelperText>
         </Container>
     );
 };
