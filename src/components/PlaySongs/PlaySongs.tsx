@@ -229,7 +229,7 @@ const PlaySongs = () => {
         return (
             <Container data-testid="playback-container-party">
                 <Close onClick={closePlayer}/>
-            <Title>{ currentPlaylist?.partySong?.title}</Title>
+            <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
             <YoutubeWrapper>
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
             </YoutubeWrapper>
@@ -245,7 +245,7 @@ const PlaySongs = () => {
     return (
         <Container data-testid="playback-container">
             <Close onClick={closePlayer}/>
-            <Title>{currentSong?.title}</Title>
+            <Title data-testid="playback-title">{currentSong?.title}</Title>
             <YoutubeWrapper>
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
             </YoutubeWrapper>

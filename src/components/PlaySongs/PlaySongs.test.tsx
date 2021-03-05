@@ -35,11 +35,6 @@ const store = mockStore({
                 },
             ],
         },
-        loading: {
-            createPlaylistLoading: false,
-            addSongLoading: false,
-            getPlaylists: false,
-        },
     },
 });
 
@@ -73,17 +68,13 @@ const storeWithParty = mockStore({
                 },
             ],
         },
-        loading: {
-            createPlaylistLoading: false,
-            addSongLoading: false,
-            getPlaylists: false,
-        },
     },
 });
 
 describe("PlaySongs", () => {
     beforeEach(() => {
         store.clearActions();
+        storeWithParty.clearActions();
     });
     it("renders without crashing", () => {
         render(
@@ -125,7 +116,7 @@ describe("PlaySongs", () => {
         expect(playbackButtonAgain).toBeNull();
         expect(playbackContainer).not.toBeNull();
     });
-it("disables skipback button when playback is started", async () => {
+    it("disables skipback button when playback is started", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -140,7 +131,22 @@ it("disables skipback button when playback is started", async () => {
         const skipBackButton = getByTestId("skip-back");
         expect(skipBackButton).not.toBeEnabled();
     });
-it("shows mute icon when playback is started", async () => {
+    it("shows song title when playback is started", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaySongs />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const playbackButton = getByTestId("playback-button");
+        await userEvent.click(playbackButton);
+
+        const title = getByTestId("playback-title")
+        expect(title).toHaveTextContent(/Title/i)
+    });
+    it("shows mute icon when playback is started", async () => {
         const { queryByTestId, getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -155,7 +161,7 @@ it("shows mute icon when playback is started", async () => {
         const muteButton = queryByTestId("mute-icon");
         expect(muteButton).not.toBeNull();
     });
-it("shows join party button when there is a live party", async () => {
+    it("shows join party button when there is a live party", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={storeWithParty}>
@@ -167,7 +173,7 @@ it("shows join party button when there is a live party", async () => {
         const joinPartyButton = getByTestId("join-party-button");
         expect(joinPartyButton).not.toBeNull();
     });
-it("shows start party button for own playlist", async () => {
+    it("shows start party button for own playlist", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -179,7 +185,7 @@ it("shows start party button for own playlist", async () => {
         const startPartyButton = getByTestId("start-party-button");
         expect(startPartyButton).not.toBeNull();
     });
-fit("hides start party button and shows playback container when party is started", async () => {
+    it("hides start party button and shows playback container when party is started", async () => {
 
         const { queryByTestId, getByTestId } = render(
             <ThemeProvider theme={theme}>
@@ -199,7 +205,24 @@ fit("hides start party button and shows playback container when party is started
             expect(partyPlaybackContainer).not.toBeNull();
         }, 1000); 
     });
-it("hides join party button and shows playback container when party is joined", async () => {
+    it("shows song title when party is started", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaySongs />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const startPartyButton = getByTestId("start-party-button");
+        await userEvent.click(startPartyButton);
+
+        setTimeout(() => {
+            const title = getByTestId("party-title")
+            expect(title).toHaveTextContent(/Title/i)
+        }, 1000)
+    });
+    it("hides join party button and shows playback container when party is joined", async () => {
         const { queryByTestId, getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={storeWithParty}>
@@ -215,5 +238,20 @@ it("hides join party button and shows playback container when party is joined", 
         const partyPlaybackContainer = queryByTestId("playback-container-party");
         expect(joinPartyButtonAgain).toBeNull();
         expect(partyPlaybackContainer).not.toBeNull();
+    });
+    it("dispatches action when party is started", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaySongs />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const joinPartyButton = getByTestId("start-party-button");
+        await userEvent.click(joinPartyButton);
+
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual('playlists/updatePartySong/pending')
     });
 });

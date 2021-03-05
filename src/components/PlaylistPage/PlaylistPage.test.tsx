@@ -35,11 +35,6 @@ const store = mockStore({
                 },
             ],
         },
-        loading: {
-            createPlaylistLoading: false,
-            addSongLoading: false,
-            getPlaylists: false,
-        },
     },
 });
 
@@ -62,6 +57,30 @@ describe("PlaylistPage", () => {
                 </Provider>
             </ThemeProvider>
         );
+    });
+    it("shows PlaySong if there is at least one song", () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const playbackButton = getByTestId("playback-button")
+        expect(playbackButton).not.toBeNull()
+    });
+    it("shows the title of the playlist", () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const title = getByTestId("title")
+        expect(title.textContent).toContain("My cool playlist")
     });
     it("dispatches actions to subscribe to playlist and songs when mounted", () => {
         render(

@@ -47,7 +47,7 @@ const PlaylistPage = () => {
 
     return (
             <Container>
-                <Title> {currentPlaylist?.playlistName} </Title>
+                <Title data-testid="title"> {currentPlaylist?.playlistName} </Title>
                 <IconWrapper>
                     <AddIcon onClick={() => setAddSongActive(!addSongActive)}/>
                     {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)}/>}
