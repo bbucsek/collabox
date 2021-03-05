@@ -35,11 +35,6 @@ const store = mockStore({
                 },
             ],
         },
-        loading: {
-            createPlaylistLoading: false,
-            addSongLoading: false,
-            getPlaylists: false,
-        },
     },
 });
 
