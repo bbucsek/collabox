@@ -71,6 +71,7 @@ const storeWithParty = mockStore({
     },
 });
 
+
 describe("PlaySongs", () => {
     beforeEach(() => {
         store.clearActions();

@@ -155,7 +155,7 @@ const PlaySongs = () => {
         setCurrentSongBackwardIndex(0)
         setIsMuted(false)
         setIsPlaying(false)
-        setCanSkipBackward(true)
+        setCanSkipForward(true)
         setCanSkipBackward(false)
         setPlayedSongs([])
         setCanChangeSong(true)

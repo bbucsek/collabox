@@ -50,7 +50,7 @@ const PlaylistPage = () => {
                 <Title data-testid="title"> {currentPlaylist?.playlistName} </Title>
                 <IconWrapper>
                     <AddIcon onClick={() => setAddSongActive(!addSongActive)}/>
-                    {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)}/>}
+                    {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)} data-testid="playback-icon"/>}
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)}/>
                     {!isOwner && <UnsubscribeIcon onClick={unFollow}/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
