@@ -13,6 +13,9 @@ const theme = {
     lightGreen: '#058585',
     yellow: '#fcba03',
 
+    warning: '#43e0d7',
+    error: '#fc0390',
+
     primary: '#3CCFC6',
     primaryLight: '#43e0d7',
     primaryDark: '#40b8b0',
