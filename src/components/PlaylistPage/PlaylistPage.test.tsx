@@ -6,7 +6,6 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import PlaylistPage from "./PlaylistPage";
 import theme from "../../theme";
-import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -90,7 +89,7 @@ describe("PlaylistPage", () => {
             </ThemeProvider>
         );
 
-        const playIcon = getByTestId("play-icon")
+        const playIcon = getByTestId("playback-icon")
         expect(playIcon).not.toBeNull()
     });
     it("shows PlaySong if there is at least one song and play icon is clicked", async () => {
