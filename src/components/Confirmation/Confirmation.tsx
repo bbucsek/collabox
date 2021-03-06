@@ -17,13 +17,13 @@ const Confirmation = (props: ConfirmationProps) => {
     }
 
     return (
-            <Container>
-                <MessageWrapper>
+            <Container data-testid="confirmation-container">
+                <MessageWrapper data-testid="message">
                     Are you sure you want to {props.message}?
                 </MessageWrapper>
                 <ButtonWrapper>
-                    <Button onClick={confirm}>Yes</Button>
-                    <Button onClick={cancel}>Cancel</Button>
+                    <Button onClick={confirm} data-testid="confirm-button">Yes</Button>
+                    <Button onClick={cancel} data-testid="cancel-button">Cancel</Button>
                 </ ButtonWrapper>
             </Container>
         );

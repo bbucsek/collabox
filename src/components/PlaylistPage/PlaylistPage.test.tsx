@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import PlaylistPage from "./PlaylistPage";
 import theme from "../../theme";
+import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -155,5 +156,20 @@ describe("PlaylistPage", () => {
         const actions = store.getActions();
         expect(actions[2].type).toEqual("playlists/unsubscribeFromPlaylist/pending");
         expect(actions[3].type).toEqual("playlists/unsubscribeFromSongsCollection/pending");
+    });
+    it("shows the confirmation component if unfollow icon is clicked", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const unfollowIcon = getByTestId("unfollow-icon")
+        await userEvent.click(unfollowIcon)
+
+        const confirmationContainer = getByTestId("confirmation-container")
+        expect(confirmationContainer).not.toBeNull();
     });
 });
