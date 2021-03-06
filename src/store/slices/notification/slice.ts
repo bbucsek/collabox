@@ -19,7 +19,6 @@ const slice = createSlice({
     initialState,
     reducers: {
         ADD_NOTIFICATION: (state, action: PayloadAction< {message: string, severity: SEVERITY}>) => {
-            console.log("boo")
             const id = getId()
             const newState: any = [...state.notifications, {...action.payload, id}]
             state.notifications = newState

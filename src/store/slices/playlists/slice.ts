@@ -53,7 +53,7 @@ const verifyUrl = createAsyncThunk<
             const url = payload
             const youtubeId = getYoutubeId(url)
             if (!youtubeId) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "no_youtube_url", severity: SEVERITY.Error}))
+                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "no_youtube_url", severity: SEVERITY.Warning}))
                 return thunkApi.rejectWithValue("no_youtube_url")
             }
             const videoDetails = await getVideoDetails(youtubeId)
@@ -79,7 +79,7 @@ const addSong = createAsyncThunk<
             if (!currentUser) {
                 return thunkApi.rejectWithValue("no_currentUser")
             }
-            const userId = currentUser.id
+            const userId = currentUser?.id
             const userName = currentUser.name
             
             const { playlists } = state
@@ -87,7 +87,7 @@ const addSong = createAsyncThunk<
             if (!currentPlaylist) {
                 return thunkApi.rejectWithValue("no_currentPlaylist")
             }
-            const playlistId = currentPlaylist.id
+            const playlistId = currentPlaylist?.id
             const { youtubeId, title } = payload
             const song: Omit<Song, 'id'> = {
                 youtubeId,
@@ -155,6 +155,7 @@ string,
             }
             const {ownerName, playlistName } = playlistDetails
             await firestoreApi.followPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
+            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "playlist_followed", severity: SEVERITY.Info}))
             return 'playlist_followed'
         } catch (error) {
             thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))

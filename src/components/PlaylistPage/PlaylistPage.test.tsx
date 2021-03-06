@@ -6,6 +6,7 @@ import { Provider } from "react-redux";
 import { ThemeProvider } from "styled-components";
 import PlaylistPage from "./PlaylistPage";
 import theme from "../../theme";
+import userEvent from "@testing-library/user-event";
 
 const mockStore = configureMockStore([thunk]);
 const store = mockStore({
@@ -38,6 +39,28 @@ const store = mockStore({
     },
 });
 
+const storeWithoutSong = mockStore({
+    authentication: {
+        currentUser: {
+            id: "test-id",
+            name: "test-user",
+            email: "test-user-email",
+        },
+        loading: false,
+    },
+    playlists: {
+        ownPlaylists: null,
+        otherPlaylists: null,
+        currentPlaylist: {
+            id: "fake_playlist_id",
+            playlistName: "My cool playlist",
+            owner: "fake_user_id",
+            users: [],
+            songs: [],
+        },
+    },
+});
+
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useParams: () => ({
@@ -58,7 +81,19 @@ describe("PlaylistPage", () => {
             </ThemeProvider>
         );
     });
-    it("shows PlaySong if there is at least one song", () => {
+    it("shows play icon if there is at least one song", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const playIcon = getByTestId("play-icon")
+        expect(playIcon).not.toBeNull()
+    });
+    it("shows PlaySong if there is at least one song and play icon is clicked", async () => {
         const {getByTestId} = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -69,6 +104,18 @@ describe("PlaylistPage", () => {
 
         const playbackIcon = getByTestId("playback-icon")
         expect(playbackIcon).not.toBeNull()
+    });
+    it("does not show play icon if there are no songs", async () => {
+        const {queryByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={storeWithoutSong}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const playIcon = queryByTestId("play-icon")
+        expect(playIcon).toBeNull()
     });
     it("shows the title of the playlist", () => {
         const {getByTestId} = render(

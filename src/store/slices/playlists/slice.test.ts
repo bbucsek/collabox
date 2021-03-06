@@ -4,6 +4,7 @@ import PlaylistsState from './types/PlaylistsState'
 import youtubeApi from "../../../utils/youtubeApi"
 import playlistsReducer, { playlistsActions, playlistsAsyncActions } from './slice'
 import { firestoreApi } from "../../../service/firestoreApi"
+import SEVERITY from "../../../types/Severity";
 
 jest.mock("../../../service/firestoreApi")
 const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi>
@@ -176,7 +177,9 @@ describe('CreatePlaylist slice async action', () => {
       await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/createPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "playlist_created", severity: SEVERITY.Info})
+    expect(actions[2].type).toEqual('playlists/createPlaylist/fulfilled')
   })
 
   it("sets loading to true when action is pending", () => {
@@ -212,8 +215,9 @@ describe('CreatePlaylist slice async action', () => {
 
     const actions = store.getActions()
 
-    expect(actions[1].type).toEqual('playlists/createPlaylist/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/createPlaylist/rejected')
+    expect(actions[2].payload).toEqual('database_error')
     })
 })
 
@@ -226,8 +230,10 @@ describe('VerifyUrl slice async action', () => {
     await store.dispatch(playlistsAsyncActions.verifyUrl("www.bad"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
-    expect(actions[1].payload).toEqual("no_youtube_url")
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({"message": "no_youtube_url", "severity": SEVERITY.Warning})
+    expect(actions[2].type).toEqual('playlists/verifyUrl/rejected')
+    expect(actions[2].payload).toEqual("no_youtube_url")
   })
 
   it('returns error action if song is too long', async () => {
@@ -236,8 +242,10 @@ describe('VerifyUrl slice async action', () => {
 
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/verifyUrl/rejected')
-    expect(actions[1].payload).toEqual("video_too_long")
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "video_too_long", severity: SEVERITY.Warning})
+    expect(actions[2].type).toEqual('playlists/verifyUrl/rejected')
+    expect(actions[2].payload).toEqual("video_too_long")
   })
 
   it('returns the right action if the song is verified', async () => {
@@ -246,9 +254,10 @@ describe('VerifyUrl slice async action', () => {
     
     
     const actions = store.getActions()
+
     expect(actions[1].type).toEqual('playlists/checkIfSongExists/pending')
-    expect(actions[3].type).toEqual('playlists/verifyUrl/fulfilled')
-    expect(actions[3].payload).toEqual('url_verified')
+    expect(actions[4].type).toEqual('playlists/verifyUrl/fulfilled')
+    expect(actions[4].payload).toEqual('url_verified')
     })
 })
 
@@ -278,8 +287,10 @@ describe('AddSong slice async action', () => {
     await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/addSong/fulfilled')
-    expect(actions[1].payload).toEqual('song_added')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "song_added", severity: SEVERITY.Info})
+    expect(actions[2].type).toEqual('playlists/addSong/fulfilled')
+    expect(actions[2].payload).toEqual('song_added')
   })
 
   it('returns error action if there is database error', async () => {
@@ -287,8 +298,10 @@ describe('AddSong slice async action', () => {
     await store.dispatch(playlistsAsyncActions.addSong({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/addSong/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/addSong/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -312,8 +325,10 @@ describe('CheckIfSongExists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/checkIfSongExists/fulfilled')
-    expect(actions[1].payload).toEqual('duplicate_song')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "duplicate_song", severity: SEVERITY.Warning})
+    expect(actions[2].type).toEqual('playlists/checkIfSongExists/fulfilled')
+    expect(actions[2].payload).toEqual('duplicate_song')
   })
 
   it('returns the right actions if the song is not a duplicate', async () => {
@@ -322,8 +337,8 @@ describe('CheckIfSongExists slice async action', () => {
     
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/addSong/pending')
-    expect(actions[2].type).toEqual('playlists/checkIfSongExists/fulfilled')
-    expect(actions[2].payload).toEqual('not_duplicate_song')
+    expect(actions[3].type).toEqual('playlists/checkIfSongExists/fulfilled')
+    expect(actions[3].payload).toEqual('not_duplicate_song')
   })
 
   it('returns error action if there is database error', async () => {
@@ -331,7 +346,9 @@ describe('CheckIfSongExists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.checkIfSongExists({youtubeId: "fake_youtubeId", title: "Fake_title"}))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/checkIfSongExists/rejected')
   })
 })
 
@@ -345,23 +362,29 @@ describe('FollowPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/followPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "playlist_followed", severity: SEVERITY.Info})
+    expect(actions[2].type).toEqual('playlists/followPlaylist/fulfilled')
   })
   it('returns error action if there is no such playlist', async () => {
     mockedFirestoreApi.getPlaylistDetails.mockResolvedValueOnce(undefined)
     await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/followPlaylist/rejected')
-    expect(actions[1].payload).toEqual('no_such_playlist')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "no_such_playlist", severity: SEVERITY.Warning})
+    expect(actions[2].type).toEqual('playlists/followPlaylist/rejected')
+    expect(actions[2].payload).toEqual('no_such_playlist')
   })
   it('returns error action if the database is down', async () => {
     mockedFirestoreApi.getPlaylistDetails.mockRejectedValueOnce("database down")
     await store.dispatch(playlistsAsyncActions.followPlaylist("fake_playlistId"))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/followPlaylist/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/followPlaylist/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -374,15 +397,19 @@ describe('UnfollowPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unfollowPlaylist("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/unfollowPlaylist/fulfilled')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "playlist_unfollowed", severity: SEVERITY.Info})
+    expect(actions[2].type).toEqual('playlists/unfollowPlaylist/fulfilled')
   })
   it('returns error action if the database is down', async () => {
     mockedFirestoreApi.unfollowPlaylist.mockRejectedValueOnce("database down")
     await store.dispatch(playlistsAsyncActions.unfollowPlaylist("fake_playlistId"))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/unfollowPlaylist/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/unfollowPlaylist/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -404,8 +431,10 @@ describe('UpdatePartySong slice async action', () => {
     currentSong: {youtubeId: "fake_youtubeId", title: "fake_title"}}))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/updatePartySong/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/updatePartySong/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -425,8 +454,10 @@ describe('EndParty slice async action', () => {
     await store.dispatch(playlistsAsyncActions.endParty("fake_playlistId"))
     
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/endParty/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/endParty/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -448,8 +479,10 @@ describe('SubscribeToOwnPlaylists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToOwnPlaylists("fake_userid"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/subscribeToOwnPlaylists/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/subscribeToOwnPlaylists/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -471,8 +504,10 @@ describe('UnsubscribeFromOwnPlaylists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromOwnPlaylists("fake_userid"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/unsubscribeFromOwnPlaylists/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/unsubscribeFromOwnPlaylists/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -494,8 +529,10 @@ describe('SubscribeToOtherPlaylists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToOtherPlaylists("fake_playlistId"))
 
     const actions = store.getActions()
-    expect(actions[1].type).toEqual('playlists/subscribeToOtherPlaylists/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/subscribeToOtherPlaylists/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -517,9 +554,10 @@ describe('UnsubscribeFromOtherPlaylists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromOtherPlaylists("fake_playlistId"))
 
     const actions = store.getActions()
-
-    expect(actions[1].type).toEqual('playlists/unsubscribeFromOtherPlaylists/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/unsubscribeFromOtherPlaylists/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -533,7 +571,6 @@ describe('SubscribeToPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/fulfilled')
     expect(actions[1].payload).toEqual('subscribed_to_playlist')
   })
@@ -543,9 +580,10 @@ describe('SubscribeToPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
 
     const actions = store.getActions()
-
-    expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/subscribeToPlaylist/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -559,7 +597,6 @@ describe('UnsubscribeFromPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/fulfilled')
     expect(actions[1].payload).toEqual('unsubscribed_from_playlist')
   })
@@ -569,9 +606,10 @@ describe('UnsubscribeFromPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
 
     const actions = store.getActions()
-
-    expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/unsubscribeFromPlaylist/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -585,7 +623,6 @@ describe('SubscribeToSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/fulfilled')
     expect(actions[1].payload).toEqual('subscribed_to_songscollection')
   })
@@ -595,9 +632,10 @@ describe('SubscribeToSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
-    expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/subscribeToSongsCollection/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
@@ -611,7 +649,6 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/fulfilled')
     expect(actions[1].payload).toEqual('unsubscribed_from_songscollection')
   })
@@ -621,9 +658,10 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
-    expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/rejected')
-    expect(actions[1].payload).toEqual('database_error')
+    expect(actions[1].type).toEqual('notification/ADD_NOTIFICATION')
+    expect(actions[1].payload).toEqual({message: "database_error", severity: SEVERITY.Error})
+    expect(actions[2].type).toEqual('playlists/unsubscribeFromSongsCollection/rejected')
+    expect(actions[2].payload).toEqual('database_error')
   })
 })
 
