@@ -199,14 +199,13 @@ describe("PlaySongs", () => {
         const startPartyButton = getByTestId("start-party-button");
         await userEvent.click(startPartyButton);
 
-        setTimeout(() => {
-            const startPartyButtonAgain = queryByTestId("start-party-button");
-            const partyPlaybackContainer = queryByTestId("playback-container-party");
-            expect(startPartyButtonAgain).toBeNull();
-            expect(partyPlaybackContainer).not.toBeNull();
-        }, 1000); 
+        const startPartyButtonAgain = queryByTestId("start-party-button");
+        const partyPlaybackContainer = queryByTestId("playback-container-party");
+        expect(startPartyButtonAgain).toBeNull();
+        expect(partyPlaybackContainer).not.toBeNull();
+
     });
-    it("shows song title when party is started", async () => {
+    it("dispatches action when party is started", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
@@ -215,13 +214,11 @@ describe("PlaySongs", () => {
             </ThemeProvider>
         );
 
-        const startPartyButton = getByTestId("start-party-button");
-        await userEvent.click(startPartyButton);
+        const joinPartyButton = getByTestId("start-party-button");
+        await userEvent.click(joinPartyButton);
 
-        setTimeout(() => {
-            const title = getByTestId("party-title")
-            expect(title).toHaveTextContent(/Title/i)
-        }, 1000)
+        const actions = store.getActions();
+        expect(actions[0].type).toEqual('playlists/updatePartySong/pending')
     });
     it("hides join party button and shows playback container when party is joined", async () => {
         const { queryByTestId, getByTestId } = render(
@@ -240,19 +237,19 @@ describe("PlaySongs", () => {
         expect(joinPartyButtonAgain).toBeNull();
         expect(partyPlaybackContainer).not.toBeNull();
     });
-    it("dispatches action when party is started", async () => {
+    it("shows song title when party is joined", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
-                <Provider store={store}>
+                <Provider store={storeWithParty}>
                     <PlaySongs />
                 </Provider>
             </ThemeProvider>
         );
 
-        const joinPartyButton = getByTestId("start-party-button");
-        await userEvent.click(joinPartyButton);
+        const startPartyButton = getByTestId("join-party-button");
+        await userEvent.click(startPartyButton);
 
-        const actions = store.getActions();
-        expect(actions[0].type).toEqual('playlists/updatePartySong/pending')
+        const title = getByTestId("party-title")
+        expect(title).toHaveTextContent(/Title/i)
     });
 });

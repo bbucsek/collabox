@@ -56,7 +56,7 @@ const PlaySongs = () => {
         if (!currentSong) {
             setCurrentSong(songs[0]);
         }
-        await dispatch(playlistsAsyncActions.updatePartySong(
+        dispatch(playlistsAsyncActions.updatePartySong(
             {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
         setPartyJoined(true);
     };
