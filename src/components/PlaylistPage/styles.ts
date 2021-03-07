@@ -3,6 +3,7 @@ import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import Delete from '@material-ui/icons/Delete';
 
 export const Container = styled.div`
     display:flex;
@@ -69,6 +70,18 @@ export const InviteIcon = styled(PersonAddIcon)`
 `
 
 export const UnsubscribeIcon = styled(SentimentVeryDissatisfiedIcon)`
+    color: ${({ theme }) => theme.colors.primary};
+    font-size: 3rem !important;
+    margin-right: 1rem;
+    cursor: pointer;
+
+    &:hover {
+        color: ${({ theme }) => theme.colors.secondaryLight};
+    }
+
+`
+
+export const DeleteIcon = styled(Delete)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
     margin-right: 1rem;

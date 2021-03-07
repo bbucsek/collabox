@@ -15,6 +15,7 @@ import {
     InviteIcon,
     PlayIcon,
     UnsubscribeIcon,
+    DeleteIcon,
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
@@ -49,6 +50,9 @@ const PlaylistPage = () => {
             setConfirmationIsVisible(false)
         }
 
+    const deletePlaylist = async () => {
+        dispatch(playlistsAsyncActions.deletePlaylist(id))
+        history.push('/')
     }
 
     useEffect(() => {
@@ -70,6 +74,7 @@ const PlaylistPage = () => {
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                     {!isOwner && <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
+                    {isOwner && <DeleteIcon onClick={deletePlaylist} />}
                 </IconWrapper>
                 {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 {addSongActive && <AddSong />}
