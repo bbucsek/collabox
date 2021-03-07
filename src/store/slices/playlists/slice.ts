@@ -154,6 +154,29 @@ string,
         }   
 })
 
+const deleteSong = createAsyncThunk<
+    string,
+    string,
+    { state: RootState }
+    >
+    ('playlists/deleteSong',
+        async (payload, thunkApi) => {
+            const state = thunkApi.getState()            
+            const { playlists } = state
+            const { currentPlaylist } = playlists
+            if (!currentPlaylist) {
+                return thunkApi.rejectWithValue("no_currentPlaylist")
+            }
+            const playlistId = currentPlaylist.id
+            const songId = payload
+            try {
+                await firestoreApi.deleteSong(playlistId, songId)
+                return 'song_deleted'
+            } catch (error) {
+                return thunkApi.rejectWithValue('database_error')
+            }
+    })
+
 const followPlaylist = createAsyncThunk<
 string,
 string,
@@ -439,6 +462,7 @@ export const playlistsAsyncActions = {
     verifyUrl,
     addSong, 
     checkIfSongExists,
+    deleteSong,
     followPlaylist,
     unfollowPlaylist,
     updatePartySong,

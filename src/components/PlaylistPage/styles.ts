@@ -65,8 +65,6 @@ export const InviteIcon = styled(PersonAddIcon)`
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
     }
-
-
 `
 
 export const UnsubscribeIcon = styled(SentimentVeryDissatisfiedIcon)`
@@ -78,7 +76,6 @@ export const UnsubscribeIcon = styled(SentimentVeryDissatisfiedIcon)`
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
     }
-
 `
 
 export const DeleteIcon = styled(Delete)`
@@ -90,5 +87,4 @@ export const DeleteIcon = styled(Delete)`
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
     }
-
 `

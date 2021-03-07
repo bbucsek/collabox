@@ -187,6 +187,16 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
     return !(querySnapshot.docs.length === 0)
 }
 
+const deleteSong = async (playlistId: string, songId: string) => {
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .doc(songId)
+    .delete()
+    
+}
+
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {
     const partySong = { partySong: {youtubeId, title, startTime:Date.now()}}
     await database
@@ -221,6 +231,7 @@ export const firestoreApi = {
     unsubscribeFromSongsCollection,
     addSong, 
     checkIfSongExists, 
+    deleteSong,
     updatePartySong,
     endParty
 }
