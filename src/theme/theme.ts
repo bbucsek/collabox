@@ -15,6 +15,7 @@ const theme = {
 
     warning: '#43e0d7',
     error: '#fc0390',
+    info: '#c912cc',
 
     primary: '#3CCFC6',
     primaryLight: '#43e0d7',

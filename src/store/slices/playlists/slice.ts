@@ -8,8 +8,6 @@ import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
-import { notificationActions } from '../notification/slice'
-import SEVERITY from '../../../types/Severity'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -35,10 +33,8 @@ string,
         const playlistName = payload
         try {
             const id = await firestoreApi.createPlaylist(currentUser!.id, currentUser!.name, playlistName)
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "playlist_created", severity: SEVERITY.Info}))
             return id
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     })
@@ -53,13 +49,11 @@ const verifyUrl = createAsyncThunk<
             const url = payload
             const youtubeId = getYoutubeId(url)
             if (!youtubeId) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "no_youtube_url", severity: SEVERITY.Warning}))
                 return thunkApi.rejectWithValue("no_youtube_url")
             }
             const videoDetails = await getVideoDetails(youtubeId)
             const videoDurationIsOk = checkIfVideoDurationIsOk(videoDetails.duration)
             if (!videoDurationIsOk) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "video_too_long", severity: SEVERITY.Warning}))
                 return thunkApi.rejectWithValue("video_too_long")
             }
             thunkApi.dispatch(checkIfSongExists({youtubeId, title: videoDetails.title}))
@@ -98,10 +92,8 @@ const addSong = createAsyncThunk<
             }
             try {
                 await firestoreApi.addSong(playlistId, song)
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "song_added", severity: SEVERITY.Info}))
                 return 'song_added'
             } catch (error) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
                 return thunkApi.rejectWithValue('database_error')
             }
     })
@@ -124,14 +116,12 @@ string,
         try{
             const songExists = await firestoreApi.checkIfSongExists(playlistId, youtubeId)
             if (songExists) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "duplicate_song", severity: SEVERITY.Warning}))
                 return 'duplicate_song'
             }
             thunkApi.dispatch(addSong({youtubeId, title}))
             return 'not_duplicate_song'
 
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }   
 })
@@ -150,15 +140,12 @@ string,
         try {
             const playlistDetails: any = await firestoreApi.getPlaylistDetails(playlistId)
             if (!playlistDetails) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "no_such_playlist", severity: SEVERITY.Warning}))
                 return thunkApi.rejectWithValue('no_such_playlist')
             }
             const {ownerName, playlistName } = playlistDetails
             await firestoreApi.followPlaylist(currentUser!.id, ownerName, playlistId, playlistName)
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "playlist_followed", severity: SEVERITY.Info}))
             return 'playlist_followed'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     })
@@ -176,10 +163,8 @@ const unfollowPlaylist = createAsyncThunk<
             const playlistId = payload
             try {
                 await firestoreApi.unfollowPlaylist(currentUser!.id, playlistId)
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "playlist_unfollowed", severity: SEVERITY.Info}))
                 return 'playlist_unfollowed'
             } catch (error) {
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
                 return thunkApi.rejectWithValue('database_error')
             }
         })
@@ -195,7 +180,6 @@ const updatePartySong = createAsyncThunk<
                 await firestoreApi.updatePartySong(playlistId, currentSong.youtubeId, currentSong.title)
                 return 'partysong_updated'
             } catch{
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
                 return thunkApi.rejectWithValue('database_error')
             }
 })
@@ -211,7 +195,6 @@ const endParty = createAsyncThunk<
                 await firestoreApi.endParty(playlistId)
                 return 'party_ended'
             } catch{
-                thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
                 return thunkApi.rejectWithValue('database_error')
             }
 })
@@ -280,7 +263,6 @@ const subscribeToOwnPlaylists = createAsyncThunk<
             await firestoreApi.subscribeToOwnPlaylists(userId, observer)  
             return 'subscribed_to_own_playlists'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
 })
@@ -297,7 +279,6 @@ const unsubscribeFromOwnPlaylists = createAsyncThunk<
             await firestoreApi.unsubscribeFromOwnPlaylists(id)
             return 'unsubscribed_from_own_playlists'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }
@@ -317,7 +298,6 @@ const subscribeToOtherPlaylists = createAsyncThunk<
             await firestoreApi.subscribeToOtherPlaylists(userId, observer)
             return 'subscribed_to_other_playlists'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
 })
@@ -334,7 +314,6 @@ const unsubscribeFromOtherPlaylists = createAsyncThunk<
             await firestoreApi.unsubscribeFromOtherPlaylists(id)
             return 'unsubscribed_from_other_playlists'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }
@@ -355,7 +334,6 @@ const subscribeToPlaylist = createAsyncThunk<
             await firestoreApi.subscribeToPlaylist(id, observer)
             return 'subscribed_to_playlist'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }
@@ -373,7 +351,6 @@ const unsubscribeFromPlaylist = createAsyncThunk<
             await firestoreApi.unsubscribeFromPlaylist(id)
             return 'unsubscribed_from_playlist'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }
@@ -394,7 +371,6 @@ const subscribeToSongsCollection = createAsyncThunk<
             await firestoreApi.subscribeToSongsCollection(id, observer)
             return 'subscribed_to_songscollection'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }
@@ -412,7 +388,6 @@ const unsubscribeFromSongsCollection = createAsyncThunk<
             await firestoreApi.unsubscribeFromSongsCollection(id)
             return 'unsubscribed_from_songscollection'
         } catch (error) {
-            thunkApi.dispatch( notificationActions.ADD_NOTIFICATION({message: "database_error", severity: SEVERITY.Error}))
             return thunkApi.rejectWithValue('database_error')
         }
     }

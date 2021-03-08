@@ -7,9 +7,7 @@ export const Container = styled.div<{severity: SEVERITY}>`
     flex-direction: row;
     justify-content: space-between;
     border-radius: 10px;
-    background-color: ${({severity, theme}) => 
-        severity === SEVERITY.Error? theme.colors.error
-        : severity === SEVERITY.Warning? theme.colors.warning: theme.colors.secondaryLight};
+    background-color: ${({severity, theme}) => theme.colors[severity]};
     color: ${({ severity, theme }) => severity === SEVERITY.Warning? theme.colors.blueActive : theme.colors.whiteFontColor};
     box-shadow: ${({ theme }) => theme.boxShadow};
     width: 20rem;
@@ -23,6 +21,7 @@ export const Container = styled.div<{severity: SEVERITY}>`
 export const Close = styled(CloseIcon)`
     margin-top: 5px;
     margin-right: 5px;
+    cursor: pointer;
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
         border-radius: 5px;

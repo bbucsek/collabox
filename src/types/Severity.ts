@@ -1,7 +1,7 @@
 enum SEVERITY {
-    Error,
-    Warning,
-    Info
+    Error = 'error',
+    Warning = 'warning',
+    Info = 'info'
 }
 
 export default SEVERITY
