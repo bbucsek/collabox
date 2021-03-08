@@ -12,8 +12,6 @@ The most important features (creating, playing, following, unfollowing playlists
 
 Create a playlist and add songs that are shorter than 10 minutes by submitting a youtube url. Invite your friends to follow your playlist. Your followers will be also able to add songs. The playlist owner can delete songs and the playlist itself.
 
-![Playlist](/../Readme/src/prtscr.jpg?raw=true "Collabox")
-
 ### Listen to the playlist and start a party
 
 Play your playlists, and those that you follow as many times as you want. You will not see the youtube video, but you can control the playback (skipping among songs, (un)muting, pausing, stopping). 
@@ -23,6 +21,10 @@ The playlist owner can also start a party, to which all followers can join. All 
 ### Voting on songs
 
 You can upvote/downvote each song in your own and the followed playlists. The order of the songs in the playlist is determined by their popularity.
+
+### Screen shot from the application
+
+![Playlist](https://github.com/bbucsek/collabox/blob/feat/Readme/prtscr.jpg?raw=true "Collabox")
 
 ### Installation and Setup Instructions
 
