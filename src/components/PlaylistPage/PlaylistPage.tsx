@@ -4,6 +4,7 @@ import { useHistory, useParams } from "react-router-dom";
 import { selectCurrentUser } from "../../store/slices/authentication/selectors";
 import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
+import ActionType from "../../types/ActionType";
 import AddSong from "../AddSong";
 import PlaySongs from "../PlaySongs";
 import { 
@@ -19,11 +20,6 @@ import {
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
-
-enum ActionType {
-    Delete,
-    Unfollow
-}
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
