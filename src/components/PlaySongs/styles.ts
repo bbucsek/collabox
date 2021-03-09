@@ -42,6 +42,10 @@ export const Option = styled.button`
     box-shadow: ${({ theme }) => theme.boxShadow};
     margin: 1rem;
     
+    &:focus {
+        outline: none;
+    }
+    
     &:hover {
         background-color: ${({ theme }) => theme.colors.secondaryLight};
     }
