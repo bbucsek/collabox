@@ -45,7 +45,7 @@ const verifyUrl = createAsyncThunk<
     { state: RootState }
     >
     ('playlists/verifyUrl',
-        async (payload: string, thunkApi) => {
+    async (payload: string, thunkApi) => {
             const url = payload
             const youtubeId = getYoutubeId(url)
             if (!youtubeId) {
@@ -73,7 +73,7 @@ const addSong = createAsyncThunk<
             if (!currentUser) {
                 return thunkApi.rejectWithValue("no_currentUser")
             }
-            const userId = currentUser.id
+            const userId = currentUser?.id
             const userName = currentUser.name
             
             const { playlists } = state
@@ -81,7 +81,7 @@ const addSong = createAsyncThunk<
             if (!currentPlaylist) {
                 return thunkApi.rejectWithValue("no_currentPlaylist")
             }
-            const playlistId = currentPlaylist.id
+            const playlistId = currentPlaylist?.id
             const { youtubeId, title } = payload
             const song: Omit<Song, 'id'> = {
                 youtubeId,

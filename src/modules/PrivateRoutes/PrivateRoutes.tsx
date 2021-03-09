@@ -3,6 +3,7 @@ import { Switch, Route } from "react-router-dom";
 import AddPlaylist from "../../components/AddPlaylist";
 import FollowPlaylist from "../../components/FollowPlaylist";
 import Landing from "../../components/Landing";
+import Notifications from "../../components/Notifications";
 import PlaylistPage from "../../components/PlaylistPage";
 import Sidebar from "../../components/Sidebar";
 import { Container } from "./styles";
@@ -17,6 +18,7 @@ export default function PrivateRoutes() {
                 <Route exact path="/playlist/add" component={AddPlaylist} />
                 <Route exact path="/playlist/:id" component={PlaylistPage} />
             </Switch>
+            <Notifications/>
         </Container>
     );
 }

@@ -17,6 +17,7 @@ import {
     UnsubscribeIcon,
  } from "./styles";
 import Songlist from "../Songlist";
+import Confirmation from "../Confirmation";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -25,6 +26,7 @@ const PlaylistPage = () => {
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
     const [playerActive, setPlayerActive] = useState(false);
+    const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
     const dispatch = useDispatch();
     const history = useHistory();
@@ -33,6 +35,20 @@ const PlaylistPage = () => {
     const unFollow = async () => {
         await dispatch(playlistsAsyncActions.unfollowPlaylist(id))
         history.push('/')
+    }
+
+    const unFollowOnClick = () => {
+        setConfirmationIsVisible(true)
+    }
+
+    const confirmAction = (isConfirmed: boolean) => {
+        if (isConfirmed){
+            unFollow();
+        }
+        if (!isConfirmed){
+            setConfirmationIsVisible(false)
+        }
+
     }
 
     useEffect(() => {
@@ -52,12 +68,13 @@ const PlaylistPage = () => {
                     <AddIcon onClick={() => setAddSongActive(!addSongActive)}/>
                     {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)} data-testid="playback-icon"/>}
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)}/>
-                    {!isOwner && <UnsubscribeIcon onClick={unFollow}/>}
+                    {!isOwner && <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
                 </IconWrapper>
                 {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 {addSongActive && <AddSong />}
                 <Songlist />
+                {confirmationIsVisible && <Confirmation message="unfollow the playlist" confirm={confirmAction}/>}
             </Container>
         );
 };

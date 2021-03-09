@@ -211,7 +211,6 @@ describe('CreatePlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/createPlaylist/rejected')
     expect(actions[1].payload).toEqual('database_error')
     })
@@ -517,7 +516,6 @@ describe('UnsubscribeFromOtherPlaylists slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromOtherPlaylists("fake_playlistId"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromOtherPlaylists/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
@@ -533,7 +531,6 @@ describe('SubscribeToPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/fulfilled')
     expect(actions[1].payload).toEqual('subscribed_to_playlist')
   })
@@ -543,7 +540,6 @@ describe('SubscribeToPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToPlaylist/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
@@ -559,7 +555,6 @@ describe('UnsubscribeFromPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/fulfilled')
     expect(actions[1].payload).toEqual('unsubscribed_from_playlist')
   })
@@ -569,7 +564,6 @@ describe('UnsubscribeFromPlaylist slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromPlaylist("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromPlaylist/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
@@ -585,7 +579,6 @@ describe('SubscribeToSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/fulfilled')
     expect(actions[1].payload).toEqual('subscribed_to_songscollection')
   })
@@ -595,7 +588,6 @@ describe('SubscribeToSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.subscribeToSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/subscribeToSongsCollection/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
@@ -611,7 +603,6 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/fulfilled')
     expect(actions[1].payload).toEqual('unsubscribed_from_songscollection')
   })
@@ -621,7 +612,6 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
     await store.dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection("fake_id"))
 
     const actions = store.getActions()
-
     expect(actions[1].type).toEqual('playlists/unsubscribeFromSongsCollection/rejected')
     expect(actions[1].payload).toEqual('database_error')
   })
