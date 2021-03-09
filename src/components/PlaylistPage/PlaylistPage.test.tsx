@@ -26,6 +26,11 @@ const store = mockStore({
             playlistName: "My cool playlist",
             owner: "fake_user_id",
             users: [],
+            partySong: {
+                youtubeId: "fake_url",
+                title: "Title",
+                startTime: 'fake_title'
+            },
             songs: [
                 {
                     id: "fake_id",
@@ -171,5 +176,47 @@ describe("PlaylistPage", () => {
 
         const confirmationContainer = getByTestId("confirmation-container")
         expect(confirmationContainer).not.toBeNull();
+    });
+
+    it("shows invite icon", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const inviteIcon = getByTestId("invite-icon")
+        expect(inviteIcon).not.toBeNull()
+    });
+
+    it("shows addsong icon", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const addIcon = getByTestId("addsong-icon")
+        expect(addIcon).not.toBeNull()
+    });
+
+    it("shows join party when click on play icon", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const playIcon = getByTestId("playback-icon")
+        await userEvent.click(playIcon)
+        const joinParty = getByTestId("join-party-button")
+
+        expect(joinParty).not.toBeNull()
     });
 });
