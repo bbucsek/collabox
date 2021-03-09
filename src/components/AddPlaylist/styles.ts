@@ -42,7 +42,7 @@ export const HelperText = styled.div`
 export const Button = styled.button`
     border-radius: 10px;
     border-width: 0px;
-    color: ${({ theme }) => theme.colors.backgroundLight};
+    color: ${({ theme }) => theme.colors.whiteFontColor};
     background-color:  ${({ theme }) => theme.colors.secondary};
     font-size: 1.2rem;
     min-height: 20px;
