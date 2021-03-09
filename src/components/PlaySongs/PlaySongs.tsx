@@ -10,7 +10,16 @@ import StopIcon from "@material-ui/icons/StopRounded";
 import VolumeUpIcon from "@material-ui/icons/VolumeUpRounded";
 import VolumeOffIcon from "@material-ui/icons/VolumeOffRounded";
 import { selectCurrentPlaylist, selectSongs } from "../../store/slices/playlists/selectors";
-import { Container, ControlWrapper, Title, ButtonCanBeDisabled, YoutubeWrapper, Button, PlaybackButton, Close } from "./styles";
+import { Container,
+    ControlWrapper, 
+    Title, 
+    ButtonCanBeDisabled,
+    YoutubeWrapper, 
+    Button, 
+    Option, 
+    Close,
+    OptionContainer,
+ } from "./styles";
 import Song from "../../types/Song";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import { selectCurrentUser } from "../../store/slices/authentication/selectors";
@@ -217,11 +226,11 @@ const PlaySongs = () => {
 
     if (!playbackStarted && !partyJoined) {
         return (
-            <>
-                <PlaybackButton onClick={startPlayback} data-testid="playback-button">Listen to the playlist</PlaybackButton>
-                {isOwner && <PlaybackButton onClick={startParty} data-testid="start-party-button">Start a party</PlaybackButton>}
-                {!isOwner && partyOngoing && <PlaybackButton onClick={joinParty} data-testid="join-party-button">Join the party</PlaybackButton>}
-            </>
+            <OptionContainer>
+                <Option onClick={startPlayback} data-testid="playback-button">Listen to the playlist</Option>
+                {isOwner && <Option onClick={startParty} data-testid="start-party-button">Start a party</Option>}
+                {!isOwner && partyOngoing && <Option onClick={joinParty} data-testid="join-party-button">Join the party</Option>}
+            </OptionContainer>
         );
     }
 

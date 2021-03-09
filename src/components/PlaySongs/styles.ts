@@ -1,37 +1,20 @@
 import styled from 'styled-components'
 import CloseIcon from '@material-ui/icons/Close';
 
-
-export const PlaybackButton = styled.button`
-    height: 4rem;
-    width: 40vw;
-    background-color: ${({ theme }) => theme.colors.yellow};
-    border-radius: 10px;
-    border: 0;
-    font-size: 1.4rem;
-    color: white;
-    cursor: pointer;
-    box-shadow: ${({ theme }) => theme.boxShadow};
-    &:focus {
-        outline: none;
-    }
-    margin-bottom: 2rem;
-    
-`
 export const Container = styled.div`
     display:flex;
     flex-direction: column;
     align-items: center;
     width: 40vw;
     border-radius: 10px;
-    background: ${({ theme }) => theme.colors.yellow};
+    background: ${({ theme }) => theme.colors.secondary};
     box-shadow: ${({ theme }) => theme.boxShadow};
     margin-bottom: 2rem;
     button {
         border: 0;
         background-color: inherit;
         cursor: pointer;
-        transition: 0.3s ease-in-out;
+        transition: 0.1s ease-in-out;
         &:hover {
             transform: scale(1.1);
         }
@@ -41,7 +24,29 @@ export const Container = styled.div`
     }
 `
 
+export const OptionContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+`
 
+export const Option = styled.button`
+    height: 3rem;
+    padding: 0 1rem;
+    background-color: ${({ theme }) => theme.colors.secondary};
+    border-radius: 10px;
+    border: 0;
+    font-size: 1rem;
+    color: ${({ theme }) => theme.colors.whiteFontColor};
+    cursor: pointer;
+    box-shadow: ${({ theme }) => theme.boxShadow};
+    margin: 1rem;
+    
+    &:hover {
+        background-color: ${({ theme }) => theme.colors.secondaryLight};
+    }
+    
+`
 
 export const YoutubeWrapper = styled.div`
     display: none;
@@ -63,19 +68,27 @@ export const Title = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;  
     align-self: center; 
-    color: ${({ theme }) => theme.colors.blueGreen};
+    color: ${({ theme }) => theme.colors.whiteFontColor};
     font-size: 1.2rem;
     line-height: 1.6rem;
     margin-bottom: 15px;
+`
+
+export const Button = styled.button`
+    border: 0;
+    background-color: inherit;
+    cursor: pointer;
+    transition: 0.3s ease-in-out;
     &:hover {
-        overflow: visible;
+        transform: scale(1.1);
     }
 `
-export const Button = styled.button`
-`
+
 export const ButtonCanBeDisabled = styled.button<{disabled: boolean}>`
+    
     svg {
-        color: ${({ theme, disabled }) => disabled === true? "grey": theme.colors.blue};
+        color: ${({ theme, disabled }) => disabled === true ? theme.colors.disabled: theme.colors.blue};
+        cursor: ${({ theme, disabled }) => disabled === true ? "not-allowed" : "pointer"};
     }
 `
 
