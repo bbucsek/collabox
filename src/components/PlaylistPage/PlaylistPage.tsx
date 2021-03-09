@@ -49,6 +49,7 @@ const PlaylistPage = () => {
         if (!isConfirmed){
             setConfirmationIsVisible(false)
         }
+    }
 
     const deletePlaylist = async () => {
         dispatch(playlistsAsyncActions.deletePlaylist(id))
@@ -83,5 +84,6 @@ const PlaylistPage = () => {
             </Container>
         );
 };
+
 
 export default PlaylistPage;
