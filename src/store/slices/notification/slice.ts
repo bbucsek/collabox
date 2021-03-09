@@ -19,10 +19,10 @@ const slice = createSlice({
     name: 'notification',
     initialState,
     extraReducers: {
-        [playlistsAsyncActions.createPlaylist.fulfilled.type]: (state, action) => {
+        [playlistsAsyncActions.createPlaylist.fulfilled.type]: (state) => {
             state.notifications.push({
             id: getId(),
-            message: action.payload,
+            message: 'playlist_created',
             severity: SEVERITY.Info,
             })
         },
@@ -43,7 +43,7 @@ const slice = createSlice({
         [playlistsAsyncActions.addSong.fulfilled.type]: (state, action) => {
             state.notifications.push({
             id: getId(),
-            message: 'song_added',
+            message: action.payload,
             severity: SEVERITY.Info,
             })
         },

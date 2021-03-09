@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Delete from '@material-ui/icons/Delete';
 
 export const Container = styled.div`
     display: flex;
@@ -34,4 +35,14 @@ export const VoteCount = styled.div`
 
 export const VoteButtons = styled.div`
     flex: 1;
+`
+
+export const DeleteIcon = styled(Delete)`
+    color: ${({ theme }) => theme.colors.whiteFontColor};
+    margin-right: 1rem;
+    cursor: pointer;
+
+    &:hover {
+        color: ${({ theme }) => theme.colors.secondaryDark};
+    }
 `

@@ -29,8 +29,30 @@ const getPlaylistDetails = async(playlistId: string) => {
     .get()
     .then((doc) => {
         return doc.data()
-
     })
+}
+
+const deletePlaylist = async (currentUserId: string, playlistId: string, followers: string[]) => {
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .delete()
+
+    await database
+    .collection('users')
+    .doc(currentUserId)
+    .collection('ownPlaylists')
+    .doc(playlistId)
+    .delete()
+
+    await followers.forEach(async (followerId) => {
+        await database
+        .collection('users')
+        .doc(followerId)
+        .collection('otherPlaylists')
+        .doc(playlistId)
+        .delete()
+    });
 }
 
 const followPlaylist = async (userId: string, ownerName: string, playlistId: string, playlistName: string) => {
@@ -40,6 +62,11 @@ const followPlaylist = async (userId: string, ownerName: string, playlistId: str
     .collection('otherPlaylists')
     .doc(playlistId)
     .set({ ownerName, playlistName })
+
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .update({followers: firebase.firestore.FieldValue.arrayUnion(userId)})
 }
 
 const unfollowPlaylist = async (userId: string, playlistId: string) => {
@@ -49,6 +76,11 @@ const unfollowPlaylist = async (userId: string, playlistId: string) => {
     .collection('otherPlaylists')
     .doc(playlistId)
     .delete()
+
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .update({followers: firebase.firestore.FieldValue.arrayRemove(userId)})
 }
 
 const subscribeToPlaylist = async (id: string, observer: (playlist: any) => void) => {
@@ -153,6 +185,15 @@ const checkIfSongExists = async (playlistId: string, youtubeId: string) => {
     return !(querySnapshot.docs.length === 0)
 }
 
+const deleteSong = async (playlistId: string, songId: string) => {
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .doc(songId)
+    .delete() 
+}
+
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {
     const partySong = { partySong: {youtubeId, title, startTime:Date.now()}}
     await database
@@ -168,12 +209,12 @@ const endParty = async (playlistId: string) => {
     .update({
         partySong: firebase.firestore.FieldValue.delete()
     })
-
 }
 
 export const firestoreApi = {
     createPlaylist,
     getPlaylistDetails, 
+    deletePlaylist,
     followPlaylist,
     unfollowPlaylist,
     subscribeToPlaylist,
@@ -186,6 +227,7 @@ export const firestoreApi = {
     unsubscribeFromSongsCollection,
     addSong, 
     checkIfSongExists, 
+    deleteSong,
     updatePartySong,
     endParty
 }

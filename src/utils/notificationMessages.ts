@@ -1,7 +1,7 @@
 export const notificationMessages = {
     database_error: "Sorry, the database is down.",
     playlist_created: "Playlist created",
-    no_youtube_url: "This is not a youtube url!",
+    no_youtube_url: "This is not a youtube song url!",
     video_too_long: "Video too long! Song must be shorter than 10 minutes.",
     song_added: "Song added to the playlist",
     duplicate_song: "This song is already on the playlist!",
