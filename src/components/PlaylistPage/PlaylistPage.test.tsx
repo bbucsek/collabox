@@ -66,7 +66,7 @@ const storeWithoutSong = mockStore({
     },
 });
 
-const storeOfUser = mockStore({
+const storeWithOwnPlaylist = mockStore({
     authentication: {
         currentUser: {
             id: "test-id",
@@ -98,6 +98,8 @@ jest.mock("react-router-dom", () => ({
 describe("PlaylistPage", () => {
     beforeEach(() => {
         store.clearActions();
+        storeWithoutSong.clearActions();
+        storeWithOwnPlaylist.clearActions();
     });
     it("renders without crashing", () => {
         render(
@@ -278,7 +280,7 @@ describe("PlaylistPage", () => {
     it("shows the confirmation component if delete icon is clicked", async () => {
         const {getByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={storeOfUser}>
+                <Provider store={storeWithOwnPlaylist}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
@@ -292,7 +294,7 @@ describe("PlaylistPage", () => {
     it("hides the confirmation component and does not dispatch action if delete is cancelled in confirmation window", async () => {
         const {getByTestId, queryByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={storeOfUser}>
+                <Provider store={storeWithOwnPlaylist}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
@@ -305,13 +307,13 @@ describe("PlaylistPage", () => {
 
         const confirmationContainer = queryByTestId("confirmation-container")
         expect(confirmationContainer).toBeNull();
-        const actions = storeOfUser.getActions()
+        const actions = storeWithOwnPlaylist.getActions()
         expect(actions.filter((action: any) => action.type === 'playlists/deletePlaylist/pending').length).toEqual(0)
     });
     it("hides the confirmation component and dispatches action if delete is confirmed in confirmation window", async () => {
         const {getByTestId, queryByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={storeOfUser}>
+                <Provider store={storeWithOwnPlaylist}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
@@ -323,7 +325,7 @@ describe("PlaylistPage", () => {
 
         const confirmationContainer = queryByTestId("confirmation-container")
         expect(confirmationContainer).toBeNull();
-        const actions = storeOfUser.getActions()
+        const actions = storeWithOwnPlaylist.getActions()
         expect(actions.filter((action: any) => action.type === 'playlists/deletePlaylist/pending').length).toEqual(1)
     });
 });

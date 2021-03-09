@@ -29,7 +29,6 @@ const getPlaylistDetails = async(playlistId: string) => {
     .get()
     .then((doc) => {
         return doc.data()
-
     })
 }
 
@@ -68,7 +67,6 @@ const followPlaylist = async (userId: string, ownerName: string, playlistId: str
     .collection('playlists')
     .doc(playlistId)
     .update({followers: firebase.firestore.FieldValue.arrayUnion(userId)})
-
 }
 
 const unfollowPlaylist = async (userId: string, playlistId: string) => {
@@ -193,8 +191,7 @@ const deleteSong = async (playlistId: string, songId: string) => {
     .doc(playlistId)
     .collection('songs')
     .doc(songId)
-    .delete()
-    
+    .delete() 
 }
 
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {
@@ -212,7 +209,6 @@ const endParty = async (playlistId: string) => {
     .update({
         partySong: firebase.firestore.FieldValue.delete()
     })
-
 }
 
 export const firestoreApi = {

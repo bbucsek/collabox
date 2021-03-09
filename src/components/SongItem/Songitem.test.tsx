@@ -1,12 +1,12 @@
 import React from "react";
+import { Provider } from "react-redux";
 import { render } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import configureMockStore from "redux-mock-store";
 import thunk from "redux-thunk";
-import Songitem from "./SongItem";
 import { ThemeProvider } from "styled-components";
+import Songitem from "./SongItem";
 import theme from "../../theme";
-import userEvent from "@testing-library/user-event";
-import { Provider } from "react-redux";
 
 const testSong = {
     id: "fake_id",

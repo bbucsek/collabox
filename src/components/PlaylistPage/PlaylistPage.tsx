@@ -24,10 +24,10 @@ const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentUser = useSelector(selectCurrentUser);
-    const [addSongActive, setAddSongActive] = useState(false);
-    const [inviteActive, setInviteActive] = useState(false);
-    const [playerActive, setPlayerActive] = useState(false);
-    const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
+    const [addSongActive, setAddSongActive] = useState<boolean>(false);
+    const [inviteActive, setInviteActive] = useState<boolean>(false);
+    const [playerActive, setPlayerActive] = useState<boolean>(false);
+    const [confirmationIsVisible, setConfirmationIsVisible] = useState<boolean>(false)
     const [confirmationText, setConfirmationText] = useState<string>("")
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
     const dispatch = useDispatch();
