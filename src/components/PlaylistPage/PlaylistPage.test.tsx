@@ -66,6 +66,28 @@ const storeWithoutSong = mockStore({
     },
 });
 
+const storeOfUser = mockStore({
+    authentication: {
+        currentUser: {
+            id: "test-id",
+            name: "user_name",
+            email: "test-user-email",
+        },
+        loading: false,
+    },
+    playlists: {
+        ownPlaylists: null,
+        otherPlaylists: null,
+        currentPlaylist: {
+            id: "fake_playlist_id",
+            playlistName: "My cool playlist",
+            ownerName: "user_name",
+            users: [],
+            songs: [],
+        },
+    },
+});
+
 jest.mock("react-router-dom", () => ({
     ...jest.requireActual("react-router-dom"),
     useParams: () => ({
@@ -134,6 +156,44 @@ describe("PlaylistPage", () => {
         const title = getByTestId("title")
         expect(title.textContent).toContain("My cool playlist")
     });
+    it("shows invite icon", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const inviteIcon = getByTestId("invite-icon")
+        expect(inviteIcon).not.toBeNull()
+    });    
+    it("shows addsong icon", async () => {
+            const {getByTestId} = render(
+                <ThemeProvider theme={theme}>
+                    <Provider store={store}>
+                        <PlaylistPage />
+                    </Provider>
+                </ThemeProvider>
+            );
+
+        const addIcon = getByTestId("addsong-icon")
+        expect(addIcon).not.toBeNull()
+    });
+    it("shows join party when clicked on play icon", async () => {
+    const { getByTestId } = render(
+        <ThemeProvider theme={theme}>
+            <Provider store={store}>
+                <PlaylistPage />
+            </Provider>
+        </ThemeProvider>)
+
+        const playIcon = getByTestId("playback-icon")
+        await userEvent.click(playIcon)
+        
+        const joinParty = getByTestId("join-party-button")
+        expect(joinParty).not.toBeNull()
+    });
     it("dispatches actions to subscribe to playlist and songs when mounted", () => {
         render(
             <ThemeProvider theme={theme}>
@@ -177,46 +237,93 @@ describe("PlaylistPage", () => {
         const confirmationContainer = getByTestId("confirmation-container")
         expect(confirmationContainer).not.toBeNull();
     });
+    it("hides the confirmation component and does not dispatch action if unfollow is cancelled in confirmation window", async () => {
+        const {getByTestId, queryByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
 
-    it("shows invite icon", async () => {
+        const unfollowIcon = getByTestId("unfollow-icon")
+        await userEvent.click(unfollowIcon)
+        const cancelButton = getByTestId("cancel-button")
+        await userEvent.click(cancelButton)
+
+        const confirmationContainer = queryByTestId("confirmation-container")
+        expect(confirmationContainer).toBeNull();
+        const actions = store.getActions()
+        expect(actions.filter((action: any) => action.type === 'playlists/unfollowPlaylist/pending').length).toEqual(0)
+    });
+    it("hides the confirmation component and dispatches action if unfollow is confirmed in confirmation window", async () => {
+        const {getByTestId, queryByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                    <PlaylistPage />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const unfollowIcon = getByTestId("unfollow-icon")
+        await userEvent.click(unfollowIcon)
+        const confirmButton = getByTestId("confirm-button")
+        await userEvent.click(confirmButton)
+
+        const confirmationContainer = queryByTestId("confirmation-container")
+        expect(confirmationContainer).toBeNull();
+        const actions = store.getActions()
+        expect(actions.filter((action: any) => action.type === 'playlists/unfollowPlaylist/pending').length).toEqual(1)
+    });
+    it("shows the confirmation component if delete icon is clicked", async () => {
         const {getByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={store}>
+                <Provider store={storeOfUser}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
         );
+        const deleteIcon = getByTestId("delete-icon")
+        await userEvent.click(deleteIcon)
 
-        const inviteIcon = getByTestId("invite-icon")
-        expect(inviteIcon).not.toBeNull()
+        const confirmationContainer = getByTestId("confirmation-container")
+        expect(confirmationContainer).not.toBeNull();
     });
-
-    it("shows addsong icon", async () => {
-        const {getByTestId} = render(
+    it("hides the confirmation component and does not dispatch action if delete is cancelled in confirmation window", async () => {
+        const {getByTestId, queryByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={store}>
+                <Provider store={storeOfUser}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
         );
 
-        const addIcon = getByTestId("addsong-icon")
-        expect(addIcon).not.toBeNull()
+        const deleteIcon = getByTestId("delete-icon")
+        await userEvent.click(deleteIcon)
+        const cancelButton = getByTestId("cancel-button")
+        await userEvent.click(cancelButton)
+
+        const confirmationContainer = queryByTestId("confirmation-container")
+        expect(confirmationContainer).toBeNull();
+        const actions = storeOfUser.getActions()
+        expect(actions.filter((action: any) => action.type === 'playlists/deletePlaylist/pending').length).toEqual(0)
     });
-
-    it("shows join party when click on play icon", async () => {
-        const { getByTestId } = render(
+    it("hides the confirmation component and dispatches action if delete is confirmed in confirmation window", async () => {
+        const {getByTestId, queryByTestId} = render(
             <ThemeProvider theme={theme}>
-                <Provider store={store}>
+                <Provider store={storeOfUser}>
                     <PlaylistPage />
                 </Provider>
             </ThemeProvider>
         );
+        const deleteIcon = getByTestId("delete-icon")
+        await userEvent.click(deleteIcon)
+        const confirmButton = getByTestId("confirm-button")
+        await userEvent.click(confirmButton)
 
-        const playIcon = getByTestId("playback-icon")
-        await userEvent.click(playIcon)
-        const joinParty = getByTestId("join-party-button")
-
-        expect(joinParty).not.toBeNull()
+        const confirmationContainer = queryByTestId("confirmation-container")
+        expect(confirmationContainer).toBeNull();
+        const actions = storeOfUser.getActions()
+        expect(actions.filter((action: any) => action.type === 'playlists/deletePlaylist/pending').length).toEqual(1)
     });
 });

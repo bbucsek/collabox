@@ -28,27 +28,35 @@ const PlaylistPage = () => {
     const [inviteActive, setInviteActive] = useState(false);
     const [playerActive, setPlayerActive] = useState(false);
     const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
+    const [confirmationText, setConfirmationText] = useState<string>("")
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
     const dispatch = useDispatch();
     const history = useHistory();
 
+    const unFollowOnClick = () => {
+        setConfirmationIsVisible(true)
+        setConfirmationText("unfollow the playlist")
+    }
+
+    const deleteOnClick = () => {
+        setConfirmationIsVisible(true)
+        setConfirmationText("delete the playlist")
+    }
+
+    const confirmAction = (isConfirmed: boolean) => {
+        if (isConfirmed && confirmationText.includes("unfollow")){
+            unFollow();
+        }
+        else if (isConfirmed && confirmationText.includes("delete")){
+            deletePlaylist()
+        }
+        setConfirmationIsVisible(false)
+        setConfirmationText("")
+    }
 
     const unFollow = async () => {
         await dispatch(playlistsAsyncActions.unfollowPlaylist(id))
         history.push('/')
-    }
-
-    const unFollowOnClick = () => {
-        setConfirmationIsVisible(true)
-    }
-
-    const confirmAction = (isConfirmed: boolean) => {
-        if (isConfirmed){
-            unFollow();
-        }
-        if (!isConfirmed){
-            setConfirmationIsVisible(false)
-        }
     }
 
     const deletePlaylist = async () => {
@@ -75,12 +83,12 @@ const PlaylistPage = () => {
                     <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                     {!isOwner && <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
-                    {isOwner && <DeleteIcon onClick={deletePlaylist} />}
+                    {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
                 </IconWrapper>
                 {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 {addSongActive && <AddSong />}
                 <Songlist />
-                {confirmationIsVisible && <Confirmation message="unfollow the playlist" confirm={confirmAction}/>}
+                {confirmationIsVisible && <Confirmation message={confirmationText} confirm={confirmAction}/>}
             </Container>
         );
 };
