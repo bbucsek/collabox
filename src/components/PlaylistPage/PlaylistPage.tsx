@@ -20,14 +20,20 @@ import {
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
 
+enum ActionType {
+    Delete,
+    Unfollow
+}
+
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentUser = useSelector(selectCurrentUser);
-    const [addSongActive, setAddSongActive] = useState<boolean>(false);
-    const [inviteActive, setInviteActive] = useState<boolean>(false);
-    const [playerActive, setPlayerActive] = useState<boolean>(false);
-    const [confirmationIsVisible, setConfirmationIsVisible] = useState<boolean>(false)
+    const [addSongActive, setAddSongActive] = useState(false);
+    const [inviteActive, setInviteActive] = useState(false);
+    const [playerActive, setPlayerActive] = useState(false);
+    const [actionType, setActionType] = useState<ActionType | null>()
+    const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
     const [confirmationText, setConfirmationText] = useState<string>("")
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
     const dispatch = useDispatch();
@@ -36,22 +42,25 @@ const PlaylistPage = () => {
     const unFollowOnClick = () => {
         setConfirmationIsVisible(true)
         setConfirmationText("unfollow the playlist")
+        setActionType(ActionType.Unfollow)
     }
 
     const deleteOnClick = () => {
         setConfirmationIsVisible(true)
         setConfirmationText("delete the playlist")
+        setActionType(ActionType.Delete)
     }
 
     const confirmAction = (isConfirmed: boolean) => {
-        if (isConfirmed && confirmationText.includes("unfollow")){
+        if (isConfirmed && actionType === ActionType.Unfollow){
             unFollow();
         }
-        else if (isConfirmed && confirmationText.includes("delete")){
+        else if (isConfirmed && actionType === ActionType.Delete){
             deletePlaylist()
         }
         setConfirmationIsVisible(false)
         setConfirmationText("")
+        setActionType(null)
     }
 
     const unFollow = async () => {
