@@ -195,11 +195,11 @@ const deleteSong = async (playlistId: string, songId: string) => {
     .delete() 
 }
 
-const checkVoteStatus = async (userId: string, playlistId: string, songId: string) => {
+const checkVoteStatus = async (userId: string, playlistId: string, songId: string, playlistType: PlaylistType) => {
     return await database
     .collection('users')
     .doc(userId)
-    .collection('ownPlaylists')
+    .collection(playlistType)
     .doc(playlistId)
     .get()
     .then((doc) => {
@@ -225,7 +225,7 @@ const vote = async (userId: string, playlistId: string, songId: string, voteChan
     .doc(playlistId)
     .collection('songs')
     .doc(songId)
-    .update({votes: voteChange})
+    .update({votes: firebase.firestore.FieldValue.increment(voteChange)})
 }
 
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {

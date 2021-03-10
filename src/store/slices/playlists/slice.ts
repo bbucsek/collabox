@@ -199,7 +199,7 @@ string,
         const playlistId = currentPlaylist.id
         const {songId, voteIntention, playlistType } = payload
         console.log("will check")
-        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser.id, playlistId, songId)
+        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser.id, playlistId, songId, playlistType)
         console.log(voteStatus)
         if ( voteStatus === voteIntention ) {
             return thunkApi.rejectWithValue('already_voted')
