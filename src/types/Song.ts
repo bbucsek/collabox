@@ -5,6 +5,8 @@ type Song = {
     votes: number,
     userId: string,
     userName: string,
+    upVoted: boolean,
+    downVoted: boolean
 }
 
 export default Song

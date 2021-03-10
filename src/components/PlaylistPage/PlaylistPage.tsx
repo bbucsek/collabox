@@ -65,7 +65,7 @@ const PlaylistPage = () => {
     }
 
     const deletePlaylist = async () => {
-        dispatch(playlistsAsyncActions.deletePlaylist(id))
+        await dispatch(playlistsAsyncActions.deletePlaylist(id))
         history.push('/')
     }
 

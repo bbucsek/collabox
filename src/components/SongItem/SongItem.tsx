@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import AddIcon from '@material-ui/icons/Add';
-import RemoveIcon from '@material-ui/icons/Remove';
 import Song from '../../types/Song'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice';
 import { selectCurrentPlaylist } from '../../store/slices/playlists/selectors';
 import { selectCurrentUser } from '../../store/slices/authentication/selectors';
 import Confirmation from '../Confirmation';
-import { Container, SongTitle, AddedBy, VoteCount, VoteButtons, DeleteIcon } from './styles'
+import { Container, SongTitle, AddedBy, VoteCount, VoteButtons, DeleteIcon, UpvoteIcon, DownvoteIcon } from './styles'
+import PlaylistType from '../../types/PlaylistType';
+import VoteType from '../../types/VoteType';
 
 type SongProps = {
     song: Song
@@ -17,7 +17,8 @@ const SongItem = ({ song }: SongProps) => {
     const currentUser = useSelector(selectCurrentUser);
     const currentPlaylist = useSelector(selectCurrentPlaylist)
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
-    const [confirmationIsVisible, setConfirmationIsVisible] = useState<boolean>(false)
+    const playlistType = isOwner? PlaylistType.ownPlaylist :  PlaylistType.followedPlaylist;
+    const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
     const dispatch = useDispatch()
     
     const confirmAction = (isConfirmed: boolean) => {
@@ -29,6 +30,10 @@ const SongItem = ({ song }: SongProps) => {
 
     const deleteOnClick = () => {
         setConfirmationIsVisible(true)
+    }
+
+    const vote = (vote: VoteType) => {
+        dispatch(playlistsAsyncActions.vote({songId: song.id, voteType: vote, playlistType}))
     }
 
     return (
@@ -44,8 +49,8 @@ const SongItem = ({ song }: SongProps) => {
                 {`votes: ${song.votes}`}
             </VoteCount>
             <VoteButtons>
-                <AddIcon />
-                <RemoveIcon />
+                <UpvoteIcon onClick={() => {vote(VoteType.upVote)}} disabled={song.upVoted} data-testid="upvote-icon"/>
+                <DownvoteIcon onClick={() => {vote(VoteType.downVote)}} disabled={song.downVoted} data-testid="downvote-icon" />
             </VoteButtons>
             {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
         </Container>

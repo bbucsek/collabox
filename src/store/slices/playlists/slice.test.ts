@@ -4,6 +4,8 @@ import PlaylistsState from './types/PlaylistsState'
 import youtubeApi from "../../../utils/youtubeApi"
 import playlistsReducer, { playlistsActions, playlistsAsyncActions } from './slice'
 import { firestoreApi } from "../../../service/firestoreApi"
+import VoteType from "../../../types/VoteType";
+import PlaylistType from "../../../types/PlaylistType";
 
 jest.mock("../../../service/firestoreApi")
 const mockedFirestoreApi = firestoreApi as jest.Mocked<typeof firestoreApi>
@@ -173,7 +175,7 @@ describe('CreatePlaylist slice async action', () => {
 
   it('returns the right actions if playlist is created', async () => {
     mockedFirestoreApi.createPlaylist.mockResolvedValueOnce("new_ID")
-      await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
+    await store.dispatch(playlistsAsyncActions.createPlaylist("My cool playlist"))
 
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/createPlaylist/fulfilled')
@@ -216,6 +218,37 @@ describe('CreatePlaylist slice async action', () => {
     })
 })
 
+describe('DeletePlaylist slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+})
+  it('returns error action if there is no current playlist', async () => {
+    await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.deletePlaylist("fake_playlistId"))
+
+    const actions = storeWithoutCurrentPlaylist.getActions()
+    expect(actions[1].type).toEqual('playlists/deletePlaylist/rejected')
+    expect(actions[1].payload).toEqual("no_current_playlist")
+  })
+
+  it('returns the right actions if playlist is deleted', async () => {
+    mockedFirestoreApi.deletePlaylist.mockResolvedValueOnce()
+      await store.dispatch(playlistsAsyncActions.deletePlaylist("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/deletePlaylist/fulfilled')
+    expect(actions[1].payload).toEqual('playlist_deleted')
+  })
+
+  it('returns error action if database is down', async () => {
+    mockedFirestoreApi.deletePlaylist.mockRejectedValueOnce("database down")
+    await store.dispatch(playlistsAsyncActions.deletePlaylist("fake_playlistId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/deletePlaylist/rejected')
+    expect(actions[1].payload).toEqual('database_error')
+    })
+})
+
 describe('VerifyUrl slice async action', () => {
   beforeEach(() => {
       store.clearActions()
@@ -254,6 +287,8 @@ describe('VerifyUrl slice async action', () => {
 describe('AddSong slice async action', () => {
   beforeEach(() => {
       store.clearActions()
+      storeWithoutCurrentPlaylist.clearActions()
+      storeWithoutUser.clearActions()
 })
 
   it('returns error action if there is no logged in user', async () => {
@@ -331,6 +366,74 @@ describe('CheckIfSongExists slice async action', () => {
 
     const actions = store.getActions()
     expect(actions[1].type).toEqual('playlists/checkIfSongExists/rejected')
+  })
+})
+
+describe('DeleteSong slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+      storeWithoutCurrentPlaylist.clearActions()
+      storeWithoutUser.clearActions()
+})
+
+  it('returns error action if there is no current playlist', async () => {
+    await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.deleteSong("fake_songId"))
+
+    const actions = storeWithoutCurrentPlaylist.getActions()
+    expect(actions[1].type).toEqual('playlists/deleteSong/rejected')
+    expect(actions[1].payload).toEqual("no_currentPlaylist")
+  })
+
+  it('returns the right action if the song is deleted', async () => {
+    await store.dispatch(playlistsAsyncActions.deleteSong("fake_songId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/deleteSong/fulfilled')
+    expect(actions[1].payload).toEqual("song_deleted")
+  })
+
+  it('returns error action if there is database error', async () => {
+    mockedFirestoreApi.deleteSong.mockRejectedValueOnce('firestore error')
+    await store.dispatch(playlistsAsyncActions.deleteSong("fake_songId"))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/deleteSong/rejected')
+  })
+})
+
+describe('Vote slice async action', () => {
+  beforeEach(() => {
+      store.clearActions()
+      storeWithoutCurrentPlaylist.clearActions()
+      storeWithoutUser.clearActions()
+})
+
+  it('returns the right action if the song is voted on', async () => {
+    await store.dispatch(playlistsAsyncActions
+      .vote({songId: "fake_songId", voteType: VoteType.upVote, playlistType: PlaylistType.ownPlaylist}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/vote/fulfilled')
+    expect(actions[1].payload).toEqual("voted_on_song")
+  })
+
+  it('returns the right error acrion if the the user has already voted', async () => {
+    mockedFirestoreApi.checkVoteStatus.mockResolvedValueOnce(1)
+    await store.dispatch(playlistsAsyncActions
+      .vote({songId: "fake_songId", voteType: VoteType.upVote, playlistType: PlaylistType.ownPlaylist}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/vote/rejected')
+    expect(actions[1].payload).toEqual("already_voted")
+  })
+
+  it('returns error action if there is database error', async () => {
+    mockedFirestoreApi.vote.mockRejectedValueOnce('firestore error')
+    await store.dispatch(playlistsAsyncActions
+      .vote({songId: "fake_songId", voteType: VoteType.upVote, playlistType: PlaylistType.ownPlaylist}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/vote/rejected')
   })
 })
 

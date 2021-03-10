@@ -14,7 +14,9 @@ const testSong = {
     title: "Title",
     votes: 0,
     userId: "fake_user_id",
-    userName: 'fake_user_name'
+    userName: 'fake_user_name',
+    upVoted: false,
+    downVoted: false,
 };
 
 
@@ -50,6 +52,9 @@ const store = mockStore({
 });
 
 describe("Songitem component", () => {
+    beforeEach(() => {
+        store.clearActions();
+    })
     it("renders without crashing", () => {
         render(
             <ThemeProvider theme={theme}>
@@ -59,7 +64,6 @@ describe("Songitem component", () => {
             </ThemeProvider>
         );
     });
-
     it("renders the songitem with the right title", () => {
         const { getByText } = render(
             <ThemeProvider theme={theme}>
@@ -124,5 +128,35 @@ describe("Songitem component", () => {
         expect(actions[0].type).toEqual('playlists/deleteSong/pending')
         const confirmationContainer = queryByTestId("confirmation-container")
         expect(confirmationContainer).toBeNull();
+    });
+    it("dispatches action if upvote icon is clicked", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store = {store}> 
+                    <Songitem song={testSong}/>
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const upvoteIcon = getByTestId("upvote-icon")
+        await userEvent.click(upvoteIcon)
+
+        const actions = store.getActions()
+        expect(actions[0].type).toEqual('playlists/vote/pending')
+    });
+    it("dispatches action if downvote icon is clicked", async () => {
+        const {getByTestId} = render(
+            <ThemeProvider theme={theme}>
+                <Provider store = {store}> 
+                    <Songitem song={testSong}/>
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const downvoteIcon = getByTestId("downvote-icon")
+        await userEvent.click(downvoteIcon)
+
+        const actions = store.getActions()
+        expect(actions[0].type).toEqual('playlists/vote/pending')
     });
 });

@@ -92,7 +92,7 @@ export const ButtonCanBeDisabled = styled.button<{disabled: boolean}>`
     
     svg {
         color: ${({ theme, disabled }) => disabled === true ? theme.colors.disabled: theme.colors.blue};
-        cursor: ${({ theme, disabled }) => disabled === true ? "not-allowed" : "pointer"};
+        cursor: ${({ disabled }) => disabled === true ? "not-allowed" : "pointer"};
     }
 `
 

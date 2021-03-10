@@ -8,6 +8,8 @@ import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
+import PlaylistType from '../../../types/PlaylistType'
+import VoteType from '../../../types/VoteType'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -49,9 +51,6 @@ string,
         const state = thunkApi.getState()
         const {authentication} = state
         const {currentUser} = authentication
-        if(!currentUser) {
-            return thunkApi.rejectWithValue('no_current_user')
-        }
         const {playlists} = state
         if(!playlists.currentPlaylist) {
             return thunkApi.rejectWithValue('no_current_playlist')
@@ -60,7 +59,7 @@ string,
         const {followers} = currentPlaylist
         const playlistId = payload
         try {
-            await firestoreApi.deletePlaylist(currentUser.id, playlistId, followers)
+            await firestoreApi.deletePlaylist(currentUser!.id, playlistId, followers)
             return 'playlist_deleted'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
@@ -111,7 +110,7 @@ const addSong = createAsyncThunk<
             }
             const playlistId = currentPlaylist?.id
             const { youtubeId, title } = payload
-            const song: Omit<Song, 'id'> = {
+            const song: Omit<Song, 'id' | 'downVoted' | 'upVoted'> = {
                 youtubeId,
                 title,
                 votes: 0,
@@ -176,6 +175,34 @@ const deleteSong = createAsyncThunk<
                 return thunkApi.rejectWithValue('database_error')
             }
     })
+
+const vote = createAsyncThunk<
+string,
+{songId: string, voteType: VoteType, playlistType: PlaylistType},
+{ state: RootState }
+>
+('playlists/vote',
+    async (payload, thunkApi) => {
+        const state = thunkApi.getState()   
+        const {authentication} = state
+        const { currentUser } = authentication  
+        const { playlists } = state
+        const { currentPlaylist } = playlists
+        const playlistId = currentPlaylist!.id
+        const {songId, voteType, playlistType } = payload
+
+        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser!.id, playlistId, songId, playlistType)
+        if ( voteStatus === voteType ) {
+            return thunkApi.rejectWithValue('already_voted')
+        }
+        try {
+            const voteChange = voteType * (Math.abs(voteStatus) + Math.abs(voteType))
+            await firestoreApi.vote(currentUser!.id, playlistId, songId, voteChange, voteType, playlistType)
+            return 'voted_on_song'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+})
 
 const followPlaylist = createAsyncThunk<
 string,
@@ -463,6 +490,7 @@ export const playlistsAsyncActions = {
     addSong, 
     checkIfSongExists,
     deleteSong,
+    vote,
     followPlaylist,
     unfollowPlaylist,
     updatePartySong,

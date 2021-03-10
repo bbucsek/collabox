@@ -1,7 +1,9 @@
 import firebase from 'firebase';
 import 'firebase/firestore'
 import PlaylistData from '../types/PlaylistData';
+import PlaylistType from '../types/PlaylistType';
 import Song from '../types/Song'
+import VoteType from '../types/VoteType';
 import database from "./database"
 
 let unsubscribeFromP: (id: string) => void | undefined;
@@ -165,7 +167,7 @@ const unsubscribeFromSongsCollection = async (id: string) => {
     await unsubscribeFromS(id)
 }
 
-const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
+const addSong = async (playlistId: string, song: Omit<Song, 'id' | 'downVoted' | 'upVoted'>) => {
     const response = await database
     .collection('playlists')
     .doc(playlistId)
@@ -192,6 +194,39 @@ const deleteSong = async (playlistId: string, songId: string) => {
     .collection('songs')
     .doc(songId)
     .delete() 
+}
+
+const checkVoteStatus = async (userId: string, playlistId: string, songId: string, playlistType: PlaylistType) => {
+    return await database
+    .collection('users')
+    .doc(userId)
+    .collection(playlistType)
+    .doc(playlistId)
+    .get()
+    .then((doc) => {
+        const playlist: any = doc.data()
+        const  { votes } = playlist
+        if (!votes || !votes[songId]) {
+            return 0
+        }
+        return votes[songId]
+    })
+}
+
+const vote = async (userId: string, playlistId: string, songId: string, voteChange: number, voteType: VoteType, playlistType: PlaylistType) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection(playlistType)
+    .doc(playlistId)
+    .update({[`votes.${songId}`]: voteType})
+
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .doc(songId)
+    .update({votes: firebase.firestore.FieldValue.increment(voteChange)})
 }
 
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {
@@ -228,6 +263,8 @@ export const firestoreApi = {
     addSong, 
     checkIfSongExists, 
     deleteSong,
+    checkVoteStatus,
+    vote,
     updatePartySong,
     endParty
 }
