@@ -287,6 +287,8 @@ describe('VerifyUrl slice async action', () => {
 describe('AddSong slice async action', () => {
   beforeEach(() => {
       store.clearActions()
+      storeWithoutCurrentPlaylist.clearActions()
+      storeWithoutUser.clearActions()
 })
 
   it('returns error action if there is no logged in user', async () => {
