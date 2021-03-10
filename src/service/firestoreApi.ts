@@ -3,6 +3,7 @@ import 'firebase/firestore'
 import PlaylistData from '../types/PlaylistData';
 import PlaylistType from '../types/PlaylistType';
 import Song from '../types/Song'
+import VoteType from '../types/VoteType';
 import database from "./database"
 
 let unsubscribeFromP: (id: string) => void | undefined;
@@ -166,7 +167,7 @@ const unsubscribeFromSongsCollection = async (id: string) => {
     await unsubscribeFromS(id)
 }
 
-const addSong = async (playlistId: string, song: Omit<Song, 'id'>) => {
+const addSong = async (playlistId: string, song: Omit<Song, 'id' | 'downVoted' | 'upVoted'>) => {
     const response = await database
     .collection('playlists')
     .doc(playlistId)
@@ -208,17 +209,17 @@ const checkVoteStatus = async (userId: string, playlistId: string, songId: strin
         if (!votes || !votes[songId]) {
             return 0
         }
-        return Number(votes[songId])
+        return votes[songId]
     })
 }
 
-const vote = async (userId: string, playlistId: string, songId: string, voteChange: number, voteIntention: number, playlistType: PlaylistType) => {
+const vote = async (userId: string, playlistId: string, songId: string, voteChange: number, voteType: VoteType, playlistType: PlaylistType) => {
     await database
     .collection('users')
     .doc(userId)
     .collection(playlistType)
     .doc(playlistId)
-    .update({[`votes.${songId}`]: voteIntention})
+    .update({[`votes.${songId}`]: voteType})
 
     await database
     .collection('playlists')

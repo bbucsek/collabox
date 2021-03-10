@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 import Delete from '@material-ui/icons/Delete';
+import AddIcon from '@material-ui/icons/Add';
+import RemoveIcon from '@material-ui/icons/Remove';
 
 export const Container = styled.div`
     display: flex;
@@ -44,5 +46,25 @@ export const DeleteIcon = styled(Delete)`
 
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryDark};
+    }
+`
+
+export const UpvoteIcon = styled(AddIcon)<{disabled: boolean}>`
+    color: ${({ theme, disabled }) => disabled? theme.colors.disabled : theme.colors.whiteFontColor};
+    margin-right: 1rem;
+    cursor: ${({ disabled }) => disabled === true ? "not-allowed" : "pointer"};
+
+    &:hover {
+        color: ${({ theme, disabled }) => disabled? theme.colors.disabled : theme.colors.secondaryDark};
+    }
+`
+
+export const DownvoteIcon = styled(RemoveIcon)<{disabled: boolean}>`
+    color: ${({ theme, disabled }) => disabled? theme.colors.disabled : theme.colors.whiteFontColor};
+    margin-right: 1rem;
+    cursor: ${({ disabled }) => disabled === true ? "not-allowed" : "pointer"};
+
+    &:hover {
+        color: ${({ theme, disabled }) => disabled? theme.colors.disabled : theme.colors.secondaryDark};
     }
 `

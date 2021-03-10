@@ -9,6 +9,7 @@ import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
 import PlaylistType from '../../../types/PlaylistType'
+import VoteType from '../../../types/VoteType'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -112,7 +113,7 @@ const addSong = createAsyncThunk<
             }
             const playlistId = currentPlaylist?.id
             const { youtubeId, title } = payload
-            const song: Omit<Song, 'id'> = {
+            const song: Omit<Song, 'id' | 'downVoted' | 'upVoted'> = {
                 youtubeId,
                 title,
                 votes: 0,
@@ -180,7 +181,7 @@ const deleteSong = createAsyncThunk<
 
 const vote = createAsyncThunk<
 string,
-{songId: string, voteIntention: number, playlistType: PlaylistType},
+{songId: string, voteType: VoteType, playlistType: PlaylistType},
 { state: RootState }
 >
 ('playlists/vote',
@@ -197,16 +198,15 @@ string,
             return thunkApi.rejectWithValue("no_currentPlaylist")
         }
         const playlistId = currentPlaylist.id
-        const {songId, voteIntention, playlistType } = payload
-        console.log("will check")
+        const {songId, voteType, playlistType } = payload
+
         const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser.id, playlistId, songId, playlistType)
-        console.log(voteStatus)
-        if ( voteStatus === voteIntention ) {
+        if ( voteStatus === voteType ) {
             return thunkApi.rejectWithValue('already_voted')
         }
         try {
-            const voteChange = voteIntention * (Math.abs(voteStatus) + Math.abs(voteIntention))
-            await firestoreApi.vote(currentUser.id, playlistId, songId, voteChange, voteIntention, playlistType)
+            const voteChange = voteType * (Math.abs(voteStatus) + Math.abs(voteType))
+            await firestoreApi.vote(currentUser.id, playlistId, songId, voteChange, voteType, playlistType)
             return 'voted_on_song'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
