@@ -1,6 +1,7 @@
 import firebase from 'firebase';
 import 'firebase/firestore'
 import PlaylistData from '../types/PlaylistData';
+import PlaylistType from '../types/PlaylistType';
 import Song from '../types/Song'
 import database from "./database"
 
@@ -194,6 +195,39 @@ const deleteSong = async (playlistId: string, songId: string) => {
     .delete() 
 }
 
+const checkVoteStatus = async (userId: string, playlistId: string, songId: string) => {
+    return await database
+    .collection('users')
+    .doc(userId)
+    .collection('ownPlaylists')
+    .doc(playlistId)
+    .get()
+    .then((doc) => {
+        const playlist: any = doc.data()
+        const  { votes } = playlist
+        if (!votes || !votes[songId]) {
+            return 0
+        }
+        return Number(votes[songId])
+    })
+}
+
+const vote = async (userId: string, playlistId: string, songId: string, voteChange: number, voteIntention: number, playlistType: PlaylistType) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection(playlistType)
+    .doc(playlistId)
+    .update({[`votes.${songId}`]: voteIntention})
+
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .collection('songs')
+    .doc(songId)
+    .update({votes: voteChange})
+}
+
 const updatePartySong = async (playlistId: string, youtubeId: string, title: string) => {
     const partySong = { partySong: {youtubeId, title, startTime:Date.now()}}
     await database
@@ -228,6 +262,8 @@ export const firestoreApi = {
     addSong, 
     checkIfSongExists, 
     deleteSong,
+    checkVoteStatus,
+    vote,
     updatePartySong,
     endParty
 }

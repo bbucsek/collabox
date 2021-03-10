@@ -8,6 +8,7 @@ import RootState from '../../RootState'
 import Playlist from '../../../types/Playlist'
 import PlaylistData from '../../../types/PlaylistData'
 import Song from '../../../types/Song'
+import PlaylistType from '../../../types/PlaylistType'
 
 const initialState: PlaylistsState = {
     ownPlaylists: null,
@@ -176,6 +177,41 @@ const deleteSong = createAsyncThunk<
                 return thunkApi.rejectWithValue('database_error')
             }
     })
+
+const vote = createAsyncThunk<
+string,
+{songId: string, voteIntention: number, playlistType: PlaylistType},
+{ state: RootState }
+>
+('playlists/vote',
+    async (payload, thunkApi) => {
+        const state = thunkApi.getState()   
+        const {authentication} = state
+        const { currentUser } = authentication  
+        if (!currentUser) {
+            return thunkApi.rejectWithValue("no_currentUser")
+        }
+        const { playlists } = state
+        const { currentPlaylist } = playlists
+        if (!currentPlaylist) {
+            return thunkApi.rejectWithValue("no_currentPlaylist")
+        }
+        const playlistId = currentPlaylist.id
+        const {songId, voteIntention, playlistType } = payload
+        console.log("will check")
+        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser.id, playlistId, songId)
+        console.log(voteStatus)
+        if ( voteStatus === voteIntention ) {
+            return thunkApi.rejectWithValue('already_voted')
+        }
+        try {
+            const voteChange = voteIntention * (Math.abs(voteStatus) + Math.abs(voteIntention))
+            await firestoreApi.vote(currentUser.id, playlistId, songId, voteChange, voteIntention, playlistType)
+            return 'voted_on_song'
+        } catch (error) {
+            return thunkApi.rejectWithValue('database_error')
+        }
+})
 
 const followPlaylist = createAsyncThunk<
 string,
@@ -463,6 +499,7 @@ export const playlistsAsyncActions = {
     addSong, 
     checkIfSongExists,
     deleteSong,
+    vote,
     followPlaylist,
     unfollowPlaylist,
     updatePartySong,

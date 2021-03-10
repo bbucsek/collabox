@@ -8,6 +8,7 @@ import { selectCurrentPlaylist } from '../../store/slices/playlists/selectors';
 import { selectCurrentUser } from '../../store/slices/authentication/selectors';
 import Confirmation from '../Confirmation';
 import { Container, SongTitle, AddedBy, VoteCount, VoteButtons, DeleteIcon } from './styles'
+import PlaylistType from '../../types/PlaylistType';
 
 type SongProps = {
     song: Song
@@ -17,6 +18,7 @@ const SongItem = ({ song }: SongProps) => {
     const currentUser = useSelector(selectCurrentUser);
     const currentPlaylist = useSelector(selectCurrentPlaylist)
     const isOwner = currentUser?.name === currentPlaylist?.ownerName;
+    const playlistType = isOwner? PlaylistType.ownPlaylist :  PlaylistType.followedPlaylist;
     const [confirmationIsVisible, setConfirmationIsVisible] = useState<boolean>(false)
     const dispatch = useDispatch()
     
@@ -29,6 +31,14 @@ const SongItem = ({ song }: SongProps) => {
 
     const deleteOnClick = () => {
         setConfirmationIsVisible(true)
+    }
+
+    const upvote = () => {
+        dispatch(playlistsAsyncActions.vote({songId: song.id, voteIntention: 1, playlistType}))
+    }
+
+    const downvote = () => {
+        dispatch(playlistsAsyncActions.vote({songId: song.id, voteIntention: -1, playlistType}))
     }
 
     return (
@@ -44,8 +54,8 @@ const SongItem = ({ song }: SongProps) => {
                 {`votes: ${song.votes}`}
             </VoteCount>
             <VoteButtons>
-                <AddIcon />
-                <RemoveIcon />
+                <AddIcon onClick={upvote}/>
+                <RemoveIcon onClick={downvote} />
             </VoteButtons>
             {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
         </Container>
