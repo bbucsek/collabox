@@ -53,8 +53,8 @@ const SongItem = ({ song }: SongProps) => {
                 {`votes: ${song.votes}`}
             </VoteCount>
             <VoteButtons>
-                <UpvoteIcon onClick={upvote} disabled={song.upVoted}/>
-                <DownvoteIcon onClick={downvote} disabled={song.downVoted} />
+                <UpvoteIcon onClick={upvote} disabled={song.upVoted} data-testid="upvote-icon"/>
+                <DownvoteIcon onClick={downvote} disabled={song.downVoted} data-testid="downvote-icon" />
             </VoteButtons>
             {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
         </Container>

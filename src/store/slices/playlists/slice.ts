@@ -51,9 +51,6 @@ string,
         const state = thunkApi.getState()
         const {authentication} = state
         const {currentUser} = authentication
-        if(!currentUser) {
-            return thunkApi.rejectWithValue('no_current_user')
-        }
         const {playlists} = state
         if(!playlists.currentPlaylist) {
             return thunkApi.rejectWithValue('no_current_playlist')
@@ -62,7 +59,7 @@ string,
         const {followers} = currentPlaylist
         const playlistId = payload
         try {
-            await firestoreApi.deletePlaylist(currentUser.id, playlistId, followers)
+            await firestoreApi.deletePlaylist(currentUser!.id, playlistId, followers)
             return 'playlist_deleted'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')
@@ -189,24 +186,18 @@ string,
         const state = thunkApi.getState()   
         const {authentication} = state
         const { currentUser } = authentication  
-        if (!currentUser) {
-            return thunkApi.rejectWithValue("no_currentUser")
-        }
         const { playlists } = state
         const { currentPlaylist } = playlists
-        if (!currentPlaylist) {
-            return thunkApi.rejectWithValue("no_currentPlaylist")
-        }
-        const playlistId = currentPlaylist.id
+        const playlistId = currentPlaylist!.id
         const {songId, voteType, playlistType } = payload
 
-        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser.id, playlistId, songId, playlistType)
+        const voteStatus: number = await firestoreApi.checkVoteStatus(currentUser!.id, playlistId, songId, playlistType)
         if ( voteStatus === voteType ) {
             return thunkApi.rejectWithValue('already_voted')
         }
         try {
             const voteChange = voteType * (Math.abs(voteStatus) + Math.abs(voteType))
-            await firestoreApi.vote(currentUser.id, playlistId, songId, voteChange, voteType, playlistType)
+            await firestoreApi.vote(currentUser!.id, playlistId, songId, voteChange, voteType, playlistType)
             return 'voted_on_song'
         } catch (error) {
             return thunkApi.rejectWithValue('database_error')

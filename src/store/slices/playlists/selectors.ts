@@ -1,3 +1,4 @@
+import VoteType from '../../../types/VoteType'
 import RootState from '../../RootState'
 
 export const selectOwnPlaylists = (state: RootState) => state.playlists.ownPlaylists
@@ -19,9 +20,9 @@ export const selectSongs = (state: RootState) => {
         return songsWithoutVoteInfo
     }
     let songs = songsWithoutVoteInfo?.map((song) => {
-        if (voteInfo[song.id] === 1){
+        if (voteInfo[song.id] === VoteType.upVote){
             return {...song, upVoted: true}
-        } else if(voteInfo[song.id] === -1) {
+        } else if(voteInfo[song.id] === VoteType.downVote) {
             return {...song, downVoted: true}
         }   
         return song
