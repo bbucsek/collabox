@@ -32,12 +32,8 @@ const SongItem = ({ song }: SongProps) => {
         setConfirmationIsVisible(true)
     }
 
-    const upvote = () => {
-        dispatch(playlistsAsyncActions.vote({songId: song.id, voteType: VoteType.upVote, playlistType}))
-    }
-
-    const downvote = () => {
-        dispatch(playlistsAsyncActions.vote({songId: song.id, voteType: VoteType.downVote, playlistType}))
+    const vote = (vote: VoteType) => {
+        dispatch(playlistsAsyncActions.vote({songId: song.id, voteType: vote, playlistType}))
     }
 
     return (
@@ -53,8 +49,8 @@ const SongItem = ({ song }: SongProps) => {
                 {`votes: ${song.votes}`}
             </VoteCount>
             <VoteButtons>
-                <UpvoteIcon onClick={upvote} disabled={song.upVoted} data-testid="upvote-icon"/>
-                <DownvoteIcon onClick={downvote} disabled={song.downVoted} data-testid="downvote-icon" />
+                <UpvoteIcon onClick={() => {vote(VoteType.upVote)}} disabled={song.upVoted} data-testid="upvote-icon"/>
+                <DownvoteIcon onClick={() => {vote(VoteType.downVote)}} disabled={song.downVoted} data-testid="downvote-icon" />
             </VoteButtons>
             {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
         </Container>
