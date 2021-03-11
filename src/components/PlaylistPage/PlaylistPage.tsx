@@ -17,7 +17,6 @@ import {
     IconWrapper,
     Container,
     Subtitle,
-    Title,
     AddIcon,
     InviteIcon,
     PlayIcon,
@@ -30,6 +29,7 @@ import {
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
+import Editable from "../Editable";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -128,8 +128,11 @@ const PlaylistPage = () => {
 if (isOwner) {
 
     return (
-        <Container>
-                <Title data-testid="title" isOwner={isOwner}> {currentPlaylistName} </Title>
+            <Container>
+                <Editable 
+                    data-testid="title" 
+                    playlistName={currentPlaylist?.playlistName}
+                />
                 <IconWrapper>
                     <TooltipWrapper> 
                         <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
