@@ -24,7 +24,7 @@ You can upvote/downvote each song in your own and the followed playlists. The or
 
 ### Screen shot from the application
 
-![Playlist](https://github.com/bbucsek/collabox/blob/feat/Readme/prtscr.jpg?raw=true "Collabox")
+![Playlist](prtscr.jpg?raw=true "Collabox")
 
 ### Installation and Setup Instructions
 
