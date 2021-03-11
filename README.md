@@ -22,9 +22,9 @@ The playlist owner can also start a party, to which all followers can join. All 
 
 You can upvote/downvote each song in your own and the followed playlists. The order of the songs in the playlist is determined by their popularity.
 
-### Screen shot from the application
+### Screenshot from the application
 
-![Playlist](https://github.com/bbucsek/collabox/blob/feat/Readme/prtscr.jpg?raw=true "Collabox")
+![Playlist](prtscr.jpg?raw=true "Collabox")
 
 ### Installation and Setup Instructions
 
