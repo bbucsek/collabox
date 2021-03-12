@@ -119,6 +119,7 @@ const subscribeToOwnPlaylists = async (userId: string,
     .collection('users')
     .doc(userId)
     .collection('ownPlaylists')
+    .orderBy('playlistName')
     .onSnapshot(callback) 
 }
 
@@ -141,6 +142,7 @@ const subscribeToOtherPlaylists = async (userId: string, observer: (playlists: a
     .collection('users')
     .doc(userId)
     .collection('otherPlaylists')
+    .orderBy('playlistName')
     .onSnapshot(callback) 
 }
 
@@ -160,6 +162,7 @@ const subscribeToSongsCollection = async (id: string, observer: (playlist: any) 
         .collection('playlists')
         .doc(id)
         .collection('songs')
+        .orderBy('votes', 'desc')
         .onSnapshot(callback)
 }
 
