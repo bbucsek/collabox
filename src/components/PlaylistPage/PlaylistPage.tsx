@@ -17,6 +17,9 @@ import {
     PlayIcon,
     UnsubscribeIcon,
     DeleteIcon,
+    Tooltip,
+    TooltipWrapper,
+    PartyIcon,
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
@@ -83,12 +86,32 @@ const PlaylistPage = () => {
             <Container>
                 <Title data-testid="title"> {currentPlaylist?.playlistName} </Title>
                 <IconWrapper>
-                    <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
-                    {currentPlaylist?.songs?.length > 0 && <PlayIcon onClick={() => setPlayerActive(!playerActive)} data-testid="playback-icon"/>}
-                    <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
+                    <TooltipWrapper> 
+                        <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
+                        <Tooltip length="140">Add new song</Tooltip>
+                    </TooltipWrapper> 
+                    {currentPlaylist?.songs?.length > 0 && 
+                        <>
+                            <TooltipWrapper>
+                                <PlayIcon onClick={() => setPlayerActive(!playerActive)} data-testid="playback-icon"/>
+                                <Tooltip length="160">Play the playlist</Tooltip>
+                            </TooltipWrapper>
+                            <TooltipWrapper>
+                                <PartyIcon onClick={() => setPlayerActive(!playerActive)} data-testid="playback-icon"/>
+                                <Tooltip length="140">Start a party</Tooltip>
+                            </TooltipWrapper>
+                        </>}
+                    <TooltipWrapper> 
+                        <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
+                        <Tooltip length="200">Invite others to follow</Tooltip>
+                    </TooltipWrapper> 
                     {!isOwner && <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>}
                     {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
-                    {isOwner && <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>}
+                    {isOwner && <> 
+                                    <TooltipWrapper> 
+                                        <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>
+                                        <Tooltip length="140">Delete playlist</Tooltip>
+                                    </TooltipWrapper></>}
                 </IconWrapper>
                 {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs/>}
                 {addSongActive && <AddSong />}
