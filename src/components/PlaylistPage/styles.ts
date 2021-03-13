@@ -50,6 +50,8 @@ export const PlayIcon = styled(PlayArrowIcon)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
     cursor: pointer;
+    margin-left: -0.2rem;
+    margin-right: -0.7rem;
 
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
@@ -79,6 +81,7 @@ export const UnsubscribeIcon = styled(SentimentVeryDissatisfiedIcon)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
     cursor: pointer;
+    margin-left: 0.3rem;
 
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
@@ -96,16 +99,17 @@ export const DeleteIcon = styled(DeleteI)`
 `
 export const TooltipWrapper = styled.div`
     position: relative;
+    margin-right: 0.5rem;
 `
 
-export const Tooltip = styled.div<{length: string}>`
+export const Tooltip = styled.div<{length: string, left: string}>`
     & {
         visibility: hidden;
         opacity: 0;
         transition: visibility 0.5s, opacity 0.5s;
         position: absolute;
         top: -70%;
-        left: -100%;
+        left: ${(props) => props.left}%;
         z-index: 1;
         min-width: ${(props) => props.length}px;
         padding: 5px;
