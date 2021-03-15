@@ -26,14 +26,21 @@ import { selectCurrentUser } from "../../store/slices/authentication/selectors";
 import Playlist from "../../types/Playlist";
 import User from "../../types/User";
 
-const PlaySongs = () => {
+type playSongsProps = {
+    isParty: boolean,
+    closePlayer: () => void,
+}
+
+const PlaySongs = (props: playSongsProps) => {
+    const {isParty} = props
+    const playbackStarted = true;
     const songs = useSelector(selectSongs);
     const currentPlaylist: Playlist = useSelector(selectCurrentPlaylist);
     const currentUser: User = useSelector(selectCurrentUser);
     const isOwner = currentUser.id === currentPlaylist.owner;
-    const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
-    const [partyJoined, setPartyJoined] = useState<boolean>(false);
-    const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
+    // const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
+    // const [partyJoined, setPartyJoined] = useState<boolean>(false);
+    // const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
     const [player, setPlayer] = useState<any | undefined>();
     const [currentSong, setCurrentSong] = useState<Pick<Song, 'youtubeId'| 'title'> | undefined>();
     const [currentSongForwardIndex, setCurrentSongForwardIndex] = useState<number>(0);
@@ -45,7 +52,7 @@ const PlaySongs = () => {
     const [playedSongs, setPlayedSongs] = useState<Pick<Song, 'youtubeId'| 'title'>[]>([]);
     const [canChangeSong, setCanChangeSong] = useState<boolean>(true);
     const dispatch = useDispatch()
-
+    console.log('rerendered/mounted')
     const playerOptions: PlayerOptions = {
         height: "390",
         width: "640",
@@ -54,33 +61,33 @@ const PlaySongs = () => {
         },
     };
 
-    const startPlayback = () => {
-        setPlaybackStarted(true);
-        if (songs.length === 1) {
-            setCanSkipForward(false)
-        }
-    };
+    // const startPlayback = () => {
+    //     setPlaybackStarted(true);
+    //     if (songs.length === 1) {
+    //         setCanSkipForward(false)
+    //     }
+    // };
 
-    const startParty = async () => {
-        if (!currentSong) {
-            setCurrentSong(songs[0]);
-        }
-        dispatch(playlistsAsyncActions.updatePartySong(
-            {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
-        setPartyJoined(true);
-    };
+    // const startParty = async () => {
+    //     if (!currentSong) {
+    //         setCurrentSong(songs[0]);
+    //     }
+    //     dispatch(playlistsAsyncActions.updatePartySong(
+    //         {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
+    //     // setisParty(true);
+    // };
 
     const endParty =  useCallback( async() => {
         await dispatch(playlistsAsyncActions.endParty(currentPlaylist.id))
     }, [currentPlaylist.id, dispatch])
 
-    const joinParty = () => {
-        if (!currentPlaylist.partySong) {
-            return
-        }
-        setPlaybackStarted(true);
-        setPartyJoined(true);
-    };
+    // const joinParty = () => {
+    //     if (!currentPlaylist.partySong) {
+    //         return
+    //     }
+    //     setPlaybackStarted(true);
+    //     // setisParty(true);
+    // };
 
     const onReady = (event: any) => {
         setPlayer(event.target);
@@ -91,7 +98,7 @@ const PlaySongs = () => {
         if (currentSong) {
             setPlayedSongs([...playedSongs, {youtubeId: currentSong.youtubeId, title: currentSong.title}]);
         }
-        if (!partyJoined) {
+        if (!isParty) {
             setCurrentSongForwardIndex(currentSongForwardIndex + 1);
         } 
         setCanChangeSong(true);
@@ -157,33 +164,36 @@ const PlaySongs = () => {
     };
 
     const closePlayer = useCallback(() => {
-        setPartyJoined(false)
-        setPlaybackStarted(false)
-        setPlayer(null)
-        setCurrentSongForwardIndex(0)
-        setCurrentSongBackwardIndex(0)
-        setIsMuted(false)
-        setIsPlaying(false)
-        setCanSkipForward(true)
-        setCanSkipBackward(false)
-        setPlayedSongs([])
-        setCanChangeSong(true)
-        if (isOwner && partyJoined) {
+        // setisParty(false)
+        // setPlaybackStarted(false)
+        // setPlayer(null)
+        // setCurrentSongForwardIndex(0)
+        // setCurrentSongBackwardIndex(0)
+        // setIsMuted(false)
+        // setIsPlaying(false)
+        // setCanSkipForward(true)
+        // setCanSkipBackward(false)
+        // setPlayedSongs([])
+        // setCanChangeSong(true)
+        if (isOwner && isParty) {
             endParty();
         }
-    }, [endParty, partyJoined, isOwner])
+        props.closePlayer();
+    }, [endParty, isParty, isOwner, props])
 
+    // useEffect(() => {
+    //     if (currentPlaylist.partySong) {
+    //         setPartyOngoing(true)
+    //     } else {
+    //         setPartyOngoing(false)
+    //     }
+
+    // }, [currentPlaylist])
+
+    // change currentSong during playback and party by owner
     useEffect(() => {
-        if (currentPlaylist.partySong) {
-            setPartyOngoing(true)
-        } else {
-            setPartyOngoing(false)
-        }
-
-    }, [currentPlaylist])
-
-    useEffect(() => {
-        if (!songs || !canChangeSong || (partyJoined && !isOwner)) {
+        console.log('I am the culprit')
+        if (!songs || !canChangeSong || (isParty && !isOwner)) {
             return;
         }
 
@@ -198,43 +208,67 @@ const PlaySongs = () => {
                 closePlayer();
             }
         }
-    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, partyJoined, 
+    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty, 
         currentPlaylist.id, dispatch, playbackStarted, closePlayer]);
 
     useEffect(() => {
+        console.log('I am the culprit in startparty usee')
         const startParty = async () => {
-            if(partyJoined && isOwner && currentSong) {
+            if(isParty && isOwner && currentSong) {
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
             }
         }
             startParty();
-    }, [partyJoined, isOwner, dispatch, currentSong, currentPlaylist.id])
+    }, [isParty, isOwner, dispatch, currentSong, currentPlaylist.id])
 
     useEffect(() => {
-        if (!isOwner && partyJoined && player && currentPlaylist.partySong) {
+        if (!isOwner && isParty && player && currentPlaylist.partySong) {
             const startSecond = (Date.now()-Number(currentPlaylist.partySong.startTime))/1000
             player.loadVideoById(currentPlaylist.partySong.youtubeId, startSecond)
-        } else if (!isOwner && partyJoined && player && !currentPlaylist.partySong) {
+        } else if (!isOwner && isParty && player && !currentPlaylist.partySong) {
             closePlayer();
         }
-    }, [currentPlaylist.partySong, partyJoined, player, isOwner, closePlayer])
+    }, [currentPlaylist.partySong, isParty, player, isOwner, closePlayer])
 
+    // anybody starts a playback
     useEffect(() => {
-        setPlaybackStarted(false)
-        setPartyJoined(false)
-    }, [currentPlaylist.id])
+        if (!isParty && songs.length === 1) {
+            setCanSkipForward(false)
+        }
+    }, [isParty, songs.length])
 
-    if (!playbackStarted && !partyJoined) {
-        return (
-            <OptionContainer>
-                <Option onClick={startPlayback} data-testid="playback-button">Listen to the playlist</Option>
-                {isOwner && <Option onClick={startParty} data-testid="start-party-button">Start a party</Option>}
-                {!isOwner && partyOngoing && <Option onClick={joinParty} data-testid="join-party-button">Join the party</Option>}
-            </OptionContainer>
-        );
-    }
+    // // owner starts a party
+    // useEffect(() => {
+    //     console.log('I am the culprit in owner starts a party usee')
+    //     if (!isOwner) {
+    //         return
+    //     }
+    //     // if (!currentSong) {
+    //     //     setCurrentSong(songs[0]);
+    //     // }
+    //     if (isParty) {
+    //         dispatch(playlistsAsyncActions.updatePartySong(
+    //             {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }})) 
+    //         }
+    // }, [currentPlaylist.id, dispatch, isOwner, isParty, songs])
 
-    if (partyJoined) {
+
+    // useEffect(() => {
+    //     setPlaybackStarted(false)
+    //     setisParty(false)
+    // }, [currentPlaylist.id])
+
+    // if (!playbackStarted && !isParty) {
+    //     return (
+    //         <OptionContainer>
+    //             <Option onClick={startPlayback} data-testid="playback-button">Listen to the playlist</Option>
+    //             {isOwner && <Option onClick={startParty} data-testid="start-party-button">Start a party</Option>}
+    //             {!isOwner && partyOngoing && <Option onClick={joinParty} data-testid="join-party-button">Join the party</Option>}
+    //         </OptionContainer>
+    //     );
+    // }
+
+    if (isParty) {
         return (
             <Container data-testid="playback-container-party">
                 <Close onClick={closePlayer}/>

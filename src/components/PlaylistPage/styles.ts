@@ -14,12 +14,12 @@ export const Container = styled.div`
     overflow: scroll;
 `
 
-export const Title = styled.div`
+export const Title = styled.div<{isOwner: boolean}>`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 4rem;
     font-weight: 900;
     margin-top: 2rem;
-    margin-bottom: 3rem;
+    margin-bottom: ${({isOwner}) => isOwner? '2rem' : '1rem'};
 `
 
 export const Subtitle = styled.div`
