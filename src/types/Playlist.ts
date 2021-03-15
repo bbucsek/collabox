@@ -5,6 +5,7 @@ type Playlist = {
     id: string,
     playlistName: string,
     owner: string,
+    ownerName: string,
     followers: string[],
     partySong: null | {
         youtubeId: string,

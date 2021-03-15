@@ -208,8 +208,7 @@ const PlaySongs = (props: playSongsProps) => {
                 closePlayer();
             }
         }
-    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty, 
-        currentPlaylist.id, dispatch, playbackStarted, closePlayer]);
+    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  closePlayer]);
 
     useEffect(() => {
         console.log('I am the culprit in startparty usee')
@@ -246,11 +245,18 @@ const PlaySongs = (props: playSongsProps) => {
     //     // if (!currentSong) {
     //     //     setCurrentSong(songs[0]);
     //     // }
+
+    //     const test = async () => {
+
+    //         await dispatch(playlistsAsyncActions.updatePartySong(
+    //              {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }})) 
+             
+    //     }
+
     //     if (isParty) {
-    //         dispatch(playlistsAsyncActions.updatePartySong(
-    //             {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }})) 
-    //         }
-    // }, [currentPlaylist.id, dispatch, isOwner, isParty, songs])
+    //         test()
+    //     }
+    // }, [currentPlaylist.id, dispatch, isOwner, isParty, songs]) // songs - infinite loop
 
 
     // useEffect(() => {

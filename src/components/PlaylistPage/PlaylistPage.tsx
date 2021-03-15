@@ -2,7 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { selectCurrentUser } from "../../store/slices/authentication/selectors";
-import { selectCurrentPlaylist } from "../../store/slices/playlists/selectors";
+import { 
+    selectCurrentPlaylistId, 
+    selectCurrentPlaylistName, 
+    selectCurrentPlaylistOwnerId, 
+    selectCurrentPlaylistOwnerName, 
+    selectCurrentPlaylistPartyOngoing, 
+    selectCurrentPlaylistSongsExist } from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import ActionType from "../../types/ActionType";
 import AddSong from "../AddSong";
@@ -26,7 +32,13 @@ import Confirmation from "../Confirmation";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
-    const currentPlaylist = useSelector(selectCurrentPlaylist);
+    // const currentPlaylist = useSelector(selectCurrentPlaylist);
+    const currentPlaylistId = useSelector(selectCurrentPlaylistId);
+    const currentPlaylistName = useSelector(selectCurrentPlaylistName);
+    const currentPlaylistOwnerId = useSelector(selectCurrentPlaylistOwnerId);
+    const currentPlaylistOwnerName = useSelector(selectCurrentPlaylistOwnerName);
+    const currentPlaylistSongsExist = useSelector(selectCurrentPlaylistSongsExist); 
+    const currentPlaylistPartyOngoing = useSelector(selectCurrentPlaylistPartyOngoing); 
     const currentUser = useSelector(selectCurrentUser);
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
@@ -35,7 +47,7 @@ const PlaylistPage = () => {
     const [actionType, setActionType] = useState<ActionType | null>()
     const [confirmationIsVisible, setConfirmationIsVisible] = useState(false)
     const [confirmationText, setConfirmationText] = useState<string>("")
-    const isOwner = currentUser?.name === currentPlaylist?.ownerName;
+    const isOwner = currentUser?.id === currentPlaylistOwnerId;
     const dispatch = useDispatch();
     const history = useHistory();
 
@@ -106,13 +118,13 @@ if (isOwner) {
 
     return (
         <Container>
-                <Title data-testid="title" isOwner={isOwner}> {currentPlaylist?.playlistName} </Title>
+                <Title data-testid="title" isOwner={isOwner}> {currentPlaylistName} </Title>
                 <IconWrapper>
                     <TooltipWrapper> 
                         <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
                         <Tooltip length="140" left="-105">Add new song</Tooltip>
                     </TooltipWrapper> 
-                    {currentPlaylist?.songs?.length > 0 && 
+                    {currentPlaylistSongsExist && 
                         <>
                             <TooltipWrapper>
                                 <PlayIcon onClick={startPlayback} data-testid="playback-icon"/>
@@ -127,13 +139,13 @@ if (isOwner) {
                         <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                         <Tooltip length="200" left="-150">Invite others to follow</Tooltip>
                     </TooltipWrapper> 
-                    {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
+                    {inviteActive && <Subtitle> invite with this id: {currentPlaylistOwnerId} </Subtitle>}
                     <TooltipWrapper> 
                         <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>
                         <Tooltip length="140" left="-96">Delete playlist</Tooltip>
                     </TooltipWrapper>
                 </IconWrapper>
-                {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
+                {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
                 {addSongActive && <AddSong />}
                 <Songlist />
                 {confirmationIsVisible && <Confirmation message={confirmationText} confirm={confirmAction}/>}
@@ -142,19 +154,19 @@ if (isOwner) {
     }
  else {
     return(<Container>
-        <Title data-testid="title" isOwner={isOwner}> {currentPlaylist?.playlistName} </Title>
-        <Subtitle>by {currentPlaylist?.ownerName}</Subtitle>
+        <Title data-testid="title" isOwner={isOwner}> {currentPlaylistName} </Title>
+        <Subtitle>by {currentPlaylistOwnerName}</Subtitle>
         <IconWrapper>
             <TooltipWrapper> 
                 <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
                 <Tooltip length="140" left="-105">Add new song</Tooltip>
             </TooltipWrapper> 
-            {currentPlaylist?.songs?.length > 0 && 
+            {currentPlaylistSongsExist && 
                     <TooltipWrapper>
                         <PlayIcon onClick={startPlayback} data-testid="playback-icon"/>
                         <Tooltip length="160" left="-170">Play the playlist</Tooltip>
                     </TooltipWrapper>}
-            {currentPlaylist?.partySong && 
+            {currentPlaylistPartyOngoing && 
                 <TooltipWrapper>
                     <PartyIcon onClick={joinParty} data-testid="playback-icon"/>
                     <Tooltip length="140" left="-100">Join the party</Tooltip>
@@ -167,9 +179,9 @@ if (isOwner) {
                 <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>
                 <Tooltip length="160" left="-100">Unfollow playlist</Tooltip>
             </TooltipWrapper>
-            {inviteActive && <Subtitle> invite with this id: {currentPlaylist?.id} </Subtitle>}
+            {inviteActive && <Subtitle> invite with this id: {currentPlaylistOwnerId} </Subtitle>}
         </IconWrapper>
-        {playerActive && currentPlaylist?.songs?.length > 0 && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
+        {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
         {addSongActive && <AddSong />}
         <Songlist />
         {confirmationIsVisible && <Confirmation message={confirmationText} confirm={confirmAction}/>}
