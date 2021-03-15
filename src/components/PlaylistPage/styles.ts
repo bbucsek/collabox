@@ -137,5 +137,14 @@ export const Tooltip = styled.div<{length: string, left: string}>`
       }
 `
 
+export const JoinPartyContainer = styled.div`
+    color: ${({theme}) => theme.colors.yellow};
+    font-size: 1.5rem;
+    line-height: 3rem;
+    &:hover {
+        cursor: pointer;
+    }
+    `
+
 
 

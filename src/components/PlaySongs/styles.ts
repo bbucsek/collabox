@@ -2,7 +2,7 @@ import styled from 'styled-components'
 import CloseIcon from '@material-ui/icons/Close';
 
 export const Container = styled.div`
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     width: 40vw;
@@ -22,6 +22,12 @@ export const Container = styled.div`
             outline: none;
         }
     }
+`
+export const PartyWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
 `
 
 export const OptionContainer = styled.div`

@@ -17,6 +17,7 @@ import { Container,
     YoutubeWrapper, 
     Button, 
     Close,
+    PartyWrapper,
  } from "./styles";
 import Song from "../../types/Song";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
@@ -159,12 +160,13 @@ const PlaySongs = (props: playSongsProps) => {
     }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  closePlayer]);
 
     useEffect(() => {
-        const startParty = async () => {
+        const updatePartySong = async () => {
             if(isParty && isOwner && currentSong) {
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
             }
         }
-            startParty();
+            updatePartySong();
+        
     }, [isParty, isOwner, dispatch, currentSong, currentPlaylist.id])
 
     useEffect(() => {
@@ -186,15 +188,17 @@ const PlaySongs = (props: playSongsProps) => {
         return (
             <Container data-testid="playback-container-party">
                 <Close onClick={closePlayer}/>
-            <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
-            <YoutubeWrapper>
-                <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
-            </YoutubeWrapper>
-            <ControlWrapper>
-                <Button onClick={toggleMute} data-testid="mute-button">
-                    {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
-                </Button>
-            </ControlWrapper>
+                <PartyWrapper>
+                    <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
+                    <ControlWrapper>
+                        <Button onClick={toggleMute} data-testid="mute-button">
+                            {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                        </Button>
+                    </ControlWrapper>
+                </PartyWrapper>
+                <YoutubeWrapper>
+                    <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
+                </YoutubeWrapper>
         </Container>
         )
     }

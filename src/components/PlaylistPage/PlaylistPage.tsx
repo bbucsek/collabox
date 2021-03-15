@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { selectCurrentUser } from "../../store/slices/authentication/selectors";
 import { 
+    selectCurrentPlaylistId,
     selectCurrentPlaylistName, 
     selectCurrentPlaylistOwnerId, 
     selectCurrentPlaylistOwnerName, 
@@ -25,6 +26,7 @@ import {
     Tooltip,
     TooltipWrapper,
     PartyIcon,
+    JoinPartyContainer,
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
@@ -32,6 +34,7 @@ import Confirmation from "../Confirmation";
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
     const currentPlaylistName = useSelector(selectCurrentPlaylistName);
+    const currentPlaylistId = useSelector(selectCurrentPlaylistId);
     const currentPlaylistOwnerId = useSelector(selectCurrentPlaylistOwnerId);
     const currentPlaylistOwnerName = useSelector(selectCurrentPlaylistOwnerName);
     const currentPlaylistSongsExist = useSelector(selectCurrentPlaylistSongsExist); 
@@ -110,7 +113,16 @@ const PlaylistPage = () => {
             dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection(id));
         };
     }, [dispatch, id]);
-
+    
+    
+    useEffect(() => {
+        return () => {
+            if (isParty && isOwner) {
+                console.log('will end party')
+                dispatch(playlistsAsyncActions.endParty(id))
+            }
+        }
+    }, [isParty, isOwner, dispatch, id])
 
 
 if (isOwner) {
@@ -138,7 +150,7 @@ if (isOwner) {
                         <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                         <Tooltip length="200" left="-150">Invite others to follow</Tooltip>
                     </TooltipWrapper> 
-                    {inviteActive && <Subtitle> invite with this id: {currentPlaylistOwnerId} </Subtitle>}
+                    {inviteActive && <Subtitle> invite with this id: {currentPlaylistId} </Subtitle>}
                     <TooltipWrapper> 
                         <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>
                         <Tooltip length="140" left="-96">Delete playlist</Tooltip>
@@ -165,20 +177,22 @@ if (isOwner) {
                         <PlayIcon onClick={startPlayback} data-testid="playback-icon"/>
                         <Tooltip length="160" left="-170">Play the playlist</Tooltip>
                     </TooltipWrapper>}
-            {currentPlaylistPartyOngoing && 
-                <TooltipWrapper>
-                    <PartyIcon onClick={joinParty} data-testid="playback-icon"/>
-                    <Tooltip length="140" left="-100">Join the party</Tooltip>
-                </TooltipWrapper>}
             <TooltipWrapper> 
                 <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                 <Tooltip length="200" left="-150">Invite others to follow</Tooltip>
             </TooltipWrapper> 
+            {inviteActive && <Subtitle> invite with this id: {currentPlaylistId} </Subtitle>}
             <TooltipWrapper> 
                 <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>
                 <Tooltip length="160" left="-100">Unfollow playlist</Tooltip>
             </TooltipWrapper>
-            {inviteActive && <Subtitle> invite with this id: {currentPlaylistOwnerId} </Subtitle>}
+            {currentPlaylistPartyOngoing && 
+                    <TooltipWrapper> 
+                        <JoinPartyContainer onClick={joinParty}>
+                            Live party!
+                        </JoinPartyContainer>
+                    <Tooltip length="140" left="-5">Join the party</Tooltip>
+                    </TooltipWrapper> }
         </IconWrapper>
         {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
         {addSongActive && <AddSong />}

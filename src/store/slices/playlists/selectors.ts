@@ -16,7 +16,8 @@ export const selectCurrentPlaylistPartyOngoing = (state:RootState) => {
     return false
 }
 export const selectCurrentPlaylistSongsExist = (state:RootState) => {
-    if (state.playlists.currentPlaylist && state.playlists.currentPlaylist.songs) {
+    if (state.playlists.currentPlaylist && state.playlists.currentPlaylist.songs 
+        && state.playlists.currentPlaylist.songs.length > 0) {
         return true
     }
     return false
