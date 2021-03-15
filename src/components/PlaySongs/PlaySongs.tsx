@@ -16,9 +16,7 @@ import { Container,
     ButtonCanBeDisabled,
     YoutubeWrapper, 
     Button, 
-    Option, 
     Close,
-    OptionContainer,
  } from "./styles";
 import Song from "../../types/Song";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
@@ -33,14 +31,10 @@ type playSongsProps = {
 
 const PlaySongs = (props: playSongsProps) => {
     const {isParty} = props
-    const playbackStarted = true;
     const songs = useSelector(selectSongs);
     const currentPlaylist: Playlist = useSelector(selectCurrentPlaylist);
     const currentUser: User = useSelector(selectCurrentUser);
     const isOwner = currentUser.id === currentPlaylist.owner;
-    // const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
-    // const [partyJoined, setPartyJoined] = useState<boolean>(false);
-    // const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
     const [player, setPlayer] = useState<any | undefined>();
     const [currentSong, setCurrentSong] = useState<Pick<Song, 'youtubeId'| 'title'> | undefined>();
     const [currentSongForwardIndex, setCurrentSongForwardIndex] = useState<number>(0);
@@ -52,7 +46,7 @@ const PlaySongs = (props: playSongsProps) => {
     const [playedSongs, setPlayedSongs] = useState<Pick<Song, 'youtubeId'| 'title'>[]>([]);
     const [canChangeSong, setCanChangeSong] = useState<boolean>(true);
     const dispatch = useDispatch()
-    console.log('rerendered/mounted')
+
     const playerOptions: PlayerOptions = {
         height: "390",
         width: "640",
@@ -61,33 +55,9 @@ const PlaySongs = (props: playSongsProps) => {
         },
     };
 
-    // const startPlayback = () => {
-    //     setPlaybackStarted(true);
-    //     if (songs.length === 1) {
-    //         setCanSkipForward(false)
-    //     }
-    // };
-
-    // const startParty = async () => {
-    //     if (!currentSong) {
-    //         setCurrentSong(songs[0]);
-    //     }
-    //     dispatch(playlistsAsyncActions.updatePartySong(
-    //         {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
-    //     // setisParty(true);
-    // };
-
     const endParty =  useCallback( async() => {
         await dispatch(playlistsAsyncActions.endParty(currentPlaylist.id))
     }, [currentPlaylist.id, dispatch])
-
-    // const joinParty = () => {
-    //     if (!currentPlaylist.partySong) {
-    //         return
-    //     }
-    //     setPlaybackStarted(true);
-    //     // setisParty(true);
-    // };
 
     const onReady = (event: any) => {
         setPlayer(event.target);
@@ -164,35 +134,13 @@ const PlaySongs = (props: playSongsProps) => {
     };
 
     const closePlayer = useCallback(() => {
-        // setisParty(false)
-        // setPlaybackStarted(false)
-        // setPlayer(null)
-        // setCurrentSongForwardIndex(0)
-        // setCurrentSongBackwardIndex(0)
-        // setIsMuted(false)
-        // setIsPlaying(false)
-        // setCanSkipForward(true)
-        // setCanSkipBackward(false)
-        // setPlayedSongs([])
-        // setCanChangeSong(true)
         if (isOwner && isParty) {
             endParty();
         }
         props.closePlayer();
     }, [endParty, isParty, isOwner, props])
 
-    // useEffect(() => {
-    //     if (currentPlaylist.partySong) {
-    //         setPartyOngoing(true)
-    //     } else {
-    //         setPartyOngoing(false)
-    //     }
-
-    // }, [currentPlaylist])
-
-    // change currentSong during playback and party by owner
     useEffect(() => {
-        console.log('I am the culprit')
         if (!songs || !canChangeSong || (isParty && !isOwner)) {
             return;
         }
@@ -211,7 +159,6 @@ const PlaySongs = (props: playSongsProps) => {
     }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  closePlayer]);
 
     useEffect(() => {
-        console.log('I am the culprit in startparty usee')
         const startParty = async () => {
             if(isParty && isOwner && currentSong) {
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
@@ -229,50 +176,11 @@ const PlaySongs = (props: playSongsProps) => {
         }
     }, [currentPlaylist.partySong, isParty, player, isOwner, closePlayer])
 
-    // anybody starts a playback
     useEffect(() => {
         if (!isParty && songs.length === 1) {
             setCanSkipForward(false)
         }
     }, [isParty, songs.length])
-
-    // // owner starts a party
-    // useEffect(() => {
-    //     console.log('I am the culprit in owner starts a party usee')
-    //     if (!isOwner) {
-    //         return
-    //     }
-    //     // if (!currentSong) {
-    //     //     setCurrentSong(songs[0]);
-    //     // }
-
-    //     const test = async () => {
-
-    //         await dispatch(playlistsAsyncActions.updatePartySong(
-    //              {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }})) 
-             
-    //     }
-
-    //     if (isParty) {
-    //         test()
-    //     }
-    // }, [currentPlaylist.id, dispatch, isOwner, isParty, songs]) // songs - infinite loop
-
-
-    // useEffect(() => {
-    //     setPlaybackStarted(false)
-    //     setisParty(false)
-    // }, [currentPlaylist.id])
-
-    // if (!playbackStarted && !isParty) {
-    //     return (
-    //         <OptionContainer>
-    //             <Option onClick={startPlayback} data-testid="playback-button">Listen to the playlist</Option>
-    //             {isOwner && <Option onClick={startParty} data-testid="start-party-button">Start a party</Option>}
-    //             {!isOwner && partyOngoing && <Option onClick={joinParty} data-testid="join-party-button">Join the party</Option>}
-    //         </OptionContainer>
-    //     );
-    // }
 
     if (isParty) {
         return (

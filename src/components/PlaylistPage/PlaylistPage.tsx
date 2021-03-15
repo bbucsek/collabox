@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { selectCurrentUser } from "../../store/slices/authentication/selectors";
 import { 
-    selectCurrentPlaylistId, 
     selectCurrentPlaylistName, 
     selectCurrentPlaylistOwnerId, 
     selectCurrentPlaylistOwnerName, 
@@ -32,8 +31,6 @@ import Confirmation from "../Confirmation";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
-    // const currentPlaylist = useSelector(selectCurrentPlaylist);
-    const currentPlaylistId = useSelector(selectCurrentPlaylistId);
     const currentPlaylistName = useSelector(selectCurrentPlaylistName);
     const currentPlaylistOwnerId = useSelector(selectCurrentPlaylistOwnerId);
     const currentPlaylistOwnerName = useSelector(selectCurrentPlaylistOwnerName);
@@ -106,12 +103,14 @@ const PlaylistPage = () => {
     useEffect(() => {
         dispatch(playlistsAsyncActions.subscribeToPlaylist(id));
         dispatch(playlistsAsyncActions.subscribeToSongsCollection(id));
+        setPlayerActive(false)
 
         return () => {
             dispatch(playlistsAsyncActions.unsubscribeFromPlaylist(id));
             dispatch(playlistsAsyncActions.unsubscribeFromSongsCollection(id));
         };
     }, [dispatch, id]);
+
 
 
 if (isOwner) {
