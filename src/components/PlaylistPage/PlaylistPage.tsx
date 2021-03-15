@@ -118,7 +118,6 @@ const PlaylistPage = () => {
     useEffect(() => {
         return () => {
             if (isParty && isOwner) {
-                console.log('will end party')
                 dispatch(playlistsAsyncActions.endParty(id))
             }
         }
