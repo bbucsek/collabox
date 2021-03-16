@@ -11,7 +11,7 @@ const theme = {
     blueGreen: '#007a7a',
     whiteFontColor: '#ebd9c8',
     lightGreen: '#058585',
-    yellow: '#fcba03',
+    yellow: '#edea1c',
 
     warning: '#43e0d7',
     error: '#fc0390',

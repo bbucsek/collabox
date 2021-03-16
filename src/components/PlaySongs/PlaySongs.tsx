@@ -16,9 +16,8 @@ import { Container,
     ButtonCanBeDisabled,
     YoutubeWrapper, 
     Button, 
-    Option, 
     Close,
-    OptionContainer,
+    PartyWrapper,
  } from "./styles";
 import Song from "../../types/Song";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
@@ -26,14 +25,16 @@ import { selectCurrentUser } from "../../store/slices/authentication/selectors";
 import Playlist from "../../types/Playlist";
 import User from "../../types/User";
 
-const PlaySongs = () => {
+type playSongsProps = {
+    isParty: boolean,
+    closePlayer: () => void,
+}
+
+const PlaySongs = ({ isParty, closePlayer }: playSongsProps) => {
     const songs = useSelector(selectSongs);
     const currentPlaylist: Playlist = useSelector(selectCurrentPlaylist);
     const currentUser: User = useSelector(selectCurrentUser);
     const isOwner = currentUser.id === currentPlaylist.owner;
-    const [partyOngoing, setPartyOngoing] = useState<boolean>(false);
-    const [partyJoined, setPartyJoined] = useState<boolean>(false);
-    const [playbackStarted, setPlaybackStarted] = useState<boolean>(false);
     const [player, setPlayer] = useState<any | undefined>();
     const [currentSong, setCurrentSong] = useState<Pick<Song, 'youtubeId'| 'title'> | undefined>();
     const [currentSongForwardIndex, setCurrentSongForwardIndex] = useState<number>(0);
@@ -54,33 +55,9 @@ const PlaySongs = () => {
         },
     };
 
-    const startPlayback = () => {
-        setPlaybackStarted(true);
-        if (songs.length === 1) {
-            setCanSkipForward(false)
-        }
-    };
-
-    const startParty = async () => {
-        if (!currentSong) {
-            setCurrentSong(songs[0]);
-        }
-        dispatch(playlistsAsyncActions.updatePartySong(
-            {playlistId: currentPlaylist.id, currentSong: {youtubeId: songs[0].youtubeId, title: songs[0].title }}))
-        setPartyJoined(true);
-    };
-
     const endParty =  useCallback( async() => {
         await dispatch(playlistsAsyncActions.endParty(currentPlaylist.id))
     }, [currentPlaylist.id, dispatch])
-
-    const joinParty = () => {
-        if (!currentPlaylist.partySong) {
-            return
-        }
-        setPlaybackStarted(true);
-        setPartyJoined(true);
-    };
 
     const onReady = (event: any) => {
         setPlayer(event.target);
@@ -91,7 +68,7 @@ const PlaySongs = () => {
         if (currentSong) {
             setPlayedSongs([...playedSongs, {youtubeId: currentSong.youtubeId, title: currentSong.title}]);
         }
-        if (!partyJoined) {
+        if (!isParty) {
             setCurrentSongForwardIndex(currentSongForwardIndex + 1);
         } 
         setCanChangeSong(true);
@@ -156,34 +133,15 @@ const PlaySongs = () => {
           setIsMuted(!isMuted)
     };
 
-    const closePlayer = useCallback(() => {
-        setPartyJoined(false)
-        setPlaybackStarted(false)
-        setPlayer(null)
-        setCurrentSongForwardIndex(0)
-        setCurrentSongBackwardIndex(0)
-        setIsMuted(false)
-        setIsPlaying(false)
-        setCanSkipForward(true)
-        setCanSkipBackward(false)
-        setPlayedSongs([])
-        setCanChangeSong(true)
-        if (isOwner && partyJoined) {
+    const close = useCallback(() => {
+        if (isOwner && isParty) {
             endParty();
         }
-    }, [endParty, partyJoined, isOwner])
+        closePlayer();
+    }, [endParty, isParty, isOwner, closePlayer])
 
     useEffect(() => {
-        if (currentPlaylist.partySong) {
-            setPartyOngoing(true)
-        } else {
-            setPartyOngoing(false)
-        }
-
-    }, [currentPlaylist])
-
-    useEffect(() => {
-        if (!songs || !canChangeSong || (partyJoined && !isOwner)) {
+        if (!songs || !canChangeSong || (isParty && !isOwner)) {
             return;
         }
 
@@ -195,65 +153,58 @@ const PlaySongs = () => {
             setCurrentSong(notPlayedSongs[0]);
             setCanChangeSong(false);
             if (notPlayedSongs.length === 0) {
-                closePlayer();
+                close();
             }
         }
-    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, partyJoined, 
-        currentPlaylist.id, dispatch, playbackStarted, closePlayer]);
+    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  close]);
 
     useEffect(() => {
-        const startParty = async () => {
-            if(partyJoined && isOwner && currentSong) {
+        const updatePartySong = async () => {
+            if(isParty && isOwner && currentSong) {
             await dispatch(playlistsAsyncActions.updatePartySong({playlistId: currentPlaylist.id, currentSong}))
             }
         }
-            startParty();
-    }, [partyJoined, isOwner, dispatch, currentSong, currentPlaylist.id])
+            updatePartySong();
+        
+    }, [isParty, isOwner, dispatch, currentSong, currentPlaylist.id])
 
     useEffect(() => {
-        if (!isOwner && partyJoined && player && currentPlaylist.partySong) {
+        if (!isOwner && isParty && player && currentPlaylist.partySong) {
             const startSecond = (Date.now()-Number(currentPlaylist.partySong.startTime))/1000
             player.loadVideoById(currentPlaylist.partySong.youtubeId, startSecond)
-        } else if (!isOwner && partyJoined && player && !currentPlaylist.partySong) {
-            closePlayer();
+        } else if (!isOwner && isParty && player && !currentPlaylist.partySong) {
+            close();
         }
-    }, [currentPlaylist.partySong, partyJoined, player, isOwner, closePlayer])
+    }, [currentPlaylist.partySong, isParty, player, isOwner, close])
 
     useEffect(() => {
-        setPlaybackStarted(false)
-        setPartyJoined(false)
-    }, [currentPlaylist.id])
+        if (!isParty && songs.length === 1) {
+            setCanSkipForward(false)
+        }
+    }, [isParty, songs.length])
 
-    if (!playbackStarted && !partyJoined) {
-        return (
-            <OptionContainer>
-                <Option onClick={startPlayback} data-testid="playback-button">Listen to the playlist</Option>
-                {isOwner && <Option onClick={startParty} data-testid="start-party-button">Start a party</Option>}
-                {!isOwner && partyOngoing && <Option onClick={joinParty} data-testid="join-party-button">Join the party</Option>}
-            </OptionContainer>
-        );
-    }
-
-    if (partyJoined) {
+    if (isParty) {
         return (
             <Container data-testid="playback-container-party">
-                <Close onClick={closePlayer}/>
-            <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
-            <YoutubeWrapper>
-                <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
-            </YoutubeWrapper>
-            <ControlWrapper>
-                <Button onClick={toggleMute} data-testid="mute-button">
-                    {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
-                </Button>
-            </ControlWrapper>
+                <Close onClick={close} data-testid="close-button"/>
+                <PartyWrapper>
+                    <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
+                    <ControlWrapper>
+                        <Button onClick={toggleMute} data-testid="mute-button">
+                            {isMuted ? <VolumeUpIcon /> : <VolumeOffIcon />}
+                        </Button>
+                    </ControlWrapper>
+                </PartyWrapper>
+                <YoutubeWrapper>
+                    <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
+                </YoutubeWrapper>
         </Container>
         )
     }
 
     return (
         <Container data-testid="playback-container">
-            <Close onClick={closePlayer}/>
+            <Close onClick={close} data-testid="close-button"/>
             <Title data-testid="playback-title">{currentSong?.title}</Title>
             <YoutubeWrapper>
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />
