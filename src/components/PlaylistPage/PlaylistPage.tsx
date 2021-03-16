@@ -52,17 +52,18 @@ const PlaylistPage = () => {
     const history = useHistory();
 
     const startPlayback = () => {
+        setIsParty(false)
         setPlayerActive(true)
     }
 
     const startParty = () => {
-        setPlayerActive(true)
         setIsParty(true)
+        setPlayerActive(true)
     }
 
     const joinParty = () => {
-        setPlayerActive(true)
         setIsParty(true)
+        setPlayerActive(true)
     }
 
     const closePlayer = () => {

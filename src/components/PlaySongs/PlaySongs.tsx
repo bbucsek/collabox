@@ -30,8 +30,7 @@ type playSongsProps = {
     closePlayer: () => void,
 }
 
-const PlaySongs = (props: playSongsProps) => {
-    const {isParty} = props
+const PlaySongs = ({ isParty, closePlayer }: playSongsProps) => {
     const songs = useSelector(selectSongs);
     const currentPlaylist: Playlist = useSelector(selectCurrentPlaylist);
     const currentUser: User = useSelector(selectCurrentUser);
@@ -134,12 +133,12 @@ const PlaySongs = (props: playSongsProps) => {
           setIsMuted(!isMuted)
     };
 
-    const closePlayer = useCallback(() => {
+    const close = useCallback(() => {
         if (isOwner && isParty) {
             endParty();
         }
-        props.closePlayer();
-    }, [endParty, isParty, isOwner, props])
+        closePlayer();
+    }, [endParty, isParty, isOwner, closePlayer])
 
     useEffect(() => {
         if (!songs || !canChangeSong || (isParty && !isOwner)) {
@@ -154,10 +153,10 @@ const PlaySongs = (props: playSongsProps) => {
             setCurrentSong(notPlayedSongs[0]);
             setCanChangeSong(false);
             if (notPlayedSongs.length === 0) {
-                closePlayer();
+                close();
             }
         }
-    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  closePlayer]);
+    }, [songs, currentSongBackwardIndex, canChangeSong, playedSongs, isOwner, isParty,  close]);
 
     useEffect(() => {
         const updatePartySong = async () => {
@@ -174,9 +173,9 @@ const PlaySongs = (props: playSongsProps) => {
             const startSecond = (Date.now()-Number(currentPlaylist.partySong.startTime))/1000
             player.loadVideoById(currentPlaylist.partySong.youtubeId, startSecond)
         } else if (!isOwner && isParty && player && !currentPlaylist.partySong) {
-            closePlayer();
+            close();
         }
-    }, [currentPlaylist.partySong, isParty, player, isOwner, closePlayer])
+    }, [currentPlaylist.partySong, isParty, player, isOwner, close])
 
     useEffect(() => {
         if (!isParty && songs.length === 1) {
@@ -187,7 +186,7 @@ const PlaySongs = (props: playSongsProps) => {
     if (isParty) {
         return (
             <Container data-testid="playback-container-party">
-                <Close onClick={closePlayer} data-testid="close-button"/>
+                <Close onClick={close} data-testid="close-button"/>
                 <PartyWrapper>
                     <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
                     <ControlWrapper>
@@ -205,7 +204,7 @@ const PlaySongs = (props: playSongsProps) => {
 
     return (
         <Container data-testid="playback-container">
-            <Close onClick={closePlayer} data-testid="close-button"/>
+            <Close onClick={close} data-testid="close-button"/>
             <Title data-testid="playback-title">{currentSong?.title}</Title>
             <YoutubeWrapper>
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />

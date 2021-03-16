@@ -38,7 +38,6 @@ export const IconWrapper = styled.div`
 export const AddIcon = styled(PlaylistAddIcon)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
-    // margin-right: 1rem;
     cursor: pointer;
 
     &:hover {
@@ -61,6 +60,7 @@ export const PartyIcon = styled(MusicNoteIcon)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
     cursor: pointer;
+    margin-right: -0.4rem;
 
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
@@ -71,6 +71,7 @@ export const InviteIcon = styled(PersonAddIcon)`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 3rem !important;
     cursor: pointer;
+    margin-left: 0.4rem;
 
     &:hover {
         color: ${({ theme }) => theme.colors.secondaryLight};
