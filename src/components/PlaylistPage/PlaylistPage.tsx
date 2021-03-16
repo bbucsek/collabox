@@ -132,73 +132,72 @@ if (isOwner) {
                 <IconWrapper>
                     <TooltipWrapper> 
                         <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
-                        <Tooltip length="140" left="-105">Add new song</Tooltip>
+                        <Tooltip length="140" left="-105" data-testid="addsong-tooltip">Add new song</Tooltip>
                     </TooltipWrapper> 
                     {currentPlaylistSongsExist && 
                         <>
                             <TooltipWrapper>
                                 <PlayIcon onClick={startPlayback} data-testid="playback-icon"/>
-                                <Tooltip length="160" left="-170">Play the playlist</Tooltip>
+                                <Tooltip length="160" left="-170" data-testid="playback-tooltip">Play the playlist</Tooltip>
                             </TooltipWrapper>
                             <TooltipWrapper>
-                                <PartyIcon onClick={startParty} data-testid="playback-icon"/>
-                                <Tooltip length="140" left="-100">Start a party</Tooltip>
+                                <PartyIcon onClick={startParty} data-testid="start-party-icon"/>
+                                <Tooltip length="140" left="-100" data-testid="start-party-tooltip">Start a party</Tooltip>
                             </TooltipWrapper>
                         </>}
                     <TooltipWrapper> 
                         <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
-                        <Tooltip length="200" left="-150">Invite others to follow</Tooltip>
+                        <Tooltip length="200" left="-150" data-testid="invite-tooltip">Invite others to follow</Tooltip>
                     </TooltipWrapper> 
-                    {inviteActive && <Subtitle> invite with this id: {currentPlaylistId} </Subtitle>}
+                    {inviteActive && <Subtitle data-testid="invite-id"> invite with this id: {currentPlaylistId} </Subtitle>}
                     <TooltipWrapper> 
-                        <DeleteIcon onClick={deleteOnClick} data-testid="delete-icon"/>
-                        <Tooltip length="140" left="-96">Delete playlist</Tooltip>
+                        <DeleteIcon onClick={deleteOnClick} data-testid="delete-playlist-icon"/>
+                        <Tooltip length="140" left="-96" data-testid="delete-tooltip">Delete playlist</Tooltip>
                     </TooltipWrapper>
                 </IconWrapper>
-                {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
+                {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer} data-testid="player"/>}
                 {addSongActive && <AddSong />}
                 <Songlist />
                 {confirmationIsVisible && <Confirmation message={confirmationText} confirm={confirmAction}/>}
             </Container>
         );
     }
- else {
+    
     return(<Container>
         <Title data-testid="title" isOwner={isOwner}> {currentPlaylistName} </Title>
-        <Subtitle>by {currentPlaylistOwnerName}</Subtitle>
+        <Subtitle data-testid="owner-name" >by {currentPlaylistOwnerName}</Subtitle>
         <IconWrapper>
             <TooltipWrapper> 
                 <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>
-                <Tooltip length="140" left="-105">Add new song</Tooltip>
+                <Tooltip length="140" left="-105" data-testid="addsong-tooltip">Add new song</Tooltip>
             </TooltipWrapper> 
             {currentPlaylistSongsExist && 
                     <TooltipWrapper>
                         <PlayIcon onClick={startPlayback} data-testid="playback-icon"/>
-                        <Tooltip length="160" left="-170">Play the playlist</Tooltip>
+                        <Tooltip length="160" left="-170" data-testid="playback-tooltip">Play the playlist</Tooltip>
                     </TooltipWrapper>}
             <TooltipWrapper> 
                 <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
-                <Tooltip length="200" left="-150">Invite others to follow</Tooltip>
+                <Tooltip length="200" left="-150" data-testid="invite-tooltip">Invite others to follow</Tooltip>
             </TooltipWrapper> 
-            {inviteActive && <Subtitle> invite with this id: {currentPlaylistId} </Subtitle>}
+            {inviteActive && <Subtitle data-testid="invite-id"> invite with this id: {currentPlaylistId} </Subtitle>}
             <TooltipWrapper> 
                 <UnsubscribeIcon onClick={unFollowOnClick} data-testid="unfollow-icon"/>
-                <Tooltip length="160" left="-100">Unfollow playlist</Tooltip>
+                <Tooltip length="160" left="-100" data-testid="unfollow-tooltip">Unfollow playlist</Tooltip>
             </TooltipWrapper>
             {currentPlaylistPartyOngoing && 
                     <TooltipWrapper> 
-                        <JoinPartyContainer onClick={joinParty}>
+                        <JoinPartyContainer onClick={joinParty} data-testid="join-party">
                             Live party!
                         </JoinPartyContainer>
-                    <Tooltip length="140" left="-5">Join the party</Tooltip>
+                    <Tooltip length="140" left="-5" data-testid="join-party-tooltip">Join the party</Tooltip>
                     </TooltipWrapper> }
         </IconWrapper>
-        {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer}/>}
+        {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer} data-testid="player"/>}
         {addSongActive && <AddSong />}
         <Songlist />
         {confirmationIsVisible && <Confirmation message={confirmationText} confirm={confirmAction}/>}
     </Container>)
-    }
 
 };
 

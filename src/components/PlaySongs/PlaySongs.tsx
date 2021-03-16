@@ -187,7 +187,7 @@ const PlaySongs = (props: playSongsProps) => {
     if (isParty) {
         return (
             <Container data-testid="playback-container-party">
-                <Close onClick={closePlayer}/>
+                <Close onClick={closePlayer} data-testid="close-button"/>
                 <PartyWrapper>
                     <Title data-testid="party-title">{ currentPlaylist?.partySong?.title}</Title>
                     <ControlWrapper>
@@ -205,7 +205,7 @@ const PlaySongs = (props: playSongsProps) => {
 
     return (
         <Container data-testid="playback-container">
-            <Close onClick={closePlayer}/>
+            <Close onClick={closePlayer} data-testid="close-button"/>
             <Title data-testid="playback-title">{currentSong?.title}</Title>
             <YoutubeWrapper>
                 <YouTube videoId={currentSong?.youtubeId} opts={playerOptions} onReady={onReady} onEnd={onEnd} />

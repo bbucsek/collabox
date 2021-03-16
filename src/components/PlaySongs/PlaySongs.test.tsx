@@ -81,53 +81,19 @@ describe("PlaySongs", () => {
         render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <PlaySongs />
+                    <PlaySongs isParty={false} closePlayer={() => {}} />
                 </Provider>
             </ThemeProvider>
         );
-    });
-    it("shows listen button and hides playback container when playback is not started", () => {
-        const { queryByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const playbackButton = queryByTestId("playback-button");
-        const playbackContainer = queryByTestId("playback-container");
-        expect(playbackButton).not.toBeNull();
-        expect(playbackContainer).toBeNull();
-    });
-    it("hides listen button and shows playback container when playback is started", async () => {
-        const { queryByTestId, getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const playbackButton = getByTestId("playback-button");
-        await userEvent.click(playbackButton);
-
-        const playbackButtonAgain = queryByTestId("playback-button");
-        const playbackContainer = queryByTestId("playback-container");
-        expect(playbackButtonAgain).toBeNull();
-        expect(playbackContainer).not.toBeNull();
     });
     it("disables skipback button when playback is started", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <PlaySongs />
+                <PlaySongs isParty={false} closePlayer={() => {}} />
                 </Provider>
             </ThemeProvider>
         );
-
-        const playbackButton = getByTestId("playback-button");
-        await userEvent.click(playbackButton);
 
         const skipBackButton = getByTestId("skip-back");
         expect(skipBackButton).not.toBeEnabled();
@@ -136,120 +102,90 @@ describe("PlaySongs", () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <PlaySongs />
+                <PlaySongs isParty={false} closePlayer={() => {}} />
                 </Provider>
             </ThemeProvider>
         );
-
-        const playbackButton = getByTestId("playback-button");
-        await userEvent.click(playbackButton);
 
         const title = getByTestId("playback-title")
         expect(title).toHaveTextContent(/Title/i)
     });
     it("shows mute icon when playback is started", async () => {
-        const { queryByTestId, getByTestId } = render(
+        const { queryByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <PlaySongs />
+                <PlaySongs isParty={false} closePlayer={() => {}} />
                 </Provider>
             </ThemeProvider>
         );
-
-        const playbackButton = getByTestId("playback-button");
-        await userEvent.click(playbackButton);
 
         const muteButton = queryByTestId("mute-icon");
         expect(muteButton).not.toBeNull();
     });
-    it("shows join party button when there is a live party", async () => {
-        const { getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={storeWithParty}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const joinPartyButton = getByTestId("join-party-button");
-        expect(joinPartyButton).not.toBeNull();
-    });
-    it("shows start party button for own playlist", async () => {
+    it("calls props function when the player is closed during playback", async () => {
+        const mockedCloseFunction = jest.fn()
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={store}>
-                    <PlaySongs />
+                    <PlaySongs isParty={false} closePlayer={mockedCloseFunction} />
                 </Provider>
             </ThemeProvider>
         );
 
-        const startPartyButton = getByTestId("start-party-button");
-        expect(startPartyButton).not.toBeNull();
+        const closeButton = getByTestId("close-button")
+        await userEvent.click(closeButton)
+
+        expect(mockedCloseFunction).toHaveBeenCalled()
     });
-    it("hides start party button and shows playback container when party is started", async () => {
-
-        const { queryByTestId, getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const startPartyButton = getByTestId("start-party-button");
-        await userEvent.click(startPartyButton);
-
-        const startPartyButtonAgain = queryByTestId("start-party-button");
-        const partyPlaybackContainer = queryByTestId("playback-container-party");
-        expect(startPartyButtonAgain).toBeNull();
-        expect(partyPlaybackContainer).not.toBeNull();
-
-    });
-    it("dispatches action when party is started", async () => {
-        const { getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={store}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const joinPartyButton = getByTestId("start-party-button");
-        await userEvent.click(joinPartyButton);
-
-        const actions = store.getActions();
-        expect(actions[0].type).toEqual('playlists/updatePartySong/pending')
-    });
-    it("hides join party button and shows playback container when party is joined", async () => {
-        const { queryByTestId, getByTestId } = render(
-            <ThemeProvider theme={theme}>
-                <Provider store={storeWithParty}>
-                    <PlaySongs />
-                </Provider>
-            </ThemeProvider>
-        );
-
-        const joinPartyButton = getByTestId("join-party-button");
-        await userEvent.click(joinPartyButton);
-
-        const joinPartyButtonAgain = queryByTestId("join-party-button");
-        const partyPlaybackContainer = queryByTestId("playback-container-party");
-        expect(joinPartyButtonAgain).toBeNull();
-        expect(partyPlaybackContainer).not.toBeNull();
-    });
-    it("shows song title when party is joined", async () => {
+    it("shows party playback container when there is a live party", async () => {
         const { getByTestId } = render(
             <ThemeProvider theme={theme}>
                 <Provider store={storeWithParty}>
-                    <PlaySongs />
+                <PlaySongs isParty={true} closePlayer={() => {}} />
                 </Provider>
             </ThemeProvider>
         );
 
-        const startPartyButton = getByTestId("join-party-button");
-        await userEvent.click(startPartyButton);
+        const playbackContainer = getByTestId("playback-container-party");
+        expect(playbackContainer).not.toBeNull();
+    });
+    it("shows mute button when there is a live party", async () => {
+        const { queryByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={store}>
+                <PlaySongs isParty={true} closePlayer={() => {}} />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const muteButton = queryByTestId("mute-button");
+        expect(muteButton).not.toBeNull();
+    });
+    it("shows song title when there is a live party", async () => {
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={storeWithParty}>
+                    <PlaySongs isParty={true} closePlayer={() => {}} />
+                </Provider>
+            </ThemeProvider>
+        );
 
         const title = getByTestId("party-title")
         expect(title).toHaveTextContent(/Title/i)
+    });
+    it("calls props function when the player is closed during a party", async () => {
+        const mockedCloseFunction = jest.fn()
+        const { getByTestId } = render(
+            <ThemeProvider theme={theme}>
+                <Provider store={storeWithParty}>
+                    <PlaySongs isParty={true} closePlayer={mockedCloseFunction} />
+                </Provider>
+            </ThemeProvider>
+        );
+
+        const closeButton = getByTestId("close-button")
+        await userEvent.click(closeButton)
+
+        expect(mockedCloseFunction).toHaveBeenCalled()
     });
 });
