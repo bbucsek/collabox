@@ -32,6 +32,9 @@ export const InputField = styled.input`
     font-size: 4rem;
     font-weight: 900;
     border: none;
+    &:focus {
+        outline: none;
+    } 
 `
 
 export const Form = styled.form`
