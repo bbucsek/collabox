@@ -252,8 +252,10 @@ const endParty = async (playlistId: string) => {
 const changeTitle = async (playlistId: string, playlistName: string, ownerId: string, followers: string[]) => {
 
     changePlaylistTitle(playlistId, playlistName)
-    changePlaylistNameInFollowersList(playlistId, playlistName, followers)
     changePlaylistNameInUserList(playlistId, playlistName, ownerId)
+    if (followers) {
+        changePlaylistNameInFollowersList(playlistId, playlistName, followers)
+    }
 
 }
 
