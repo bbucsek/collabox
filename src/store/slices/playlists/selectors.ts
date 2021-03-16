@@ -45,5 +45,3 @@ export const selectSongs = (state: RootState) => {
         return song
     })
     return songs}
-export const selectCurrentPlaylistId = (state: RootState) => state.playlists.currentPlaylist?.id
-//export const selectSongs = (state: RootState) => state.playlists.currentPlaylist?.songs

@@ -9,5 +9,5 @@ export const notificationMessages = {
     playlist_followed: "Playlist is now followed",
     playlist_unfollowed: "Playlist is unfollowed",
     own_playlist: "You cannot follow your won playlist!",
-    title_too_long: "The title is too long!",
+    title_not_good: "Something went wrong with the title! Make sure its reasonable!",
 }

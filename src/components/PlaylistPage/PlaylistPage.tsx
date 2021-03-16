@@ -7,8 +7,10 @@ import {
     selectCurrentPlaylistName, 
     selectCurrentPlaylistOwnerId, 
     selectCurrentPlaylistOwnerName, 
-    selectCurrentPlaylistPartyOngoing, 
-    selectCurrentPlaylistSongsExist } from "../../store/slices/playlists/selectors";
+    selectCurrentPlaylistPartyOngoing,
+    selectCurrentPlaylist,
+    selectCurrentPlaylistSongsExist 
+} from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import ActionType from "../../types/ActionType";
 import AddSong from "../AddSong";
@@ -24,6 +26,7 @@ import {
     DeleteIcon,
     Tooltip,
     TooltipWrapper,
+    Title,
     PartyIcon,
     JoinPartyContainer,
  } from "./styles";
@@ -39,6 +42,7 @@ const PlaylistPage = () => {
     const currentPlaylistOwnerName = useSelector(selectCurrentPlaylistOwnerName);
     const currentPlaylistSongsExist = useSelector(selectCurrentPlaylistSongsExist); 
     const currentPlaylistPartyOngoing = useSelector(selectCurrentPlaylistPartyOngoing); 
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentUser = useSelector(selectCurrentUser);
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
