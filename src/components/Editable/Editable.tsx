@@ -24,7 +24,7 @@ const Editable = ({ playlistName }: IProps) => {
     const playlistId: string = useSelector(selectCurrentPlaylistId)
     const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentUser = useSelector(selectCurrentUser);
-    const isOwner = currentUser?.name === currentPlaylist?.ownerName;
+    const isOwner = currentUser?.id === currentPlaylist?.owner;
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -50,9 +50,9 @@ const Editable = ({ playlistName }: IProps) => {
                         onChange={e => setNewTitle(e.target.value)}
                         data-testid="title-input"
                     />
-                    <FormButton onClick={submitTitleChange} data-testid="submit-form"/>
+                    <FormButton onClick={submitTitleChange} data-testid="submit-button"/>
                 </Form>
-                <EditTitleIcon onClick={() => setEditTitle(!editTitle)}/>
+                <EditTitleIcon onClick={() => setEditTitle(!editTitle)} data-testid="edit-icon"/>
             </Container>
         )
     }
@@ -60,7 +60,7 @@ const Editable = ({ playlistName }: IProps) => {
     return (
         <Container>
             <Title>{playlistName}</Title>
-            {isOwner && <EditTitleIcon onClick={() => setEditTitle(!editTitle)}/>}
+            {isOwner && <EditTitleIcon onClick={() => setEditTitle(!editTitle)} data-testid="edit-icon" />}
         </Container>
     )
 }
