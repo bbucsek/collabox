@@ -37,8 +37,10 @@ const Editable = ({ playlistName }: IProps) => {
 
     const submitTitleChange = async (e: FormEvent<HTMLButtonElement>) => {
         e.preventDefault()
-        await dispatch(playlistsAsyncActions.changePlaylistTitle({newTitle, playlistId}))
-        setEditTitle(false)
+        let res = await dispatch(playlistsAsyncActions.changePlaylistTitle({newTitle, playlistId}))
+        if (res.payload === newTitle) {
+            setEditTitle(false)
+        }
     }
 
     if (editTitle) {

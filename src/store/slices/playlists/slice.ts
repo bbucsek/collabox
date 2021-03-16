@@ -284,6 +284,9 @@ const changePlaylistTitle = createAsyncThunk<
     >('playlists/changeName',
         async (payload: {newTitle: string, playlistId: string}, thunkApi) => {
             const { playlistId, newTitle } = payload
+            if (newTitle.length > 50) {
+                return thunkApi.rejectWithValue('title_too_long')
+            }
             const state = thunkApi.getState()
             const {playlists, authentication} = state
             const {currentUser} = authentication
@@ -322,7 +325,6 @@ const slice = createSlice({
     },
     extraReducers: {
         [changePlaylistTitle.fulfilled.type]: (state, action) => {
-            console.log(action.payload)
             state.currentPlaylist!.playlistName = action.payload
         },
         [createPlaylist.pending.type]: (state) => {
