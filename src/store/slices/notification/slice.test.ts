@@ -170,6 +170,13 @@ describe('Notification slice', () => {
         expect(nextState.notifications[0].message).toEqual('database_error')
         expect(nextState.notifications[0].severity).toEqual('error')
     }),
+    it('returns the right notification when newtitle is empty string', () => {
+        const nextState = notificationReducer(state, 
+            {type: playlistsAsyncActions.changePlaylistTitle.rejected, payload: 'title_not_good'} )
+
+        expect(nextState.notifications[0].message).toEqual('title_not_good')
+        expect(nextState.notifications[0].severity).toEqual('error')
+    }),
 
   describe('DELETE_NOTIFICATION action', () => {
     it('sets the state with the correct value', () => {
