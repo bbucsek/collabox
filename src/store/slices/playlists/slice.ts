@@ -277,6 +277,33 @@ const endParty = createAsyncThunk<
             }
 })
 
+const changePlaylistTitle = createAsyncThunk<
+    string,
+    {newTitle: string, playlistId: string},
+    {state: RootState}
+    >('playlists/changeName',
+        async (payload: {newTitle: string, playlistId: string}, thunkApi) => {
+            const { playlistId, newTitle } = payload
+            if (newTitle.length > 40 || newTitle === '') {
+                return thunkApi.rejectWithValue('title_not_good')
+            }
+            const state = thunkApi.getState()
+            const {playlists, authentication} = state
+            const {currentUser} = authentication
+            if(!playlists.currentPlaylist) {
+                return thunkApi.rejectWithValue('no_current_playlist')
+            }
+            const { currentPlaylist } = playlists   
+            const {followers} = currentPlaylist
+                try {
+                    await firestoreApi.changeTitle(playlistId, newTitle, currentUser!.id, followers)
+                    return payload.newTitle;
+                } catch {
+                    return thunkApi.rejectWithValue('database_error')
+                }
+        }    
+    )
+
 const slice = createSlice({
     name: 'playlists',
     initialState,
@@ -297,6 +324,9 @@ const slice = createSlice({
         },
     },
     extraReducers: {
+        [changePlaylistTitle.fulfilled.type]: (state, action) => {
+            state.currentPlaylist!.playlistName = action.payload
+        },
         [createPlaylist.pending.type]: (state) => {
             state.loading.createPlaylistLoading = true
         },
@@ -494,5 +524,6 @@ export const playlistsAsyncActions = {
     followPlaylist,
     unfollowPlaylist,
     updatePartySong,
-    endParty
+    endParty, 
+    changePlaylistTitle,
 }

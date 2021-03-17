@@ -720,4 +720,50 @@ describe('UnsubscribeFromSongsCollection slice async action', () => {
   })
 })
 
+describe('changePlaylistTitle slice async action', () => {
+  beforeEach(() => {
+    store.clearActions()
+  })
+  
+  it('returns the right action if action dispatched to the changePlaylistTitle action', async () => {
+    await store.dispatch(playlistsAsyncActions.changePlaylistTitle({playlistId: 'test_id', newTitle: 'test_title'}))
+
+    const actions = store.getActions()
+    expect(actions[1].type).toEqual('playlists/changeName/fulfilled')
+  })
+
+  it('returns the right payload if action dispatched to the changePlaylistTitle action', async () => {
+    await store.dispatch(playlistsAsyncActions.changePlaylistTitle({playlistId: 'test_id', newTitle: 'test_title'}))
+
+    const actions = store.getActions()
+    expect(actions[1].payload).toEqual('test_title')
+  })
+
+  it('returns right payload when there is no current playlist', async () => {
+    await storeWithoutCurrentPlaylist.dispatch(playlistsAsyncActions.changePlaylistTitle({playlistId: 'test_id', newTitle: 'test_title'}))
+
+    const actions = storeWithoutCurrentPlaylist.getActions()
+    expect(actions[1].type).toEqual('playlists/changeName/rejected')
+    expect(actions[1].payload).toEqual('no_current_playlist')
+  })
+
+  it('returns error when the newtitle is empty string ', async () => {
+    await store.dispatch(playlistsAsyncActions.changePlaylistTitle({playlistId: 'test_id', newTitle: ''}))
+
+    const actions = store.getActions()
+    expect(actions[1].payload).toEqual('title_not_good')
+  })
+
+  
+
+  it('returns error when the newtitle is too long ', async () => {
+    await store.dispatch(playlistsAsyncActions.changePlaylistTitle({
+      playlistId: 'test_id',
+      newTitle: 'asdfghjklqasdfghjklqasdfghjklqasdfghjklqa'}))
+
+    const actions = store.getActions()
+    expect(actions[1].payload).toEqual('title_not_good')
+  })
+})
+
 

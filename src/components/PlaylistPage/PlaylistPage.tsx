@@ -7,8 +7,10 @@ import {
     selectCurrentPlaylistName, 
     selectCurrentPlaylistOwnerId, 
     selectCurrentPlaylistOwnerName, 
-    selectCurrentPlaylistPartyOngoing, 
-    selectCurrentPlaylistSongsExist } from "../../store/slices/playlists/selectors";
+    selectCurrentPlaylistPartyOngoing,
+    selectCurrentPlaylist,
+    selectCurrentPlaylistSongsExist 
+} from "../../store/slices/playlists/selectors";
 import { playlistsAsyncActions } from "../../store/slices/playlists/slice";
 import ActionType from "../../types/ActionType";
 import AddSong from "../AddSong";
@@ -17,7 +19,6 @@ import {
     IconWrapper,
     Container,
     Subtitle,
-    Title,
     AddIcon,
     InviteIcon,
     PlayIcon,
@@ -25,11 +26,13 @@ import {
     DeleteIcon,
     Tooltip,
     TooltipWrapper,
+    Title,
     PartyIcon,
     JoinPartyContainer,
  } from "./styles";
 import Songlist from "../Songlist";
 import Confirmation from "../Confirmation";
+import Editable from "../Editable";
 
 const PlaylistPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -39,6 +42,7 @@ const PlaylistPage = () => {
     const currentPlaylistOwnerName = useSelector(selectCurrentPlaylistOwnerName);
     const currentPlaylistSongsExist = useSelector(selectCurrentPlaylistSongsExist); 
     const currentPlaylistPartyOngoing = useSelector(selectCurrentPlaylistPartyOngoing); 
+    const currentPlaylist = useSelector(selectCurrentPlaylist);
     const currentUser = useSelector(selectCurrentUser);
     const [addSongActive, setAddSongActive] = useState(false);
     const [inviteActive, setInviteActive] = useState(false);
@@ -128,8 +132,11 @@ const PlaylistPage = () => {
 if (isOwner) {
 
     return (
-        <Container>
-                <Title data-testid="title" isOwner={isOwner}> {currentPlaylistName} </Title>
+            <Container>
+                <Editable 
+                    data-testid="title" 
+                    playlistName={currentPlaylist?.playlistName}
+                />
                 <IconWrapper>
                     <TooltipWrapper> 
                         <AddIcon onClick={() => setAddSongActive(!addSongActive)} data-testid="addsong-icon"/>

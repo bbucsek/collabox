@@ -159,6 +159,13 @@ const slice = createSlice({
             severity: SEVERITY.Error,
             })
         },
+        [playlistsAsyncActions.changePlaylistTitle.rejected.type]: (state, action) => {
+            state.notifications.push({
+            id: getId(),
+            message: action.payload,
+            severity: SEVERITY.Error,
+            })
+        },
 },
     reducers: {
         DELETE_NOTIFICATION: (state, action: PayloadAction<number>) => {

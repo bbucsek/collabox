@@ -8,5 +8,6 @@ export const notificationMessages = {
     no_such_playlist: "There is no playlist with this id!",
     playlist_followed: "Playlist is now followed",
     playlist_unfollowed: "Playlist is unfollowed",
-    own_playlist: "You cannot follow your won playlist!"
+    own_playlist: "You cannot follow your own playlist!",
+    title_not_good: "Please make sure that the title is between 0-40 characters long!",
 }

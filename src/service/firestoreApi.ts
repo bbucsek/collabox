@@ -249,6 +249,49 @@ const endParty = async (playlistId: string) => {
     })
 }
 
+const changeTitle = async (playlistId: string, playlistName: string, ownerId: string, followers: string[]) => {
+
+    changePlaylistTitle(playlistId, playlistName)
+    changePlaylistNameInUserList(playlistId, playlistName, ownerId)
+    if (followers) {
+        changePlaylistNameInFollowersList(playlistId, playlistName, followers)
+    }
+
+}
+
+const changePlaylistTitle = async (playlistId: string, playlistName: string) => {
+    await database
+    .collection('playlists')
+    .doc(playlistId)
+    .update({
+        playlistName: playlistName
+    })
+}
+
+const changePlaylistNameInFollowersList = async (playlistId: string, playlistName: string, followers: string[]) => {
+    await followers.forEach(async (followerId) => {
+        await database
+        .collection('users')
+        .doc(followerId)
+        .collection('otherPlaylists')
+        .doc(playlistId)
+        .update({
+            playlistName: playlistName
+        })
+    });
+}
+
+const changePlaylistNameInUserList = async (playlistId: string, playlistName: string, userId: string) => {
+    await database
+    .collection('users')
+    .doc(userId)
+    .collection('ownPlaylists')
+    .doc(playlistId)
+    .update({
+        playlistName: playlistName
+    })
+}
+
 export const firestoreApi = {
     createPlaylist,
     getPlaylistDetails, 
@@ -269,5 +312,6 @@ export const firestoreApi = {
     checkVoteStatus,
     vote,
     updatePartySong,
-    endParty
+    endParty,
+    changeTitle,
 }
