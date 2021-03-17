@@ -60,3 +60,43 @@ export const Icon = styled(AddIcon)`
     }
 
 `
+
+export const TooltipWrapper = styled.div`
+    position: relative;
+    margin-right: 0.5rem;
+`
+
+export const Tooltip = styled.div<{length: string, left: string}>`
+    & {
+        visibility: hidden;
+        opacity: 0;
+        transition: visibility 0.5s, opacity 0.5s;
+        position: absolute;
+        top: -100%;
+        left: ${(props) => props.left}%;
+        z-index: 1;
+        min-width: ${(props) => props.length}px;
+        padding: 5px;
+        border-radius: 6px;
+        background-color: ${({theme}) => theme.colors.secondaryLight};
+        color: ${({theme}) => theme.colors.whiteFontColor};
+        text-align: center;
+        
+        ${TooltipWrapper}:hover & {
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.5s linear;
+        }
+    }
+
+    &:after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: ${({theme}) => theme.colors.secondaryLight} transparent transparent transparent;
+    }
+`
