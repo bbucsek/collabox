@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
     align-items: center;
     flex: 8.5;
     height: 100vh;
+    flex-wrap: wrap;
 `
 
 export const ContentWrapper = styled.div`
@@ -25,6 +26,9 @@ export const SongItemWrapper = styled.div`
     flex-direction: column;
     width: 30%;
     flex: 3;
+    @media (max-width: 800px) {
+      display: none;
+    }   
 
 `
 
