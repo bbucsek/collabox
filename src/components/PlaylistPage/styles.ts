@@ -135,7 +135,7 @@ export const Tooltip = styled.div<{length: string, left: string}>`
         border-width: 5px;
         border-style: solid;
         border-color: ${({theme}) => theme.colors.secondaryLight} transparent transparent transparent;
-      }
+    }
 `
 
 export const JoinPartyContainer = styled.div`

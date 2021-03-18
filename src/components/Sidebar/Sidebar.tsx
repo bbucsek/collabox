@@ -1,5 +1,15 @@
 import React, { useEffect } from 'react'
-import { Container, Title, Logout, Subtitle, Wrapper, Icon } from './styles'
+import { 
+    Container, 
+    Title, 
+    Logout, 
+    Subtitle, 
+    Wrapper, 
+    Icon,
+    Tooltip,
+    TooltipWrapper,
+} 
+from './styles'
 import { signOut } from '../../service/authentication'
 import PlaylistItem from './PlaylistItem'
 import { playlistsAsyncActions } from '../../store/slices/playlists/slice'
@@ -53,7 +63,10 @@ const Sidebar = () => {
                 <Subtitle>
                     My playlists
                 </Subtitle>
-                <Icon onClick={createPlaylist}/>
+                <TooltipWrapper>
+                    <Icon onClick={createPlaylist}/>
+                    <Tooltip length="150" left="-260" data-testid="addsong-tooltip">Create playlist</Tooltip>
+                </TooltipWrapper>
             </Wrapper>
             {ownPlaylists?.map((playlist: PlaylistData) => {
                 return <PlaylistItem key={playlist.id} playlist={playlist} />
@@ -62,7 +75,10 @@ const Sidebar = () => {
                 <Subtitle>
                     Others' playlists
                 </Subtitle>
-                <Icon onClick={followPlaylist}/>
+                <TooltipWrapper>
+                    <Icon onClick={followPlaylist}/>
+                    <Tooltip length="150" left="-260" data-testid="addsong-tooltip">Follow playlist</Tooltip>
+                </TooltipWrapper>
             </Wrapper>
             {otherPlaylists?.map((otherPlaylist: PlaylistData) => {
                 return <PlaylistItem key={otherPlaylist.id} playlist={otherPlaylist} />

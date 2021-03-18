@@ -157,11 +157,11 @@ if (isOwner) {
                         <InviteIcon onClick={() => setInviteActive(!inviteActive)} data-testid="invite-icon"/>
                         <Tooltip length="200" left="-150" data-testid="invite-tooltip">Invite others to follow</Tooltip>
                     </TooltipWrapper> 
-                    {inviteActive && <Subtitle data-testid="invite-id"> invite with this id: {currentPlaylistId} </Subtitle>}
                     <TooltipWrapper> 
                         <DeleteIcon onClick={deleteOnClick} data-testid="delete-playlist-icon"/>
                         <Tooltip length="140" left="-96" data-testid="delete-tooltip">Delete playlist</Tooltip>
                     </TooltipWrapper>
+                    {inviteActive && <Subtitle data-testid="invite-id"> invite with this id: {currentPlaylistId} </Subtitle>}
                 </IconWrapper>
                 {playerActive && currentPlaylistSongsExist && <PlaySongs isParty={isParty} closePlayer={closePlayer} data-testid="player"/>}
                 {addSongActive && <AddSong />}
