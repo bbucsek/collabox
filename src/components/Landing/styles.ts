@@ -1,6 +1,11 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
+    display: flex;
+    flex-direction: column;
+`
+
+export const Wrapper = styled.div`
     display:flex;
     flex-direction: row;
     justify-content: center;
@@ -12,12 +17,15 @@ export const Container = styled.div`
 export const ContentWrapper = styled.div`
     color: ${({ theme }) => theme.colors.primary};
     font-size: 2rem;
+    flex: 4.5;
 `
 
 export const SongItemWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 30%;
+    flex: 3;
+
 `
 
 export const SongItem = styled.div`
@@ -28,17 +36,26 @@ export const SongItem = styled.div`
     background: ${({ theme }) => theme.colors.secondaryLight};
     color: ${({ theme }) => theme.colors.whiteFontColor};
     box-shadow: ${({ theme }) => theme.boxShadow};
-    width: 100%;
+    width: 80%;
     padding: 1rem;
     margin: 0.5rem;
     filter: blur(0.8px);
 `
 
 export const ContentList = styled.ul`
-    font-size: 2rem;
+    font-size: 1.5rem;
 
 `
 
 export const ContentItem = styled.li`
-    font-size: 1.5rem;
+    font-size: 1rem;
+    margin: 1rem;
+`
+
+export const Title = styled.div`
+    color: ${({ theme }) => theme.colors.primaryLight};
+    margin: 2rem 3rem 0;
+    font-size: 3rem;
+
+
 `
