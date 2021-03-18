@@ -48,12 +48,16 @@ export const SongItem = styled.div`
 
 export const ContentList = styled.ul`
     font-size: 1.5rem;
+    color: ${({ theme }) => theme.colors.primaryLight};
+
 
 `
 
 export const ContentItem = styled.li`
     font-size: 1rem;
     margin: 1rem;
+    color: ${({ theme }) => theme.colors.primaryDark};
+
 `
 
 export const Title = styled.div`
