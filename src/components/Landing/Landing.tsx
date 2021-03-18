@@ -24,9 +24,9 @@ const Landing = () => {
                     <ContentItem>
                         Compile a playlist with your friends, vote on the songs and make sure that all your guests enjoy the music on the dance floor!
                     </ContentItem>
-                    Your need to celebrate your birthday in quarantine?
+                    You need to celebrate your birthday in quarantine?
                     <ContentItem>
-                        Do not let it ruin your special day! Throw a quarantine party, where you can enjoy the same songs in your own home while meeting online. 
+                        Do not let it ruin your special day! Throw a quarantine party, where you can enjoy the same songs in your own homes with your friends while meeting online.
                     </ContentItem>
                     You want to connect with your friends through music as well?
                     <ContentItem>
