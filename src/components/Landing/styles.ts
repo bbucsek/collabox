@@ -3,6 +3,7 @@ import styled from 'styled-components'
 export const Container = styled.div`
     display: flex;
     flex-direction: column;
+    flex: 8.5;
 `
 
 export const Wrapper = styled.div`
@@ -10,7 +11,6 @@ export const Wrapper = styled.div`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    flex: 8.5;
     height: 100vh;
     flex-wrap: wrap;
 `
@@ -48,12 +48,16 @@ export const SongItem = styled.div`
 
 export const ContentList = styled.ul`
     font-size: 1.5rem;
+    color: ${({ theme }) => theme.colors.primaryLight};
+
 
 `
 
 export const ContentItem = styled.li`
     font-size: 1rem;
     margin: 1rem;
+    color: ${({ theme }) => theme.colors.primaryDark};
+
 `
 
 export const Title = styled.div`

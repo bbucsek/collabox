@@ -7,7 +7,6 @@ import { ThemeProvider } from "styled-components";
 import theme from "../../theme";
 import userEvent from "@testing-library/user-event";
 import Editable from './Editable'
-import { act } from "react-dom/test-utils";
 
 const mockStore = configureMockStore([thunk]);
 const storeWhereOwner = mockStore({
